@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- ✏️ CAMBIAR: título y descripción que aparecen en Google y al compartir en WhatsApp -->
+  <title>Carrera con Causa 2026 · Rumbo a Corea · 3K, 5K y 10K</title>
+  <meta name="description" content="Carrera temática de cultura coreana, 3K, 5K y 10K, en la Ex Hacienda de Chautla, Puebla, organizada por Granito de Arena. Lo recaudado lleva a integrantes del colectivo al Youth Summit 2027 en Corea del Sur.">
+  <meta property="og:title" content="Carrera con Causa 2026 · Rumbo a Corea">
+  <meta property="og:description" content="Corre con temática coreana y ayuda a llevar a Granito de Arena al Youth Summit 2027 en Corea del Sur. Domingo 6 de diciembre de 2026, Ex Hacienda de Chautla, Puebla.">
+  <meta property="og:image" content="assets/img/logo-granito-de-arena.png">
+  <meta name="theme-color" content="#3d2600">
+  <link rel="icon" type="image/png" href="assets/img/logo-granito-de-arena.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Black Han Sans: tipografía coreana para los textos en hangul -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Black+Han+Sans&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- El "?v=" evita que el navegador muestre una versión vieja. Cambia el número cada vez que subas cambios. -->
+  <link rel="stylesheet" href="style.css?v=20261006f">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+  <!-- ===================== ICONOS COREANOS (SVG) =====================
+       Se usan en toda la página con: <svg viewBox="0 0 64 64"><use href="#i-tigre"/></svg>
+       Disponibles: i-tigre, i-hanbok, i-gat, i-farol, i-norigae, i-bok -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <!-- Tigre (estilo arte popular coreano "minhwa") -->
+      <symbol id="i-tigre" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <circle cx="15" cy="16" r="8" fill="#f39a1e"/><circle cx="49" cy="16" r="8" fill="#f39a1e"/>
+          <circle cx="15" cy="16" r="3.5" fill="#fbe07c" stroke="none"/><circle cx="49" cy="16" r="3.5" fill="#fbe07c" stroke="none"/>
+          <ellipse cx="32" cy="35" rx="24" ry="22" fill="#f39a1e"/>
+          <path d="M32 14v8M25 15l2 6M39 15l-2 6M9 31h7M10 39h6M55 31h-7M54 39h-6" fill="none" stroke-width="3"/>
+          <ellipse cx="32" cy="45" rx="12" ry="9" fill="#fff"/>
+          <circle cx="23" cy="31" r="3.2" fill="#3d2600" stroke="none"/><circle cx="41" cy="31" r="3.2" fill="#3d2600" stroke="none"/>
+          <circle cx="24" cy="30" r="1" fill="#fff" stroke="none"/><circle cx="42" cy="30" r="1" fill="#fff" stroke="none"/>
+          <circle cx="17" cy="40" r="3" fill="#f28ab2" stroke="none" opacity=".7"/><circle cx="47" cy="40" r="3" fill="#f28ab2" stroke="none" opacity=".7"/>
+          <path d="M28 40h8l-4 4z" fill="#3d2600"/>
+          <path d="M32 44v3M32 47q-3 3-6 1M32 47q3 3 6 1" fill="none" stroke-width="2"/>
+        </g>
+      </symbol>
+      <!-- Hanbok (jeogori + chima) -->
+      <symbol id="i-hanbok" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M21 30C22 40 12 50 9 58Q32 63 55 58C52 50 42 40 43 30Z" fill="#f28ab2"/>
+          <path d="M27 36L22 58M32 36V60M37 36L42 58" fill="none" stroke-width="1.2" opacity=".45"/>
+          <path d="M23 12H41L47 16L60 26L55 33L44 26V31H20V26L9 33L4 26L17 16Z" fill="#ffc800"/>
+          <path d="M6.5 24L11.5 31" stroke="#cd2e3a" stroke-width="2.6"/><path d="M9 22L14 29" stroke="#0047a0" stroke-width="2.6"/>
+          <path d="M57.5 24L52.5 31" stroke="#cd2e3a" stroke-width="2.6"/><path d="M55 22L50 29" stroke="#0047a0" stroke-width="2.6"/>
+          <path d="M26 12L32 22L38 12" fill="none" stroke="#fff" stroke-width="3"/>
+          <path d="M32 22L27 37M32 22L36 34" fill="none" stroke="#cd2e3a" stroke-width="3.5"/>
+          <circle cx="32" cy="22" r="2.6" fill="#cd2e3a" stroke="none"/>
+        </g>
+      </symbol>
+      <!-- Gat (sombrero tradicional) -->
+      <symbol id="i-gat" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M14 42Q19 56 32 58Q45 56 50 42" fill="none" stroke="#cd2e3a" stroke-width="3.2" stroke-dasharray="0 5"/>
+          <ellipse cx="32" cy="40" rx="29" ry="7" fill="#2b1f0e" fill-opacity=".88"/>
+          <path d="M21 40L23 16Q32 11 41 16L43 40Z" fill="#2b1f0e"/>
+          <ellipse cx="32" cy="16" rx="9" ry="3" fill="#5a4630"/>
+          <path d="M21.7 33Q32 36.5 42.3 33" fill="none" stroke="#ffc800" stroke-width="3"/>
+          <path d="M27 20Q26 28 26 34" fill="none" stroke="#fff" stroke-width="1.5" opacity=".35"/>
+        </g>
+      </symbol>
+      <!-- Farol cheongsachorong -->
+      <symbol id="i-farol" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M32 1V8" fill="none"/>
+          <path d="M22 8H42L46 14H18Z" fill="#0047a0"/>
+          <path d="M18 14H46L44 42H20Z" fill="#cd2e3a"/>
+          <path d="M20 36H44V42H20Z" fill="#0047a0"/>
+          <path d="M26.5 15L26 36M32 15V36M37.5 15L38 36" fill="none" stroke-width="1" opacity=".5"/>
+          <path d="M20 42H44L40 47H24Z" fill="#0047a0"/>
+          <path d="M29 47H35L36.5 62H27.5Z" fill="#ffc800"/>
+          <path d="M23 18Q22 26 23 32" fill="none" stroke="#fff" stroke-width="2" opacity=".45"/>
+        </g>
+      </symbol>
+      <!-- Norigae (adorno con borla) -->
+      <symbol id="i-norigae" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M32 3L38 10L32 17L26 10Z" fill="#cd2e3a"/>
+          <circle cx="32" cy="23" r="5.5" fill="#2e8b57"/>
+          <path d="M32 29L35.5 32.5L32 36L28.5 32.5Z" fill="#ffc800"/>
+          <path d="M27 38H37L39.5 61H24.5Z" fill="#cd2e3a"/>
+          <path d="M29.5 41L28.5 60M32 41V61M34.5 41L35.5 60" fill="none" stroke="#8f1f28" stroke-width="1.2"/>
+          <rect x="26" y="36" width="12" height="4" rx="1.5" fill="#ffc800"/>
+        </g>
+      </symbol>
+      <!-- Bokjumeoni (bolsita de la suerte) -->
+      <symbol id="i-bok" viewBox="0 0 64 64">
+        <g stroke="#3d2600" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M26 20C22 9 17 11 20 4M38 20C42 9 47 11 44 4" fill="none" stroke="#cd2e3a" stroke-width="2.6"/>
+          <path d="M20 22C8 30 8 56 32 58C56 56 56 30 44 22Z" fill="#f28ab2"/>
+          <path d="M20 22Q32 26 44 22L42 16Q32 19 22 16Z" fill="#ffc800"/>
+          <g fill="#fff" stroke-width="2">
+            <circle cx="32" cy="34" r="5"/><circle cx="39.6" cy="39.5" r="5"/><circle cx="36.7" cy="48.5" r="5"/>
+            <circle cx="27.3" cy="48.5" r="5"/><circle cx="24.4" cy="39.5" r="5"/>
+          </g>
+          <circle cx="32" cy="42" r="3.2" fill="#cd2e3a" stroke="none"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ===================== MENÚ FIJO ===================== -->
+  <header class="nav" id="nav">
+    <div class="nav__inner container">
+      <!-- ✏️ CAMBIAR: logo y nombre corto del menú -->
+      <a href="#inicio" class="nav__logo"><img src="assets/img/logo-granito-de-arena.png" alt="" width="40" height="40"><span>CARRERA <em>CON CAUSA</em></span></a>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMenu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav__menu" id="navMenu">
+        <a href="#inicio">Inicio</a>
+        <a href="#causa">La causa</a>
+        <a href="#organizador">Organizador</a>
+        <a href="#fechas">Fechas</a>
+        <a href="#sede">Sede</a>
+        <a href="#ruta">Ruta</a>
+        <a href="#kit">Kit</a>
+        <a href="#premios">Premios</a>
+        <a href="#patrocinadores">Patrocinadores</a>
+        <a href="#inscripcion" class="nav__cta">Inscríbete</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===================== 1. INICIO ===================== -->
+    <section class="hero" id="inicio">
+      <!-- ✏️ IMAGEN DE FONDO: pon tu foto en assets/img/hero.jpg y quita el comentario de la línea "background" en style.css (.hero__bg) -->
+      <div class="hero__bg" aria-hidden="true"></div>
+      <!-- PÃ©talos de mugunghwa (flor nacional de Corea) cayendo -->
+      <span class="hero__hangul" aria-hidden="true" lang="ko">함께<br>달려요</span>
+      <div class="petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="container hero__content">
+        <div class="hero__head">
+          <!-- ✏️ CAMBIAR: tipo de carrera -->
+          <p class="hero__tag reveal">Edición K-culture · 3K, 5K y 10K</p>
+          <!-- ✏️ CAMBIAR: nombre de la carrera -->
+          <h1 class="hero__title reveal">Carrera<br><span>con Causa</span> 2026</h1>
+          <p class="hero__ko reveal"><span lang="ko">함께 달려요</span> Corramos juntos rumbo a Corea</p>
+        </div>
+
+        <div class="hero__body">
+        <!-- ✏️ CAMBIAR: descripción corta (1-2 frases) -->
+        <p class="hero__lead reveal">Cada kilómetro nos acerca a Corea del Sur. Lo recaudado llevará a integrantes de Granito de Arena al <strong>Youth Summit 2027</strong>.</p>
+        <p class="hero__by reveal"><img src="assets/img/logo-granito-de-arena.png" alt="" width="44" height="44"> Organiza <strong>Granito de Arena</strong></p>
+
+        <ul class="hero__meta reveal">
+          <!-- ✏️ CAMBIAR: fecha y lugar visibles -->
+          <li><strong>📅 Domingo 6 de diciembre de 2026</strong><span>Salida 7:00 a.m.</span></li>
+          <li><strong>📍 <a href="#sede">Ex Hacienda de Chautla</a></strong><span>San Salvador el Verde, Puebla</span></li>
+        </ul>
+
+        <!-- ✏️ CAMBIAR: fecha y hora EXACTA de la salida para la cuenta regresiva.
+             Formato: AAAA-MM-DDTHH:MM:SS-06:00  (-06:00 = hora del centro de México) -->
+        <div class="countdown reveal" id="countdown" data-fecha="2026-12-06T07:00:00-06:00" aria-live="polite">
+          <div><span data-cd="d">--</span><small>días</small></div>
+          <div><span data-cd="h">--</span><small>horas</small></div>
+          <div><span data-cd="m">--</span><small>min</small></div>
+          <div><span data-cd="s">--</span><small>seg</small></div>
+        </div>
+
+        <div class="hero__ctas reveal">
+          <a href="#inscripcion" class="btn btn--primary btn--xl">Inscríbete</a>
+          <a href="#causa" class="btn btn--light">Conoce la causa</a>
+        </div>
+        </div><!-- /hero__body -->
+      </div>
+      <!-- Franja "saekdong": las rayas de colores de las mangas del hanbok tradicional -->
+      <div class="saekdong" aria-hidden="true"></div>
+    </section>
+
+    <!-- Cinta animada. ✏️ Para cambiar el texto, edita AMBOS <span> (son iguales para que el giro sea continuo) -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>CORRE ★ <b lang="ko">달려요</b> ★ 3K · 5K · 10K ★ RUMBO A COREA 2027 ★ <b lang="ko">화이팅</b> ★ CARRERA CON CAUSA ★ </span>
+        <span>CORRE ★ <b lang="ko">달려요</b> ★ 3K · 5K · 10K ★ RUMBO A COREA 2027 ★ <b lang="ko">화이팅</b> ★ CARRERA CON CAUSA ★ </span>
+      </div>
+    </div>
+
+    <!-- ===================== LA CAUSA: RUMBO A COREA ===================== -->
+    <section class="section causa" id="causa">
+      <div class="container causa__grid">
+        <div class="causa__text">
+          <p class="eyebrow reveal">La causa <span class="ko" lang="ko">우리의 목표</span></p>
+          <h2 class="reveal">Rumbo a Corea 2027</h2>
+          <!-- ✏️ CAMBIAR: texto de la causa -->
+          <p class="section__lead reveal">Con tu inscripción, integrantes de Granito de Arena viajarán a Corea del Sur para participar en el <strong>Youth Summit 2027</strong>, donde compartirán su trabajo en derechos humanos y buenas causas, y volverán con nuevas ideas para accionar aquí.</p>
+
+          <ul class="causa__list reveal">
+            <!-- ✏️ CAMBIAR: en qué se usan los fondos -->
+            <li><span>✈️</span><div><strong>Vuelos</strong>Boletos de avión México – Corea del Sur</div></li>
+            <li><span>🏨</span><div><strong>Hospedaje y alimentación</strong>Durante los días del summit</div></li>
+            <li><span>🎫</span><div><strong>Registro al summit</strong>Cuotas de participación y traslados</div></li>
+          </ul>
+
+        </div>
+
+        <!-- Mapa de vuelo animado México → Seúl (sin cifras de recaudación) -->
+        <div class="flight reveal">
+          <svg class="flight__map" viewBox="0 0 360 230" role="img" aria-label="Ruta de vuelo de México a Seúl">
+            <!-- puntitos de fondo -->
+            <defs>
+              <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="#fbe07c" opacity=".25"/></pattern>
+            </defs>
+            <rect width="360" height="230" fill="url(#dots)"/>
+            <path id="flightPath" d="M46 178C110 40 250 20 314 82" fill="none" stroke="#fbe07c" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round"/>
+            <!-- origen -->
+            <circle cx="46" cy="178" r="13" fill="#2e8b57" stroke="#fff" stroke-width="3"/>
+            <text x="46" y="214" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="13" fill="#fff">MÉXICO</text>
+            <!-- destino -->
+            <circle cx="314" cy="82" r="22" fill="#cd2e3a" opacity=".3"><animate attributeName="r" values="14;26;14" dur="2s" repeatCount="indefinite"/></circle>
+            <circle cx="314" cy="82" r="13" fill="#cd2e3a" stroke="#fff" stroke-width="3"/>
+            <text x="314" y="124" text-anchor="middle" font-family="Inter, sans-serif" font-weight="700" font-size="13" fill="#fff">SEÚL</text>
+            <text x="314" y="144" text-anchor="middle" font-family="Black Han Sans, sans-serif" font-size="15" fill="#ffc800">서울</text>
+            <!-- avión -->
+            <g>
+              <g stroke="#3d2600" stroke-width="1.8" stroke-linejoin="round" fill="#ffc800" transform="scale(1.4)">
+                <path d="M-2-3L-9-15H-4L6-3Z"/><path d="M-2 3L-9 15H-4L6 3Z"/>
+                <path d="M-13-3L-16-9H-12L-9-3Z" />
+                <path d="M-14-3H7Q15 0 7 3H-14Z" fill="#fff"/>
+              </g>
+              <animateMotion dur="7s" repeatCount="indefinite" rotate="auto" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines=".45 0 .55 1">
+                <mpath href="#flightPath"/>
+              </animateMotion>
+            </g>
+          </svg>
+          <div class="flight__text">
+            <p class="flight__title">Tú nos llevas a Corea <span lang="ko">고마워요!</span></p>
+            <p>Cada inscripción es un tramo más del vuelo. ¡Súbete con nosotros!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 2. ORGANIZADOR ===================== -->
+    <section class="section section--alt" id="organizador">
+      <div class="container org">
+        <div class="org__photo reveal">
+          <!-- ✏️ LOGO/FOTO DEL ORGANIZADOR: cambia el src si quieres usar una foto del equipo -->
+          <img src="assets/img/logo-granito-de-arena.png" alt="Logo de Granito de Arena" width="600" height="600">
+        </div>
+        <div class="org__text reveal">
+          <p class="eyebrow">Organizador <span class="ko" lang="ko">주최</span></p>
+          <!-- ✏️ CAMBIAR: nombre y descripción del organizador -->
+          <h2>Granito de Arena</h2>
+          <p class="org__motto">🫀 Visibilizamos, apoyamos y difundimos los derechos humanos y las buenas causas ✨</p>
+          <p>💡 Somos un colectivo que crea espacios para accionar y reflexionar 💛</p>
+          <p>Con la Carrera con Causa, cada kilómetro nos acerca al Youth Summit 2027 en Corea del Sur.</p>
+
+          <!-- ✏️ CAMBIAR: datos de contacto -->
+          <ul class="contact-list">
+            <li><span>✉️</span> <a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a></li>
+            <!-- Para agregar WhatsApp, quita los símbolos de comentario de la línea siguiente.
+                 El número va como 52 + 10 dígitos, sin "+" ni espacios.
+            <li><span>💬</span> <a href="https://wa.me/52XXXXXXXXXX" target="_blank" rel="noopener">WhatsApp XX XXXX XXXX</a></li>
+            -->
+          </ul>
+          <div class="socials">
+            <!-- ✏️ CAMBIAR: enlaces a tus redes -->
+            <a href="https://www.facebook.com/profile.php?id=100075559972420" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Carrusel de Instagram (se llena solo) ----------
+           Se configura en script.js → CONFIG.instagram. Si no hay feed conectado,
+           se muestra esta tarjeta para invitar a seguir la cuenta. -->
+      <div class="container ig reveal" id="instagram">
+        <div class="ig__head">
+          <div>
+            <p class="eyebrow">Instagram</p>
+            <h3 class="ig__title">Lo último de <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">@granitodearena.sm</a></h3>
+          </div>
+          <div class="ig__nav" hidden>
+            <button type="button" class="ig__arrow" data-dir="-1" aria-label="Publicaciones anteriores">‹</button>
+            <button type="button" class="ig__arrow" data-dir="1" aria-label="Publicaciones siguientes">›</button>
+          </div>
+        </div>
+        <div class="ig__track" id="igTrack" tabindex="0" aria-label="Publicaciones recientes de Instagram">
+          <a class="ig__fallback" href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">
+            <img src="assets/img/logo-granito-de-arena.png" alt="" width="72" height="72">
+            <span><strong>Síguenos en Instagram</strong>Sigue el camino rumbo a Corea</span>
+            <span class="btn btn--primary">Ver perfil</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3. FECHAS IMPORTANTES ===================== -->
+    <section class="section" id="fechas">
+      <div class="container">
+        <p class="eyebrow reveal">Agenda <span class="ko" lang="ko">일정</span></p>
+        <h2 class="reveal">Fechas importantes</h2>
+
+        <!-- ✏️ CAMBIAR: fechas. Para agregar otra, copia un <li class="timeline__item"> completo. -->
+        <ol class="timeline">
+          <li class="timeline__item reveal">
+            <span class="timeline__date">1 oct 2026</span>
+            <h3>Apertura de inscripciones</h3>
+            <p>Inscripción en línea en esta página.</p>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__date">29 nov 2026</span>
+            <h3>Cierre de inscripciones</h3>
+            <p>O antes, si se agotan los lugares.</p>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__date">4 y 5 dic 2026</span>
+            <h3>Entrega de kits</h3>
+            <p>10:00 a 18:00 h · Deportivo Central. Presenta tu confirmación e identificación.</p>
+          </li>
+          <li class="timeline__item timeline__item--main reveal">
+            <span class="timeline__date">6 dic 2026 · 7:00 a.m.</span>
+            <h3>¡Día de la carrera!</h3>
+            <!-- ✏️ CAMBIAR: actividades del festival (ejemplo) -->
+            <p>Salida 10K a las 7:00, 5K a las 7:15 y 3K a las 7:30. Al terminar: festival K-culture con K-pop, baile y comida coreana.</p>
+          </li>
+          <li class="timeline__item timeline__item--korea reveal">
+            <span class="timeline__date">2027 · Corea del Sur</span>
+            <h3>Youth Summit 2027</h3>
+            <p>Nuestros integrantes viajan a Corea gracias a ti. <span lang="ko">감사합니다!</span></p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===================== SEDE: EX HACIENDA DE CHAUTLA ===================== -->
+    <section class="section section--cafe sede" id="sede">
+      <div class="container">
+        <p class="eyebrow reveal">La sede <span class="ko" lang="ko">장소</span></p>
+        <h2 class="reveal">Ex Hacienda de Chautla</h2>
+        <!-- ✏️ CAMBIAR: descripción de la sede -->
+        <p class="section__lead reveal">Corremos entre jardines, árboles y un lago con un <strong>castillo de estilo inglés</strong> en medio. Uno de los lugares con más historia y belleza de Puebla.</p>
+
+        <div class="sede__grid">
+          <figure class="sede__art reveal">
+            <!-- ✏️ FOTO PRINCIPAL DE LA SEDE (assets/img/chautla-castillo-lago.webp) -->
+            <img src="assets/img/chautla-castillo-lago.webp" alt="Castillo de la Ex Hacienda de Chautla reflejado en el lago" width="1200" height="675" loading="lazy">
+            <figcaption>Castillo Gillow · Ex Hacienda de Chautla</figcaption>
+          </figure>
+
+          <div class="sede__info reveal">
+            <!-- ✏️ CAMBIAR: datos de la sede -->
+            <ul class="sede__facts">
+              <li><span>📍</span><div><strong>San Salvador el Verde, Puebla</strong>A 8 km de San Martín Texmelucan, sobre la carretera federal México–Puebla.</div></li>
+              <li><span>🏰</span><div><strong>Castillo Gillow</strong>Castillo de estilo inglés de finales del siglo XIX, de tabique rojo y cuatro torres, en medio de un lago artificial.</div></li>
+              <li><span>📜</span><div><strong>Hacienda desde 1777</strong>Antigua hacienda productora de trigo y maíz, hoy un espacio turístico y cultural.</div></li>
+              <li><span>🌳</span><div><strong>Naturaleza</strong>Jardines, lago y áreas verdes ideales para correr y convivir en familia.</div></li>
+            </ul>
+            <div class="sede__ctas">
+              <a class="btn btn--primary" href="https://www.google.com/maps/search/?api=1&amp;query=Ex+Hacienda+de+Chautla,+San+Salvador+el+Verde,+Puebla" target="_blank" rel="noopener">📍 Abrir en Google Maps</a>
+              <a class="btn btn--light" href="https://waze.com/ul?ll=19.3158,-98.4711&amp;navigate=yes" target="_blank" rel="noopener">🚗 Ir con Waze</a>
+            </div>
+            <!-- ✏️ CAMBIAR: indicaciones de llegada y estacionamiento (por confirmar) -->
+            <p class="sede__nota">ℹ️ Llega con al menos 45 minutos de anticipación. Información de estacionamiento y transporte: <em>por confirmar</em>.</p>
+          </div>
+        </div>
+
+        <!-- ✏️ GALERÍA DE LA SEDE: para cambiar una foto, pon la imagen en assets/img/ y cambia su src y alt -->
+        <div class="sede__fotos reveal">
+          <figure><img src="assets/img/chautla-castillo-frente.webp" alt="Fachada del castillo con su camino de entrada entre jardines" loading="lazy"><figcaption>El castillo</figcaption></figure>
+          <figure><img src="assets/img/chautla-lago-arboles.png" alt="Lago de la hacienda rodeado de árboles" loading="lazy"><figcaption>El lago</figcaption></figure>
+          <figure><img src="assets/img/chautla-muelle.webp" alt="Muelle rojo sobre el lago de la hacienda" loading="lazy"><figcaption>El muelle</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4. RUTA ===================== -->
+    <section class="section section--alt" id="ruta">
+      <div class="container">
+        <p class="eyebrow reveal">Recorrido <span class="ko" lang="ko">코스</span></p>
+        <h2 class="reveal">La ruta</h2>
+
+        <div class="route">
+          <div class="route__map reveal">
+            <!-- ✏️ MAPA: opción A (Google Maps). En Google Maps busca el lugar → Compartir → Insertar un mapa → copia solo el valor de src="..." y pégalo aquí.
+                 Si creaste la ruta en "Mis Mapas" de Google, usa su enlace de inserción.
+                 Opción B (imagen): borra el <iframe> y pon <img src="assets/img/ruta.jpg" alt="Mapa de la ruta"> -->
+            <iframe
+              src="https://www.google.com/maps?q=Ex+Hacienda+de+Chautla,+San+Salvador+el+Verde,+Puebla&amp;output=embed"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="Mapa de la ruta"></iframe>
+          </div>
+
+          <!-- ✏️ CAMBIAR: datos de la ruta -->
+          <div class="route__info reveal">
+            <div class="stat-grid">
+              <div class="stat"><strong>3 km</strong><span>Ruta Jeju</span></div>
+              <div class="stat"><strong>5 km</strong><span>Ruta Seúl</span></div>
+              <div class="stat"><strong>10 km</strong><span>Ruta Busan</span></div>
+            </div>
+            <dl class="route__list">
+              <div><dt>🚩 Salida</dt><dd>Ex Hacienda de Chautla (punto exacto por confirmar)</dd></div>
+              <div><dt>🏁 Meta</dt><dd>Mismo punto de salida, con festival K-culture</dd></div>
+              <div><dt>💧 Hidratación</dt><dd>Km 2.5, Km 5 y Km 7.5 · agua y bebida isotónica en meta</dd></div>
+              <div><dt>🎶 Animación</dt><dd>Puntos con K-pop y porras en la ruta</dd></div>
+              <div><dt>🩺 Servicio médico</dt><dd>Ambulancia en salida/meta y unidad móvil en ruta</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 5. KIT ===================== -->
+    <section class="section" id="kit">
+      <div class="container">
+        <p class="eyebrow reveal">Lo que recibes <span class="ko" lang="ko">기념품</span></p>
+        <h2 class="reveal">Kit de la carrera</h2>
+
+        <!-- ✏️ FOTOS DEL KIT: en cada tarjeta reemplaza <div class="placeholder">…</div>
+             por <img src="assets/img/kit-playera.jpg" alt="Playera oficial"> -->
+        <div class="cards cards--kit">
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">👕</div></div>
+            <h3>Playera oficial</h3><p>Diseño inspirado en Corea, tela dry-fit.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🔢</div></div>
+            <h3>Número de corredor</h3><p>Con tu nombre en español y en hangul.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🏅</div></div>
+            <h3>Medalla temática</h3><p>Diseño coreano para todos los que crucen la meta.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🍙</div></div>
+            <h3>Snack coreano</h3><p>Hidratación y un antojo coreano en la meta.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 6. PREMIOS ===================== -->
+    <section class="section section--alt" id="premios">
+      <div class="container">
+        <p class="eyebrow reveal">Reconocimientos <span class="ko" lang="ko">시상</span></p>
+        <h2 class="reveal">Premios</h2>
+        <p class="section__lead reveal">Premios en efectivo para los tres primeros lugares de cada distancia, en rama varonil y femenil.</p>
+
+        <!-- ✏️ CAMBIAR: bolsa total y reparto de premios (todo en efectivo). Suma actual: $20,000 -->
+        <div class="prize-pool reveal">
+          <span class="prize-pool__label">Bolsa total de premios</span>
+          <strong class="prize-pool__amount">$20,000</strong>
+          <span class="prize-pool__note">en efectivo</span>
+        </div>
+
+        <div class="prizes">
+          <article class="prize reveal">
+            <h3>10K</h3>
+            <p class="prize__sub">Ruta Busan · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $2,400</li>
+              <li><span class="medal medal--2">2º</span> $1,400</li>
+              <li><span class="medal medal--3">3º</span> $900</li>
+            </ol>
+          </article>
+          <article class="prize reveal">
+            <h3>5K</h3>
+            <p class="prize__sub">Ruta Seúl · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $1,700</li>
+              <li><span class="medal medal--2">2º</span> $1,100</li>
+              <li><span class="medal medal--3">3º</span> $600</li>
+            </ol>
+          </article>
+          <article class="prize reveal">
+            <h3>3K</h3>
+            <p class="prize__sub">Ruta Jeju · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $1,000</li>
+              <li><span class="medal medal--2">2º</span> $600</li>
+              <li><span class="medal medal--3">3º</span> $300</li>
+            </ol>
+          </article>
+          <!-- ✏️ Premio especial: cuando haya patrocinador, cambia el texto por los premios -->
+          <article class="prize prize--special reveal">
+            <h3>Mejor outfit K-culture</h3>
+            <p class="prize__sub">Cualquier distancia · hanbok, K-pop, K-drama… ¡sorpréndenos!</p>
+            <p class="prize__soon">Premios por anunciar</p>
+            <p class="prize__sponsor">¿Tu marca quiere patrocinar este premio? <a href="mailto:granitodearena.sm@gmail.com">Escríbenos</a></p>
+          </article>
+        </div>
+        <p class="prizes__note reveal">Los premios de 3K, 5K y 10K se entregan únicamente en efectivo, presentando identificación oficial.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 7. PATROCINADORES ===================== -->
+    <section class="section" id="patrocinadores">
+      <div class="container">
+        <p class="eyebrow reveal">Gracias a <span class="ko" lang="ko">후원</span></p>
+        <h2 class="reveal">Patrocinadores</h2>
+
+        <!-- ✏️ LOGOS: reemplaza cada <div class="placeholder">…</div> por
+             <a href="https://sitio-del-patrocinador.com" target="_blank" rel="noopener"><img src="assets/img/logo-patrocinador.png" alt="Nombre del patrocinador"></a>
+             Para agregar más, copia un <div class="sponsor">. Si no usas niveles, deja solo un bloque. -->
+        <h3 class="tier-title reveal">Oro</h3>
+        <div class="sponsors sponsors--gold">
+          <div class="sponsor reveal"><div class="placeholder">Tu logo aquí</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Tu logo aquí</div></div>
+        </div>
+
+        <h3 class="tier-title reveal">Plata</h3>
+        <div class="sponsors">
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+        </div>
+
+        <h3 class="tier-title reveal">Bronce</h3>
+        <div class="sponsors sponsors--small">
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+        </div>
+
+        <p class="sponsors__cta reveal">¿Quieres ayudarnos a llegar a Corea? <a href="mailto:granitodearena.sm@gmail.com">Escríbenos</a> y suma tu granito de arena.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 8. INSCRIPCIÓN ===================== -->
+    <!-- Precios, categorías, tallas y límites se cambian en script.js → objeto CONFIG -->
+    <section class="section section--signup" id="inscripcion">
+      <div class="container container--narrow">
+        <p class="eyebrow reveal">Asegura tu lugar <span class="ko" lang="ko">참가 신청</span></p>
+        <h2 class="reveal">Inscripción</h2>
+        <p class="section__lead reveal" id="priceLead">3K: $250 · 5K: $350 · 10K: $450 · Inscripción individual o en grupo. Todo lo recaudado va al viaje a Corea.</p>
+
+        <div class="tabs reveal" role="tablist">
+          <button class="tab is-active" role="tab" aria-selected="true" aria-controls="formIndividual" id="tabIndividual">🏃 Individual</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="formGrupo" id="tabGrupo">👥 En grupo</button>
+        </div>
+
+        <!-- ---------- A) INDIVIDUAL ---------- -->
+        <form class="form" id="formIndividual" role="tabpanel" aria-labelledby="tabIndividual" novalidate>
+          <fieldset>
+            <legend>Tus datos</legend>
+            <div class="field field--full">
+              <label for="i-nombre">Nombre completo *</label>
+              <input id="i-nombre" name="nombre" type="text" autocomplete="name" required minlength="5">
+            </div>
+            <div class="field">
+              <label for="i-edad">Edad *</label>
+              <input id="i-edad" name="edad" type="number" inputmode="numeric" required data-edad>
+            </div>
+            <div class="field">
+              <label for="i-sexo">Sexo *</label>
+              <select id="i-sexo" name="sexo" required data-opciones="sexos"></select>
+            </div>
+            <div class="field">
+              <label for="i-correo">Correo electrónico *</label>
+              <input id="i-correo" name="correo" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="i-tel">Teléfono (10 dígitos) *</label>
+              <input id="i-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+            </div>
+            <div class="field">
+              <label for="i-talla">Talla de playera *</label>
+              <select id="i-talla" name="talla" required data-opciones="tallas"></select>
+            </div>
+            <div class="field">
+              <label for="i-cat">Distancia / categoría *</label>
+              <select id="i-cat" name="categoria" required data-opciones="categorias"></select>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Contacto de emergencia</legend>
+            <div class="field">
+              <label for="i-emerg-nombre">Nombre *</label>
+              <input id="i-emerg-nombre" name="emergenciaNombre" type="text" required minlength="3">
+            </div>
+            <div class="field">
+              <label for="i-emerg-tel">Teléfono (10 dígitos) *</label>
+              <input id="i-emerg-tel" name="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono>
+            </div>
+          </fieldset>
+
+          <div class="summary" id="summaryIndividual" aria-live="polite"></div>
+
+          <label class="check">
+            <input type="checkbox" name="acepta" required>
+            <span>He leído y acepto el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--xl btn--block">Enviar inscripción</button>
+        </form>
+
+        <!-- ---------- B) GRUPO ---------- -->
+        <form class="form" id="formGrupo" role="tabpanel" aria-labelledby="tabGrupo" novalidate hidden>
+          <fieldset>
+            <legend>Responsable del grupo</legend>
+            <div class="field field--full">
+              <label for="g-grupo">Nombre del grupo (equipo, empresa, familia, fandom…) *</label>
+              <input id="g-grupo" name="grupo" type="text" required minlength="2">
+            </div>
+            <div class="field field--full">
+              <label for="g-resp">Nombre del responsable *</label>
+              <input id="g-resp" name="responsable" type="text" autocomplete="name" required minlength="5">
+            </div>
+            <div class="field">
+              <label for="g-correo">Correo electrónico *</label>
+              <input id="g-correo" name="correo" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="g-tel">Teléfono (10 dígitos) *</label>
+              <input id="g-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Cuántos corredores?</legend>
+            <div class="stepper">
+              <button type="button" class="stepper__btn" id="countMinus" aria-label="Quitar corredor">−</button>
+              <input id="g-cantidad" name="cantidad" type="number" inputmode="numeric" value="2" aria-label="Número de corredores">
+              <button type="button" class="stepper__btn" id="countPlus" aria-label="Agregar corredor">+</button>
+            </div>
+            <p class="hint" id="countHint">Mínimo 2, máximo 20 corredores.</p>
+          </fieldset>
+
+          <!-- Aquí se generan automáticamente las filas de cada corredor -->
+          <div id="runners" class="runners"></div>
+
+          <div class="summary" id="summaryGrupo" aria-live="polite"></div>
+
+          <label class="check">
+            <input type="checkbox" name="acepta" required>
+            <span>Como responsable, confirmo que todos los integrantes leyeron y aceptan el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--xl btn--block">Enviar inscripción del grupo</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== 9. PIE DE PÁGINA ===================== -->
+  <footer class="footer">
+    <div class="saekdong" aria-hidden="true"></div>
+    <div class="container footer__grid">
+      <div>
+        <a href="#inicio" class="nav__logo"><img src="assets/img/logo-granito-de-arena.png" alt="" width="40" height="40"><span>CARRERA <em>CON CAUSA</em></span></a>
+        <p>Carrera con Causa 2026 · 6 de diciembre · Ex Hacienda de Chautla, Puebla<br>Organiza Granito de Arena · Rumbo al Youth Summit 2027</p>
+        <p class="footer__ko"><span lang="ko">화이팅!</span></p>
+      </div>
+      <div>
+        <h4>Contacto</h4>
+        <!-- ✏️ CAMBIAR: contacto del pie -->
+        <p><a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a></p>
+      </div>
+      <div>
+        <h4>Síguenos</h4>
+        <p class="socials socials--footer">
+          <a href="https://www.facebook.com/profile.php?id=100075559972420" target="_blank" rel="noopener">Facebook</a>
+          <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">Instagram</a>
+        </p>
+      </div>
+      <div>
+        <h4>Documentos</h4>
+        <!-- Si tienes el reglamento en PDF, cambia href a "assets/reglamento.pdf" y quita data-open-rules -->
+        <p><a href="#reglamento" data-open-rules>Reglamento y responsiva</a></p>
+      </div>
+    </div>
+    <p class="footer__copy container">© 2026 Granito de Arena. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- ===================== REGLAMENTO (ventana) ===================== -->
+  <dialog class="modal" id="reglamento" aria-labelledby="rulesTitle">
+    <div class="modal__box">
+      <button class="modal__close" data-close aria-label="Cerrar">×</button>
+      <h2 id="rulesTitle">Reglamento y carta responsiva</h2>
+      <!-- ✏️ CAMBIAR: texto del reglamento -->
+      <div class="modal__body">
+        <ol>
+          <li>La edad mínima para participar es de 12 años. Menores de 18 requieren autorización de padre o tutor.</li>
+          <li>El número de corredor es personal e intransferible y debe portarse al frente, visible.</li>
+          <li>El tiempo límite para completar la ruta es de 1 hora 30 minutos.</li>
+          <li>Es obligatorio seguir la ruta marcada y las indicaciones de jueces y personal de apoyo.</li>
+          <li>Se permite correr con vestuario temático, siempre que no ponga en riesgo tu seguridad ni la de otros corredores.</li>
+          <li>No hay reembolsos: tu inscripción es un donativo para el viaje al Youth Summit 2027. Los cambios de distancia o talla están sujetos a disponibilidad.</li>
+          <li>Los premios son únicamente en efectivo (bolsa total de $20,000) y se entregan presentando identificación oficial.</li>
+        </ol>
+        <h3>Carta responsiva</h3>
+        <p>Declaro que me encuentro en condiciones físicas y de salud adecuadas para participar. Participo de forma voluntaria y bajo mi propio riesgo, y libero al comité organizador, patrocinadores y autoridades de cualquier responsabilidad por lesiones o daños que pudiera sufrir antes, durante o después del evento. Autorizo el uso de mi imagen en fotografías y videos del evento.</p>
+      </div>
+      <button class="btn btn--primary" data-close>Entendido</button>
+    </div>
+  </dialog>
+
+  <!-- ===================== CONFIRMACIÓN (ventana) ===================== -->
+  <dialog class="modal" id="confirmacion" aria-labelledby="confirmTitle">
+    <div class="modal__box">
+      <button class="modal__close" data-close aria-label="Cerrar">×</button>
+      <div class="confirm__icon">✅</div>
+      <h2 id="confirmTitle">¡Inscripción recibida!</h2>
+      <div class="modal__body" id="confirmBody"></div>
+      <div id="dataBlock" hidden>
+        <p class="hint">Vista de datos (modo sin conexión). Cópialos y pégalos en tu hoja de cálculo o WhatsApp:</p>
+        <textarea id="dataOutput" readonly rows="8"></textarea>
+        <button class="btn btn--ghost btn--block" id="copyData" type="button">📋 Copiar datos</button>
+      </div>
+      <button class="btn btn--primary btn--block" data-close>Listo</button>
+    </div>
+  </dialog>
+
+  <script src="script.js?v=20261006f" defer></script>
+</body>
+</html>
