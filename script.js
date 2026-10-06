@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Carrera con Causa — script.js
+   HANGUK RUN 한국 — script.js
    JavaScript puro, sin librerías.
    ========================================================================== */
 (function () {
@@ -9,7 +9,12 @@
      ✏️ CONFIGURACIÓN — CAMBIA AQUÍ PRECIOS, CATEGORÍAS, TALLAS Y CONEXIÓN
      ======================================================================== */
   var CONFIG = {
-    nombreCarrera: 'Carrera con Causa 2026',
+    nombreCarrera: 'HANGUK RUN 한국 2026',
+
+    /* Sección "Lo que regresa a la comunidad":
+       true  → muestra también los compromisos marcados [POR CONFIRMAR] (para revisarlos).
+       false → muestra SOLO los compromisos confirmados. ✏️ Ponlo en false antes de publicar. */
+    mostrarPorConfirmar: true,
 
     // Categorías / distancias y su precio por corredor (MXN)
     categorias: [
@@ -554,18 +559,29 @@
     var nums = data.corredores.map(function (r) { return r.numero; });
     var numTxt = nums.length > 1 ? 'Números del <strong>#' + nums[0] + '</strong> al <strong>#' + nums[nums.length - 1] + '</strong>' : 'Tu número: <strong>#' + nums[0] + '</strong>';
     var who = data.tipo === 'Grupo' ? 'Grupo <strong>' + esc(data.grupo) + '</strong> (' + nums.length + ' corredores)' : '<strong>' + esc(data.corredores[0].nombre) + '</strong>';
-    $('#confirmTitle').textContent = failed ? 'No pudimos enviar tu inscripción' : '¡Inscripción recibida!';
+    // ✏️ CAMBIAR: textos del mensaje de confirmación
+    $('#confirmTitle').textContent = failed ? 'No pudimos enviar tu inscripción' : '¡Gracias por sumar tu paso!';
     $('#confirmBody').innerHTML = failed
       ? '<p>Hubo un problema de conexión. Copia tus datos y envíalos por WhatsApp o correo al organizador.</p>'
-      : '<p><span lang="ko" style="font-size:1.5rem">감사합니다!</span> (¡Gracias!)</p>' +
+      : '<p><span lang="ko" style="font-size:1.5rem">감사합니다!</span> Tu inscripción a <strong>HANGUK RUN</strong> quedó registrada.</p>' +
         '<p>' + who + '<br>' + numTxt + '<br>Total a pagar: <strong>' + pesos(data.total) + '</strong></p>' +
-        '<p>Te contactaremos al correo registrado con las instrucciones de pago. Gracias por ayudarnos a llegar al Youth Summit 2027 en Corea. <span lang="ko">화이팅!</span> 🏁</p>';
+        '<p>Cada inscripción apoya a los <strong>10 jóvenes voluntarios de Granito de Arena</strong> que representarán a su comunidad en un encuentro internacional en Corea del Sur. Te contactaremos al correo registrado con las instrucciones de pago. <span lang="ko">가자!</span> 🏁</p>';
     $('#dataBlock').hidden = !showData;
     if (showData) $('#dataOutput').value = toText(data) + '\n\n--- Filas para hoja de cálculo ---\n' + toSheetRows(data);
     openModal($('#confirmacion'));
   }
 
   function updateAll() { renderSummaryIndividual(); renderSummaryGrupo(); }
+
+  /* ---------- Compromisos "Lo que regresa a la comunidad" ----------
+     Oculta los marcados data-estado="por-confirmar" si CONFIG.mostrarPorConfirmar es false,
+     y oculta la sección completa si no queda ninguno visible. */
+  function initCompromisos() {
+    var section = $('#compromisos');
+    if (!section || CONFIG.mostrarPorConfirmar) return;
+    $$('[data-estado="por-confirmar"]', section).forEach(function (el) { el.hidden = true; });
+    if (!$$('.compromiso:not([hidden])', section).length) section.hidden = true;
+  }
 
 
   /* ---------- Arranque ---------- */
@@ -574,7 +590,9 @@
     safe(initNav, 'nav');
     safe(initReveal, 'reveal');
     safe(initCountdown, 'countdown');
-    safe(initInstagram, 'instagram');    safe(initModals, 'modals');
+    safe(initInstagram, 'instagram');
+    safe(initCompromisos, 'compromisos');
+    safe(initModals, 'modals');
     safe(initTabs, 'tabs');
     safe(initIndividual, 'individual');
     safe(initGroup, 'group');

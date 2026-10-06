@@ -1,25 +1,26 @@
 /* ==========================================================================
-   Carrera con Causa — estilos
+   HANGUK RUN 한국 — estilos
    ✏️ COLORES: cambia los valores de abajo para usar los colores de tu marca.
+   Colores del logo HANGUK RUN: azul marino #1B2A49 · rojo #E63946 · azul #1D4E9E · crema #FFF6E5
    ========================================================================== */
 :root {
-  --color-primario: #ffc800;      /* amarillo del logo: botones y acentos */
-  --color-primario-osc: #f0b400;  /* amarillo al pasar el mouse */
-  --color-acento: #fbe07c;        /* crema del logo: detalles sobre fondo oscuro */
-  --color-oscuro: #3d2600;        /* café profundo: menú, títulos, pie */
-  --color-cafe: #6b4200;          /* café del logo: enlaces y etiquetas */
-  --color-causa: #e4573d;         /* coral complementario: corazones y detalles */
+  --color-primario: #E63946;      /* rojo del logo: botones y acentos */
+  --color-primario-osc: #c92a37;  /* rojo al pasar el mouse */
+  --color-acento: #FFF6E5;        /* crema del logo: detalles sobre fondo oscuro */
+  --color-oscuro: #1B2A49;        /* azul marino del logo: menú, títulos, pie */
+  --color-cafe: #1D4E9E;          /* azul del logo: enlaces y etiquetas (el nombre de la variable se conserva) */
+  --color-causa: #E63946;         /* rojo: rayitas y detalles */
   /* Tema coreano: colores de apoyo inspirados en el taegukgi y el hanbok */
-  --corea-rojo: #cd2e3a;
-  --corea-azul: #0047a0;
+  --corea-rojo: #E63946;
+  --corea-azul: #1D4E9E;
   --corea-verde: #2e8b57;
   --corea-rosa: #f28ab2;
   --font-ko: "Black Han Sans", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
-  --color-texto: #2b1f0e;
-  --color-suave: #76644a;
-  --color-fondo: #fffdf7;
-  --color-fondo-alt: #fff6dc;
-  --color-borde: #eee1bf;
+  --color-texto: #1e2636;
+  --color-suave: #5a6477;
+  --color-fondo: #FFF6E5;
+  --color-fondo-alt: #fbecd3;
+  --color-borde: #e8d8bb;
   --color-error: #d92d20;
   --color-ok: #12925a;
 
@@ -27,7 +28,7 @@
   --font-texto: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radio: 14px;
-  --sombra: 0 10px 30px rgba(61, 38, 0, .08);
+  --sombra: 0 10px 30px rgba(27, 42, 73, .08);
   --nav-alto: 64px;
 }
 
@@ -67,7 +68,7 @@ p { margin: 0 0 1em; }
 .placeholder {
   display: grid; place-items: center; width: 100%; height: 100%; min-height: 120px;
   border: 2px dashed var(--color-borde); border-radius: var(--radio);
-  background: repeating-linear-gradient(45deg, #fffbef, #fffbef 10px, #fff4d6 10px, #fff4d6 20px);
+  background: repeating-linear-gradient(45deg, #fffaf0, #fffaf0 10px, #fbefd9 10px, #fbefd9 20px);
   color: var(--color-suave); font-size: .9rem; text-align: center; padding: 12px;
 }
 
@@ -79,7 +80,7 @@ p { margin: 0 0 1em; }
   transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
 }
 .btn:active { transform: scale(.97); }
-.btn--primary { background: var(--color-primario); color: var(--color-oscuro); box-shadow: 0 8px 22px rgba(240, 180, 0, .4); }
+.btn--primary { background: var(--color-primario); color: #fff; box-shadow: 0 8px 22px rgba(230, 57, 70, .35); }
 .btn--primary:hover { background: var(--color-primario-osc); transform: translateY(-2px); }
 .btn--ghost { background: transparent; border-color: var(--color-oscuro); color: var(--color-oscuro); }
 .btn--ghost:hover { background: var(--color-oscuro); color: #fff; }
@@ -89,7 +90,7 @@ p { margin: 0 0 1em; }
 /* ---------- Menú fijo ---------- */
 .nav {
   position: fixed; inset: 0 0 auto; z-index: 50; height: var(--nav-alto);
-  background: rgba(61, 38, 0, .94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  background: rgba(27, 42, 73, .94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   transition: box-shadow .3s;
 }
 .nav.is-scrolled { box-shadow: 0 6px 20px rgba(0, 0, 0, .2); }
@@ -112,15 +113,15 @@ p { margin: 0 0 1em; }
 .nav__menu.is-open { transform: none; }
 .nav__menu a { color: #fff; text-decoration: none; font-weight: 600; padding: 14px 4px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
 .nav__menu a.is-active { color: var(--color-acento); }
-.nav__menu .nav__cta { margin-top: 14px; border: 0; background: var(--color-primario); color: var(--color-oscuro); text-align: center; border-radius: 999px; }
+.nav__menu .nav__cta { margin-top: 14px; border: 0; background: var(--color-primario); color: #fff; text-align: center; border-radius: 999px; }
 
-@media (min-width: 1100px) {
+@media (min-width: 1240px) {
   .nav__toggle { display: none; }
   .nav__menu { position: static; flex-direction: row; align-items: center; gap: 4px; padding: 0; background: none; transform: none; z-index: auto; }
   .nav__menu a { border: 0; padding: 8px 10px; font-size: .92rem; }
   .nav__menu a:hover { color: var(--color-acento); }
   .nav__menu .nav__cta { margin: 0 0 0 10px; padding: 10px 20px; }
-  .nav__menu .nav__cta:hover { color: var(--color-oscuro); background: var(--color-primario-osc); }
+  .nav__menu .nav__cta:hover { color: #fff; background: var(--color-primario-osc); }
 }
 
 /* ---------- 1. Inicio ---------- */
@@ -132,9 +133,9 @@ p { margin: 0 0 1em; }
 .hero__bg {
   position: absolute; inset: 0; z-index: 0;
   background:
-    radial-gradient(circle at 85% 15%, rgba(255, 200, 0, .42), transparent 45%),
-    radial-gradient(circle at 10% 90%, rgba(228, 87, 61, .22), transparent 40%),
-    linear-gradient(160deg, #3d2600 0%, #6b4200 100%);
+    radial-gradient(circle at 85% 15%, rgba(230, 57, 70, .38), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(29, 78, 158, .55), transparent 40%),
+    linear-gradient(160deg, #1B2A49 0%, #1D3A6E 100%);
   /* ✏️ FOTO DE FONDO: quita el comentario de las 2 líneas siguientes y pon tu imagen en assets/img/hero.jpg */
   /* background: linear-gradient(160deg, rgba(61,38,0,.85), rgba(61,38,0,.55)), url("assets/img/hero.jpg") center/cover; */
 }
@@ -146,9 +147,14 @@ p { margin: 0 0 1em; }
 }
 @keyframes pista { to { background-position: 400px 0; } }
 .hero__content { position: relative; z-index: 1; }
-.hero__tag { display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(255, 200, 0, .16); color: var(--color-acento); font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
+.hero__tag { display: inline-block; padding: 6px 14px; border-radius: 999px; background: rgba(230, 57, 70, .22); color: var(--color-acento); font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; }
 .hero__title { font-size: clamp(3.2rem, 14vw, 7rem); color: #fff; text-transform: uppercase; font-weight: 800; margin: .2em 0 .25em; }
-.hero__title span { color: var(--color-primario); }
+.hero__title { line-height: .9; margin: .25em 0 .15em; }
+.hero__name { color: #fff; letter-spacing: .02em; }
+.hero__name-ko { font-family: var(--font-ko); font-weight: 400; color: var(--color-primario); letter-spacing: 0; white-space: nowrap; }
+.hero__lema { margin: .2em 0 .1em; font: 800 clamp(1.6rem, 6vw, 2.4rem)/1.05 var(--font-titulos); text-transform: uppercase; letter-spacing: .03em; color: var(--color-acento); }
+.hero__subtitle { display: flex; align-items: center; gap: 10px; margin: .4em 0 1.1em; font-weight: 600; color: rgba(255, 255, 255, .85); }
+.hero__subtitle img { width: 40px; height: 40px; flex: none; }
 .hero__lead { font-size: 1.1rem; max-width: 46ch; color: rgba(255, 255, 255, .85); }
 .hero__by { display: flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, .85); font-size: .95rem; }
 .hero__by img { width: 44px; height: 44px; }
@@ -171,7 +177,7 @@ p { margin: 0 0 1em; }
 /* ---------- 2. Organizador ---------- */
 .org { display: grid; gap: 32px; align-items: center; }
 .org__photo { max-width: 380px; width: 100%; margin: 0 auto; }
-.org__photo img { width: 100%; height: auto; filter: drop-shadow(0 18px 30px rgba(107, 66, 0, .25)); }
+.org__photo img { width: 100%; height: auto; filter: drop-shadow(0 18px 30px rgba(29, 78, 158, .25)); }
 .contact-list { list-style: none; padding: 0; margin: 20px 0; display: grid; gap: 10px; }
 .contact-list li { display: flex; gap: 10px; align-items: center; }
 .contact-list a { color: var(--color-texto); font-weight: 600; text-decoration: none; word-break: break-word; }
@@ -206,10 +212,10 @@ p { margin: 0 0 1em; }
 .ig__post:hover img { transform: scale(1.05); }
 .ig__post figcaption {
   position: absolute; inset: auto 0 0; padding: 40px 14px 12px; color: #fff; font-size: .85rem; line-height: 1.4;
-  background: linear-gradient(transparent, rgba(61, 38, 0, .85));
+  background: linear-gradient(transparent, rgba(27, 42, 73, .85));
 }
 .ig__post figcaption span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.ig__badge { position: absolute; top: 10px; right: 10px; background: rgba(61, 38, 0, .7); color: #fff; border-radius: 999px; padding: 4px 10px; font-size: .75rem; font-weight: 700; }
+.ig__badge { position: absolute; top: 10px; right: 10px; background: rgba(27, 42, 73, .7); color: #fff; border-radius: 999px; padding: 4px 10px; font-size: .75rem; font-weight: 700; }
 .ig__fallback {
   grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
   padding: 32px 20px; border: 2px dashed var(--color-borde); border-radius: var(--radio); background: #fff;
@@ -299,9 +305,9 @@ p { margin: 0 0 1em; }
 
 /* ---------- 8. Inscripción ---------- */
 .section--signup { background: linear-gradient(180deg, var(--color-fondo) 0%, var(--color-fondo-alt) 100%); }
-.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; margin: 24px 0; background: #f6ebc8; border-radius: 999px; }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; margin: 24px 0; background: #efe2cb; border-radius: 999px; }
 .tab { min-height: 52px; border: 0; border-radius: 999px; background: transparent; font: 700 1rem var(--font-texto); color: var(--color-suave); cursor: pointer; transition: background-color .25s, color .25s; }
-.tab.is-active { background: var(--color-oscuro); color: #fff; box-shadow: 0 6px 16px rgba(61, 38, 0, .25); }
+.tab.is-active { background: var(--color-oscuro); color: #fff; box-shadow: 0 6px 16px rgba(27, 42, 73, .25); }
 
 .form { background: #fff; border-radius: 20px; padding: 22px 18px; box-shadow: var(--sombra); animation: aparecer .35s ease; }
 @keyframes aparecer { from { opacity: 0; transform: translateY(10px); } }
@@ -315,7 +321,7 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
   font: 16px var(--font-texto); color: var(--color-texto); /* 16px evita el zoom automático en iPhone */
   transition: border-color .2s, box-shadow .2s;
 }
-.field input:focus, .field select:focus { outline: none; border-color: var(--color-primario); box-shadow: 0 0 0 4px rgba(255, 200, 0, .35); }
+.field input:focus, .field select:focus { outline: none; border-color: var(--color-primario); box-shadow: 0 0 0 4px rgba(230, 57, 70, .25); }
 .field.has-error input, .field.has-error select { border-color: var(--color-error); }
 .field__error { color: var(--color-error); font-size: .82rem; font-weight: 600; }
 @media (min-width: 640px) {
@@ -367,7 +373,7 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 
 /* ---------- Ventanas (reglamento / confirmación) ---------- */
 .modal { border: 0; padding: 0; border-radius: 20px; width: min(600px, calc(100% - 24px)); max-height: calc(100svh - 40px); box-shadow: 0 30px 80px rgba(0, 0, 0, .35); }
-.modal::backdrop { background: rgba(61, 38, 0, .7); backdrop-filter: blur(3px); }
+.modal::backdrop { background: rgba(27, 42, 73, .7); backdrop-filter: blur(3px); }
 .modal__box { position: relative; padding: 28px 22px 22px; display: grid; gap: 14px; }
 .modal__close { position: absolute; top: 10px; right: 12px; width: 44px; height: 44px; border: 0; background: none; font-size: 2rem; line-height: 1; cursor: pointer; color: var(--color-suave); }
 .modal h2 { font-size: 2rem; padding-right: 40px; }
@@ -406,11 +412,11 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 .hero__bg {
   background:
     /* celosía dorada "changsal" (ventanas de las casas hanok) */
-    linear-gradient(rgba(255, 200, 0, .06) 2px, transparent 2px) 0 0 / 36px 36px,
-    linear-gradient(90deg, rgba(255, 200, 0, .06) 2px, transparent 2px) 0 0 / 36px 36px,
-    radial-gradient(circle at 85% 15%, rgba(255, 200, 0, .42), transparent 45%),
-    radial-gradient(circle at 10% 90%, rgba(228, 87, 61, .22), transparent 40%),
-    linear-gradient(160deg, #3d2600 0%, #6b4200 100%);
+    linear-gradient(rgba(255, 246, 229, .06) 2px, transparent 2px) 0 0 / 36px 36px,
+    linear-gradient(90deg, rgba(255, 246, 229, .06) 2px, transparent 2px) 0 0 / 36px 36px,
+    radial-gradient(circle at 85% 15%, rgba(230, 57, 70, .38), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(29, 78, 158, .55), transparent 40%),
+    linear-gradient(160deg, #1B2A49 0%, #1D3A6E 100%);
   /* ✏️ FOTO DE FONDO: quita el comentario de la línea siguiente y pon tu imagen en assets/img/hero.jpg */
   /* background: linear-gradient(160deg, rgba(61,38,0,.85), rgba(61,38,0,.55)), url("assets/img/hero.jpg") center/cover; */
 }
@@ -422,7 +428,7 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 }
 .hero__ko { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; color: rgba(255, 255, 255, .85); font-weight: 600; margin: -.1em 0 .8em; }
 .hero__ko span { font-size: 1.7rem; color: var(--color-acento); }
-.hero__lead strong { color: var(--color-primario); }
+.hero__lead strong { color: #fff; text-decoration: underline; text-decoration-color: var(--color-primario); text-decoration-thickness: 3px; text-underline-offset: 3px; }
 .hero__ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .btn--light { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .5); color: #fff; }
 .btn--light:hover { background: #fff; color: var(--color-oscuro); }
@@ -445,8 +451,8 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 /* Celosía muy sutil en las secciones crema */
 .section--alt {
   background:
-    linear-gradient(rgba(107, 66, 0, .045) 2px, transparent 2px) 0 0 / 36px 36px,
-    linear-gradient(90deg, rgba(107, 66, 0, .045) 2px, transparent 2px) 0 0 / 36px 36px,
+    linear-gradient(rgba(29, 78, 158, .045) 2px, transparent 2px) 0 0 / 36px 36px,
+    linear-gradient(90deg, rgba(29, 78, 158, .045) 2px, transparent 2px) 0 0 / 36px 36px,
     var(--color-fondo-alt);
 }
 
@@ -460,17 +466,17 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 .sede__art svg { display: block; width: 100%; height: auto; }
 .sede__art figcaption {
   position: absolute; right: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px;
-  background: rgba(61, 38, 0, .75); color: #fff; font-size: .75rem;
+  background: rgba(27, 42, 73, .75); color: #fff; font-size: .75rem;
 }
 .sede__onda { animation: onda 3s ease-in-out infinite alternate; }
 @keyframes onda { from { transform: translateX(-6px); } to { transform: translateX(6px); } }
 .sede__facts { list-style: none; padding: 0; margin: 0 0 22px; display: grid; gap: 12px; }
 .sede__facts li {
   display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border-radius: var(--radio);
-  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 200, 0, .25);
+  background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 246, 229, .25);
 }
 .sede__facts li > span { font-size: 1.5rem; line-height: 1; }
-.sede__facts strong { display: block; color: var(--color-primario); }
+.sede__facts strong { display: block; color: var(--color-acento); }
 .sede__facts div { color: rgba(255, 255, 255, .85); font-size: .95rem; }
 .sede__ctas { display: flex; flex-wrap: wrap; gap: 12px; }
 .sede__nota { margin: 16px 0 0; font-size: .9rem; color: rgba(255, 255, 255, .7); }
@@ -478,14 +484,14 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 .sede__fotos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 32px; }
 .sede__fotos figure {
   position: relative; margin: 0; aspect-ratio: 4 / 3; border-radius: var(--radio); overflow: hidden;
-  border: 2px solid rgba(255, 200, 0, .45);
+  border: 2px solid rgba(255, 246, 229, .45);
 }
 .sede__fotos figure:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 9; }
 .sede__fotos img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .sede__fotos figure:hover img { transform: scale(1.05); }
 .sede__fotos figcaption {
   position: absolute; left: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px;
-  background: rgba(61, 38, 0, .75); color: #fff; font-size: .78rem; font-weight: 600;
+  background: rgba(27, 42, 73, .75); color: #fff; font-size: .78rem; font-weight: 600;
 }
 @media (min-width: 900px) {
   .sede__grid { grid-template-columns: 1.15fr 1fr; gap: 48px; }
@@ -494,24 +500,24 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 }
 
 /* Sección café de Granito con celosía dorada (La causa) */
-.section--cafe {
+.section--oscuro {
   background:
-    linear-gradient(rgba(255, 200, 0, .08) 2px, transparent 2px) 0 0 / 36px 36px,
-    linear-gradient(90deg, rgba(255, 200, 0, .08) 2px, transparent 2px) 0 0 / 36px 36px,
+    linear-gradient(rgba(255, 246, 229, .08) 2px, transparent 2px) 0 0 / 36px 36px,
+    linear-gradient(90deg, rgba(255, 246, 229, .08) 2px, transparent 2px) 0 0 / 36px 36px,
     var(--color-oscuro);
   color: #fff;
 }
-.section--cafe h2 { color: var(--color-primario); }
-.section--cafe .eyebrow { color: var(--color-acento); }
-.section--cafe .section__lead { color: rgba(255, 255, 255, .88); }
-.section--cafe .section__lead strong { color: var(--color-primario); }
-.section--cafe .flight { background: #2a1a00; border: 3px solid var(--color-primario); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); }
+.section--oscuro h2 { color: #fff; }
+.section--oscuro .eyebrow { color: var(--color-acento); }
+.section--oscuro .section__lead { color: rgba(255, 255, 255, .88); }
+.section--oscuro .section__lead strong { color: var(--color-acento); }
+.section--oscuro .flight { background: #13203a; border: 3px solid var(--color-primario); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); }
 
 /* ---------- Cinta animada ---------- */
-.ticker { overflow: hidden; background: var(--color-primario); color: var(--color-oscuro); border-block: 3px solid var(--color-oscuro); }
+.ticker { overflow: hidden; background: var(--color-primario); color: #fff; border-block: 3px solid var(--color-oscuro); }
 .ticker__track { display: flex; width: max-content; animation: cinta 28s linear infinite; }
 .ticker span { white-space: nowrap; padding: 12px 0; font: 800 1.5rem/1 var(--font-titulos); letter-spacing: .04em; }
-.ticker b { color: var(--corea-rojo); font-size: 1.2rem; margin: 0 .3em; }
+.ticker b { color: var(--color-acento); font-size: 1.2rem; margin: 0 .3em; }
 .ticker--alt { background: var(--corea-rojo); color: #fff; rotate: -1.2deg; margin: 10px -10px 0; position: relative; z-index: 2; }
 .ticker--alt b { color: var(--color-primario); }
 .ticker--alt .ticker__track { animation-direction: reverse; }
@@ -524,25 +530,28 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 .causa__list li > span { font-size: 1.6rem; line-height: 1; }
 .causa__list strong { display: block; color: var(--color-oscuro); }
 .causa__list div { color: var(--color-suave); font-size: .95rem; }
-
-/* Mapa de vuelo México → Seúl */
-.flight {
-  position: relative; background: var(--color-oscuro); color: #fff; border-radius: 22px;
-  padding: 22px 18px 22px; box-shadow: 0 20px 40px rgba(61, 38, 0, .2);
+.causa__ruta { margin: -.2em 0 .8em; font: 700 1.25rem/1.2 var(--font-titulos); letter-spacing: .04em; text-transform: uppercase; color: var(--color-cafe); }
+.causa__ruta span { color: var(--corea-rojo); margin: 0 .3em; }
+.causa__ods-title { margin: 22px 0 10px; font-weight: 700; color: var(--color-oscuro); }
+/* Etiquetas de los Objetivos de Desarrollo Sostenible (colores oficiales de la ONU) */
+.ods { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ods li { padding: 10px 12px; border-radius: 10px; color: #fff; font-size: .85rem; line-height: 1.25; font-weight: 600; }
+.ods b { display: block; font: 800 1.1rem/1 var(--font-titulos); letter-spacing: .04em; margin-bottom: 3px; }
+.ods--4 { background: #c5192d; }
+.ods--8 { background: #a21942; }
+.ods--9 { background: #fd6925; }
+.ods--11 { background: #e68a00; }
+.causa__list { margin-top: 0; }
+.causa__lema {
+  margin: 4px 0 0; padding: 16px 20px; border-left: 5px solid var(--color-primario); border-radius: 0 var(--radio) var(--radio) 0;
+  background: var(--color-fondo-alt); font: 700 1.3rem/1.25 var(--font-titulos); color: var(--color-oscuro);
 }
-.flight__map { display: block; width: 100%; height: auto; }
-.flight__text { text-align: center; }
-.flight__title { font: 800 1.7rem/1.1 var(--font-titulos); text-transform: uppercase; color: var(--color-primario); margin: 6px 0 4px; }
-.flight__title span { display: block; font-size: 1.2rem; color: #fff; margin-top: 4px; }
-.flight__text p:last-child { margin: 0; color: rgba(255, 255, 255, .8); }
-.flight .hang::before { background: var(--color-acento); }
-@media (min-width: 900px) { .causa__grid { grid-template-columns: 1.25fr 1fr; gap: 64px; } }
 
-/* Línea de tiempo: hito del viaje a Corea */
+/* Línea de tiempo: hito del encuentro internacional */
 .timeline__item--korea { background: linear-gradient(135deg, var(--corea-azul), #0a2f6b); }
 .timeline__item--korea h3 { color: #fff; }
 .timeline__item--korea p { color: rgba(255, 255, 255, .8); }
-.timeline__item--korea .timeline__date { color: var(--color-primario); }
+.timeline__item--korea .timeline__date { color: var(--color-acento); }
 .timeline__item--korea::before { background: var(--corea-rojo); border-color: var(--corea-azul); }
 
 /* Premio especial */
@@ -578,7 +587,7 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 }
 .hang::before { content: ""; position: absolute; top: 0; left: 50%; width: 2px; height: calc(var(--cuerda) + 4px); margin-left: -1px; background: var(--color-cafe); }
 .hang::after { content: ""; position: absolute; top: -4px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--color-primario); border: 2px solid var(--color-oscuro); }
-.hang svg { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 4px 4px rgba(61, 38, 0, .22)); }
+.hang svg { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 4px 4px rgba(27, 42, 73, .22)); }
 @keyframes columpio { from { rotate: -6deg; } to { rotate: 6deg; } }
 
 /* Espacio para que el adorno no tape los títulos */
@@ -606,6 +615,80 @@ legend { font: 700 1.35rem var(--font-titulos); color: var(--color-oscuro); text
 .hero__lanterns .hang { width: 60px; }
 .hero__lanterns .hang::before { background: rgba(251, 224, 124, .6); }
 @media (min-width: 1024px) { .hero__lanterns { display: flex; } }
+
+/* ==========================================================================
+   HANGUK RUN: piezas nuevas
+   ========================================================================== */
+[hidden] { display: none !important; }
+.nav__ko { font-family: var(--font-ko); font-weight: 400; font-size: 1.15rem; color: var(--color-primario); margin-left: 8px; letter-spacing: 0; }
+
+/* Textos [POR CONFIRMAR]: se ven resaltados para que sea fácil encontrarlos y revisarlos */
+.pendiente {
+  display: inline-block; padding: 1px 8px; border-radius: 6px; font-size: .85em; font-weight: 600;
+  background: #fff3c4; color: #7a5a00; border: 1px dashed #d9b440;
+}
+
+/* ¿Por qué corremos? */
+.porque__grid { display: grid; gap: 36px; align-items: start; }
+.porque__text > p:not(.section__lead):not(.eyebrow):not(.porque__ods-title) { color: var(--color-texto); max-width: 62ch; }
+.porque__ods-title { margin: 22px 0 10px; font-weight: 700; color: var(--color-oscuro); }
+.delegacion {
+  position: relative; overflow: hidden; padding: 28px 24px; border-radius: 22px; color: #fff;
+  background: linear-gradient(160deg, var(--color-oscuro), #1D3A6E); box-shadow: 0 20px 40px rgba(27, 42, 73, .25);
+}
+.delegacion::after {
+  content: "가자"; position: absolute; right: -10px; bottom: -28px; font: 400 7rem/1 var(--font-ko);
+  color: rgba(255, 246, 229, .06); pointer-events: none;
+}
+.delegacion__foto { width: 100%; border-radius: 14px; margin-bottom: 18px; }
+.delegacion__num { margin: 0; font: 800 6rem/.9 var(--font-titulos); color: var(--color-primario); }
+.delegacion__label { margin: 0 0 18px; font: 800 1.6rem/1 var(--font-titulos); text-transform: uppercase; letter-spacing: .04em; }
+.delegacion__datos { list-style: none; margin: 0 0 20px; padding: 0; display: grid; gap: 10px; }
+.delegacion__datos li { display: flex; gap: 10px; color: rgba(255, 255, 255, .88); font-size: .95rem; }
+.delegacion__lema {
+  position: relative; z-index: 1; margin: 0; padding: 14px 16px; border-left: 4px solid var(--color-primario);
+  background: rgba(255, 246, 229, .08); border-radius: 0 12px 12px 0;
+  font: 700 1.25rem/1.25 var(--font-titulos); color: var(--color-acento);
+}
+@media (min-width: 900px) {
+  .porque__grid { grid-template-columns: 1.35fr 1fr; gap: 56px; }
+  .delegacion { position: sticky; top: calc(var(--nav-alto) + 24px); }
+}
+
+/* Lo que regresa a la comunidad */
+.compromisos__lista { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 14px; }
+.compromiso {
+  position: relative; padding: 22px 20px 20px; border-radius: var(--radio); background: #fff;
+  box-shadow: var(--sombra); border-top: 5px solid var(--color-cafe);
+}
+.compromiso:nth-child(even) { border-top-color: var(--color-primario); }
+.compromiso__icono { font-size: 2rem; line-height: 1; }
+.compromiso h3 { margin: 10px 0 6px; font-size: 1.35rem; }
+.compromiso p { margin: 0 0 10px; color: var(--color-suave); font-size: .95rem; }
+@media (min-width: 640px) { .compromisos__lista { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .compromisos__lista { grid-template-columns: repeat(4, 1fr); } }
+
+/* Organizador: misión y trayectoria */
+.org__datos { margin: 18px 0 0; display: grid; gap: 12px; }
+.org__datos div { padding: 12px 14px; border-radius: 12px; background: var(--color-fondo-alt); }
+.org__datos dt { font-weight: 800; font-family: var(--font-titulos); font-size: 1.1rem; text-transform: uppercase; color: var(--color-cafe); }
+.org__datos dd { margin: 2px 0 0; }
+
+/* Sede sujeta a autorización */
+.sede__aviso {
+  display: inline-block; margin: -.2em 0 1em; padding: 4px 12px; border-radius: 999px;
+  background: rgba(255, 246, 229, .12); border: 1px solid rgba(255, 246, 229, .35);
+  color: var(--color-acento); font-size: .85rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* Invitación a patrocinadores */
+.patrocina {
+  display: grid; gap: 18px; align-items: center; margin: 24px 0 8px; padding: 24px; border-radius: 20px;
+  background: var(--color-oscuro); color: rgba(255, 255, 255, .88);
+}
+.patrocina__title { margin: 0 0 8px; color: #fff; font-size: clamp(1.5rem, 5vw, 2rem); text-transform: uppercase; }
+.patrocina p { margin: 0; }
+@media (min-width: 768px) { .patrocina { grid-template-columns: 1fr auto; padding: 30px 34px; } }
 
 /* ---------- Animaciones al hacer scroll ----------
    Solo se ocultan si el JS está activo (clase .js en <html>), así el contenido
