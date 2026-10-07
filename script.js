@@ -1,102 +1,88 @@
 /* ==========================================================================
-   Expo Emprendedores con Causa — script.js
+   HANGUK RUN 한국 — script.js
    JavaScript puro, sin librerías.
    ========================================================================== */
-
-/* ==========================================================================
-   ✏️ LISTA DE EMPRENDEDORES
-   --------------------------------------------------------------------------
-   La sección "Conoce a los emprendedores" se llena de DOS formas (puedes usar una o ambas):
-
-   A) AUTOMÁTICA desde Google Sheets (recomendada):
-      Cuando conectes la hoja (ver CONFIG.urlGoogleSheets y apps-script.gs), cada registro
-      que marquen en la hoja con "Confirmado" = Sí (y que haya autorizado publicar) aparece
-      solo en la página. No hay que tocar el código.
-
-   B) MANUAL: agrega negocios en esta lista. Cada negocio es un bloque { ... } separado por coma:
-        nombre:      nombre del negocio
-        giro:        'artesanias' | 'ropa' | 'belleza' | 'servicios' | 'otro'
-        descripcion: texto corto (máx. 150 caracteres; en la tarjeta se ven 2 líneas)
-        imagen:      ruta o enlace del logo/foto, por ejemplo 'assets/img/emprendedores/mi-negocio.jpg'
-                     (vacío '' = se muestran sus iniciales con fondo de color)
-        instagram:   enlace de Instagram (opcional; vacío '' = no se muestra botón)
-        facebook:    enlace de Facebook (opcional; vacío '' = no se muestra botón)
-        dias:        días en que participa (para descontar mesas): ['2026-11-06', '2026-11-07', '2026-11-08']
-      Ejemplo:
-        { nombre: 'Mi Negocio', giro: 'artesanias', descripcion: 'Piezas de barro pintadas a mano.', imagen: '', instagram: 'https://www.instagram.com/minegocio', facebook: '', dias: ['2026-11-07'] }
-
-   Mientras no haya ninguno, la página muestra "Muy pronto conocerás a los emprendedores…".
-   ========================================================================== */
-var EMPRENDEDORES = [];
-
 (function () {
   'use strict';
 
   /* ========================================================================
-     ✏️ CONFIGURACIÓN — cupo, giros, precio, días, pago y conexión
+     ✏️ CONFIGURACIÓN — CAMBIA AQUÍ PRECIOS, CATEGORÍAS, TALLAS Y CONEXIÓN
      ======================================================================== */
   var CONFIG = {
-    nombreExpo: 'Expo Emprendedores con Causa',
+    nombreCarrera: 'HANGUK RUN 한국 2026',
 
-    // ✏️ CUPO: mesas disponibles POR DÍA.
-    // Los lugares libres de cada día se calculan solos: mesasPorDia − negocios confirmados ese día.
-    // Cuando un día se llena, el formulario lo desactiva.
-    mesasPorDia: 7,
+    /* Sección "Lo que regresa a la comunidad":
+       true  → muestra también los compromisos marcados [POR CONFIRMAR] (para revisarlos).
+       false → muestra SOLO los compromisos confirmados. ✏️ Ponlo en false antes de publicar. */
+    mostrarPorConfirmar: true,
 
-    // ✏️ PLAZO para pagar (días después de enviar la solicitud). Si no pagan, el registro se cancela.
-    diasParaPagar: 4,
-
-    // Giros (filtros y opciones del formulario). No hay alimentos ni bebidas:
-    // la expo es dentro de la cafetería y no se permite vender alimentos preparados ni bebidas.
-    // color = fondo de la tarjeta cuando el negocio no tiene foto (tonos de Granito de Arena)
-    giros: [
-      { id: 'artesanias', nombre: 'Artesanías',        emoji: '🏺', color: 'linear-gradient(135deg,#e4573d,#a8361f)' },
-      { id: 'ropa',       nombre: 'Ropa y accesorios', emoji: '👜', color: 'linear-gradient(135deg,#f0b400,#6b4200)' },
-      { id: 'belleza',    nombre: 'Belleza',           emoji: '🌸', color: 'linear-gradient(135deg,#f6a07f,#e4573d)' },
-      { id: 'servicios',  nombre: 'Servicios',         emoji: '🛠️', color: 'linear-gradient(135deg,#6b4200,#e4573d)' },
-      { id: 'otro',       nombre: 'Otro',              emoji: '✨', color: 'linear-gradient(135deg,#ffc800,#e4573d)' }
+    // Categorías / distancias y su precio por corredor (MXN)
+    categorias: [
+      { id: '3K', nombre: '3K · Ruta Jeju', precio: 250 },   // ✏️ precio de ejemplo, confirmar
+      { id: '5K', nombre: '5K · Ruta Seúl', precio: 350 },
+      { id: '10K', nombre: '10K · Ruta Busan', precio: 450 }
     ],
 
-    // ✏️ PRECIO por día de participación (debe coincidir con la sección "Para emprendedores" en index.html)
-    precioPorDia: 300,
+    tallas: ['Infantil', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    sexos: ['Femenino', 'Masculino'],
 
-    // ✏️ DÍAS de la expo (opciones del formulario)
-    dias: [
-      { id: '2026-11-06', nombre: 'Viernes 6 de noviembre' },
-      { id: '2026-11-07', nombre: 'Sábado 7 de noviembre' },
-      { id: '2026-11-08', nombre: 'Domingo 8 de noviembre' }
-    ],
+    edadMinima: 12,
+    edadMaxima: 90,
 
-    // ✏️ PAGO: la organización contacta a cada emprendedor para darle los datos de pago.
-    pago: {
-      whatsapp: '[POR CONFIRMAR: número de WhatsApp]'
-    },
+    // Inscripción en grupo
+    grupoMinimo: 2,
+    grupoMaximo: 20,
+    // Descuento por tamaño del grupo: actualmente SIN descuento.
+    // Para activarlo en el futuro, por ejemplo: [{ desde: 5, porcentaje: 10 }, { desde: 10, porcentaje: 15 }]
+    descuentosGrupo: [],
+
+    // Números de corredor: primer número disponible.
+    // Si conectas Google Sheets, el número real lo asigna la hoja (ver apps-script.gs).
+    siguienteNumero: 101,
 
     /* --------------------------------------------------------------------
-       🔌 CONEXIÓN PARA GUARDAR LOS REGISTROS (y mostrar a los emprendedores confirmados)
+       🔌 CONEXIÓN PARA GUARDAR LAS INSCRIPCIONES
        modo:
          'pantalla'  → (actual) no envía nada; muestra los datos para copiarlos.
-         'sheets'    → Google Sheets. Pega en urlGoogleSheets la URL de tu Apps Script
-                       (termina en /exec). Instrucciones en apps-script.gs.
-                       Con esta URL, la página también muestra sola a los emprendedores confirmados.
-         'formspree' → Formspree. Pega en urlFormspree tu endpoint (https://formspree.io/f/xxxx)
-         'whatsapp'  → abre WhatsApp con los datos para enviarlos a la organización.
+         'sheets'    → Google Sheets. Pega en urlGoogleSheets la URL de tu
+                       Apps Script (termina en /exec). Instrucciones en apps-script.gs
+         'formspree' → Formspree. Pega en urlFormspree tu endpoint
+                       (ej. https://formspree.io/f/abcdwxyz)
+         'whatsapp'  → abre WhatsApp con los datos para enviarlos al organizador.
        -------------------------------------------------------------------- */
-    modo: 'sheets',
-    urlGoogleSheets: 'https://script.google.com/macros/s/AKfycbyCBHdxUgg8Q4mYkqqcWw7ie7bNfQ0VYxdwBB864txXWp5hAsTVgnJlKSd7Jn0QfOoU/exec',   // 👉 PEGA AQUÍ la URL de Google Apps Script
+    modo: 'pantalla',
+    urlGoogleSheets: '',   // 👉 PEGA AQUÍ la URL de Google Apps Script
     urlFormspree: '',      // 👉 PEGA AQUÍ el endpoint de Formspree
-    whatsappOrganizacion: '52XXXXXXXXXX' // 👉 52 + 10 dígitos, sin espacios ni "+" (solo para modo 'whatsapp')
+    whatsappOrganizador: '52XXXXXXXXXX', // 👉 52 + 10 dígitos, sin espacios ni "+" (solo para modo 'whatsapp')
+
+    /* --------------------------------------------------------------------
+       📸 CARRUSEL DE INSTAGRAM (se actualiza solo con las últimas publicaciones)
+       Instagram no deja que una página web lea las publicaciones directamente,
+       así que se usa Behold (https://behold.so), que tiene plan gratuito:
+         1. Crea una cuenta en behold.so y conecta @granitodearena.sm
+            (puede pedir que la cuenta de Instagram sea Profesional/Creador,
+            se cambia gratis en la configuración de Instagram).
+         2. Crea un "Feed" de tipo JSON y copia su URL
+            (se ve como https://feeds.behold.so/XXXXXXXXXXXX).
+         3. Pégala abajo en feedUrl. Listo: cada vez que publiquen, la página
+            mostrará lo nuevo, sin tocar el código.
+       Mientras feedUrl esté vacío, se muestra una tarjeta "Síguenos en Instagram".
+       -------------------------------------------------------------------- */
+    instagram: {
+      feedUrl: '',            // 👉 PEGA AQUÍ la URL del feed JSON de Behold
+      maxPublicaciones: 8
+    }
   };
   /* ======================== FIN DE CONFIGURACIÓN ======================== */
 
-  var $ = function (s, c) { return (c || document).querySelector(s); };
-  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
-  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); };
-  var pesos = function (n) { return Number(n).toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }); };
-  function safe(fn, name) { try { fn(); } catch (e) { console.error('[' + name + ']', e); } }
-  function giro(id) {
-    for (var i = 0; i < CONFIG.giros.length; i++) if (CONFIG.giros[i].id === id || CONFIG.giros[i].nombre === id) return CONFIG.giros[i];
-    return CONFIG.giros[CONFIG.giros.length - 1];
+  var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
+  var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
+  var pesos = function (n) { return n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+
+  // Cada inicialización va protegida: si una falla, las demás siguen funcionando.
+  function safe(fn, name) {
+    try { fn(); } catch (e) { console.error('[' + name + ']', e); }
   }
 
   /* ---------- Menú ---------- */
@@ -109,6 +95,8 @@ var EMPRENDEDORES = [];
     });
     $$('a', menu).forEach(function (a) { a.addEventListener('click', close); });
     window.addEventListener('scroll', function () { nav.classList.toggle('is-scrolled', window.scrollY > 10); }, { passive: true });
+
+    // Resalta en el menú la sección visible
     if (!('IntersectionObserver' in window)) return;
     var links = {};
     $$('a[href^="#"]', menu).forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
@@ -129,10 +117,16 @@ var EMPRENDEDORES = [];
     var showAll = function () { items.forEach(function (el) { el.classList.add('is-visible'); }); };
     if (!('IntersectionObserver' in window)) return showAll();
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); }
+      });
     }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
-    items.forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 60 + 'ms'; io.observe(el); });
-    setTimeout(showAll, 6000); // red de seguridad
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = (i % 4) * 70 + 'ms';
+      io.observe(el);
+    });
+    // Red de seguridad: si algo sigue oculto a los 6 s, se muestra.
+    setTimeout(showAll, 6000);
   }
 
   /* ---------- Cuenta regresiva ---------- */
@@ -140,207 +134,160 @@ var EMPRENDEDORES = [];
     var box = $('#countdown');
     var target = new Date(box.getAttribute('data-fecha')).getTime();
     if (isNaN(target)) return;
-    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
     var el = { d: $('[data-cd="d"]', box), h: $('[data-cd="h"]', box), m: $('[data-cd="m"]', box), s: $('[data-cd="s"]', box) };
-    var timer;
+    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
     function tick() {
       var diff = target - Date.now();
-      if (diff <= 0) { box.classList.add('is-done'); box.textContent = '¡La expo ya comenzó! Te esperamos de 10:00 a 17:00 h 🎉'; clearInterval(timer); return; }
+      if (diff <= 0) {
+        box.classList.add('is-done');
+        box.textContent = '¡Hoy es el gran día! 🏁';
+        clearInterval(timer);
+        return;
+      }
       el.d.textContent = Math.floor(diff / 864e5);
       el.h.textContent = pad(Math.floor(diff / 36e5) % 24);
       el.m.textContent = pad(Math.floor(diff / 6e4) % 60);
       el.s.textContent = pad(Math.floor(diff / 1e3) % 60);
     }
-    timer = setInterval(tick, 1000);
+    var timer = setInterval(tick, 1000);
     tick();
   }
 
-  /* ---------- Emprendedores: contador, filtros y tarjetas ---------- */
-  var lista = [];            // lista final (manual + Google Sheets)
-  var filtroActual = 'todos';
-  function iniciales(nombre) {
-    var cortas = ['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e'];
-    return String(nombre).split(/\s+/).filter(function (p) { return p && cortas.indexOf(p.toLowerCase()) === -1; }).slice(0, 2)
-      .map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
-  }
-  // ¿El emprendedor participa ese día? Acepta el id '2026-11-06', el nombre 'Viernes 6 de noviembre'
-  // o una fecha que Google Sheets haya convertido sola (ej. 'Fri Nov 06 2026 00:00:00 GMT-0600').
-  var MESES_EN = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06', Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
-  function participa(e, dia) {
-    var d = e.dias;
-    if (!d) return false;
-    if (typeof d !== 'string') return d.indexOf(dia.id) !== -1 || d.indexOf(dia.nombre) !== -1;
-    if (d.indexOf(dia.nombre) !== -1 || d.indexOf(dia.id) !== -1) return true;
-    var m = d.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{1,2}) (\d{4})\b/);
-    if (m) return (m[3] + '-' + MESES_EN[m[1]] + '-' + ('0' + m[2]).slice(-2)) === dia.id;
-    return false;
-  }
-  function libres(dia) {
-    var ocupadas = lista.filter(function (e) { return participa(e, dia); }).length;
-    return Math.max(0, CONFIG.mesasPorDia - ocupadas);
-  }
-  function renderContador() {
-    var confirmados = lista.length;
-    var disponibles = CONFIG.dias.reduce(function (s, d) { return s + libres(d); }, 0);
-    var textoNeg = confirmados === 1 ? 'negocio confirmado' : 'negocios confirmados';
-    var textoLug = disponibles === 1 ? 'lugar disponible' : 'lugares disponibles';
-    var c = $('#contador');
-    if (c) c.innerHTML = '<span><b>' + confirmados + '</b> ' + textoNeg + '</span><span>·</span><span><b>' + disponibles + '</b> ' + textoLug + ' (' + CONFIG.mesasPorDia + ' mesas por día)</span>';
-    var html = CONFIG.dias.map(function (d) {
-      var n = libres(d);
-      return '<div class="cupo-dia' + (n ? '' : ' is-lleno') + '"><span>' + esc(d.nombre) + '</span><b>' +
-        (n ? n + ' de ' + CONFIG.mesasPorDia + (n === 1 ? ' mesa libre' : ' mesas libres') : 'Lleno') + '</b></div>';
-    }).join('');
-    $$('[data-contador-dias]').forEach(function (el) { el.innerHTML = html; });
-    // Desactiva en el formulario los días que ya están llenos
-    $$('#diasChips input[name="dias"]').forEach(function (inp) {
-      var dia = CONFIG.dias.filter(function (d) { return d.id === inp.value; })[0];
-      var lleno = dia && !libres(dia);
-      inp.disabled = !!lleno;
-      if (lleno) inp.checked = false;
-      inp.closest('.chip').classList.toggle('is-lleno', !!lleno);
-    });
-  }
-  function renderFiltros() {
-    var box = $('#filtros');
-    if (!box) return;
-    var html = '<button type="button" class="filtro' + (filtroActual === 'todos' ? ' is-active' : '') + '" data-giro="todos">Todos<span>' + lista.length + '</span></button>';
-    CONFIG.giros.forEach(function (g) {
-      var n = lista.filter(function (e) { return giro(e.giro).id === g.id; }).length;
-      html += '<button type="button" class="filtro' + (filtroActual === g.id ? ' is-active' : '') + '" data-giro="' + g.id + '"' + (n ? '' : ' disabled') + '>' + g.emoji + ' ' + esc(g.nombre) + '<span>' + n + '</span></button>';
-    });
-    box.innerHTML = html;
-    box.hidden = lista.length === 0;
-  }
-  /* Convierte lo que escriban en un enlace válido:
-     "@minegocio" o "minegocio" → https://www.instagram.com/minegocio (o facebook.com/…)
-     "instagram.com/minegocio" → https://instagram.com/minegocio
-     Devuelve '' si está vacío o no es válido. */
-  function urlRed(valor, red) {
-    var v = String(valor || '').trim();
-    if (!v) return '';
-    if (/^https?:\/\/[^\s.]+\.[^\s]+$/i.test(v)) return v;
-    if (/^(www\.)?(instagram|facebook|fb)\.(com|me)\/\S+$/i.test(v)) return 'https://' + v;
-    var usuario = v.replace(/^@/, '');
-    if (/^[\w.\-]{2,60}$/.test(usuario)) return 'https://www.' + red + '.com/' + usuario;
-    return '';
-  }
-  function tarjeta(e) {
-    var g = giro(e.giro);
-    var ini = '<span class="emp__iniciales" aria-hidden="true">' + esc(iniciales(e.nombre)) + '</span>';
-    var media = e.imagen ? '<img src="' + esc(e.imagen) + '" alt="Logo de ' + esc(e.nombre) + '" loading="lazy" data-ini="' + esc(iniciales(e.nombre)) + '">' : ini;
-    // Un botón por cada red que tenga el negocio; si no tiene ninguna, no se muestra botón
-    var ig = urlRed(e.instagram, 'instagram'), fb = urlRed(e.facebook, 'facebook');
-    if (!ig && !fb && e.red && e.red.url) {  // formato anterior { red: { tipo, url } }
-      if (/facebook|fb\.(com|me)/i.test(e.red.url)) fb = urlRed(e.red.url, 'facebook'); else ig = urlRed(e.red.url, 'instagram');
+  /* ---------- Carrusel de Instagram ---------- */
+  function initInstagram() {
+    var cfg = CONFIG.instagram, track = $('#igTrack');
+    if (!cfg || !cfg.feedUrl || !track) return; // sin feed: se queda la tarjeta "Síguenos"
+
+    function imageOf(p) {
+      if (p.sizes && p.sizes.medium && p.sizes.medium.mediaUrl) return p.sizes.medium.mediaUrl;
+      return p.mediaType === 'VIDEO' ? (p.thumbnailUrl || p.mediaUrl) : p.mediaUrl;
     }
-    var botones = '';
-    if (ig) botones += '<a class="btn btn--primary" href="' + esc(ig) + '" target="_blank" rel="noopener">Instagram</a>';
-    if (fb) botones += '<a class="btn btn--outline" href="' + esc(fb) + '" target="_blank" rel="noopener">Facebook</a>';
-    return '<article class="emp">' +
-      '<div class="emp__media" style="background:' + g.color + '">' + media + '<span class="emp__giro">' + g.emoji + ' ' + esc(g.nombre) + '</span></div>' +
-      '<div class="emp__body"><h3>' + esc(e.nombre) + '</h3><p class="emp__desc">' + esc(e.descripcion) + '</p>' +
-        (botones ? '<div class="emp__redes">' + botones + '</div>' : '') +
-      '</div>' +
-    '</article>';
-  }
-  function renderTarjetas() {
-    var grid = $('#gridEmprendedores');
-    if (!grid) return;
-    if (!lista.length) {
-      grid.innerHTML = '<div class="vacio"><p>Muy pronto conocerás a los emprendedores que nos acompañan.</p><a href="#registro" class="btn btn--primary">Quiero registrar mi negocio</a></div>';
-      return;
+    function badgeOf(p) {
+      if (p.mediaType === 'VIDEO') return '▶ Reel';
+      if (p.mediaType === 'CAROUSEL_ALBUM') return '❐ Álbum';
+      return '';
     }
-    var visibles = lista.filter(function (e) { return filtroActual === 'todos' || giro(e.giro).id === filtroActual; });
-    grid.innerHTML = visibles.length
-      ? visibles.map(tarjeta).join('')
-      : '<div class="vacio"><p>Aún no hay negocios en esta categoría.</p><a href="#registro" class="btn btn--primary">Registra el tuyo</a></div>';
-    // Si un logo no carga (por ejemplo, un enlace de Drive privado), se muestran las iniciales
-    $$('.emp__media img', grid).forEach(function (img) {
-      img.addEventListener('error', function () {
-        var span = document.createElement('span');
-        span.className = 'emp__iniciales';
-        span.textContent = img.getAttribute('data-ini');
-        img.replaceWith(span);
+    function render(posts) {
+      posts = posts.filter(function (p) { return p && p.permalink && imageOf(p); }).slice(0, cfg.maxPublicaciones || 8);
+      if (!posts.length) return;
+      var html = posts.map(function (p) {
+        var caption = (p.prunedCaption || p.caption || '').trim();
+        var badge = badgeOf(p);
+        return '<a class="ig__post" href="' + esc(p.permalink) + '" target="_blank" rel="noopener">' +
+          '<figure style="margin:0;height:100%">' +
+            '<img src="' + esc(imageOf(p)) + '" alt="' + esc(caption.slice(0, 120) || 'Publicación de Instagram') + '" loading="lazy">' +
+            (badge ? '<span class="ig__badge">' + badge + '</span>' : '') +
+            (caption ? '<figcaption><span>' + esc(caption) + '</span></figcaption>' : '') +
+          '</figure></a>';
+      }).join('');
+      track.insertAdjacentHTML('beforeend', html);
+      track.classList.add('is-loaded');
+
+      var nav = $('.ig__nav');
+      nav.hidden = false;
+      $$('.ig__arrow', nav).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          track.scrollBy({ left: Number(btn.getAttribute('data-dir')) * track.clientWidth * 0.9, behavior: 'smooth' });
+        });
       });
-    });
-  }
-  function renderEmprendedores() { renderContador(); renderFiltros(); renderTarjetas(); }
-  function initEmprendedores() {
-    lista = EMPRENDEDORES.slice();
-    renderEmprendedores();
-    $('#filtros').addEventListener('click', function (e) {
-      var btn = e.target.closest('.filtro');
-      if (!btn || btn.disabled) return;
-      filtroActual = btn.getAttribute('data-giro');
-      renderFiltros();
-      renderTarjetas();
-    });
-    // Emprendedores confirmados desde Google Sheets (se actualiza solo)
-    if (!CONFIG.urlGoogleSheets) return;
-    fetch(CONFIG.urlGoogleSheets + '?accion=emprendedores')
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        if (!d || !d.ok || !Array.isArray(d.emprendedores)) return;
-        lista = EMPRENDEDORES.concat(d.emprendedores);
-        renderEmprendedores();
-      })
-      .catch(function (err) { console.warn('[emprendedores] No se pudo leer la hoja:', err); });
+    }
+
+    // Se carga solo cuando la sección está cerca de la pantalla, para no hacer lenta la página.
+    var loaded = false;
+    function load() {
+      if (loaded) return; loaded = true;
+      fetch(cfg.feedUrl)
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function (d) { render(Array.isArray(d) ? d : (d.posts || [])); })
+        .catch(function (e) { console.warn('[instagram] No se pudo cargar el feed:', e); });
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) { io.disconnect(); load(); }
+      }, { rootMargin: '600px 0px' });
+      io.observe(track);
+    } else load();
   }
 
-  /* ---------- Ventanas ---------- */
-  function openModal(d) { if (typeof d.showModal === 'function') d.showModal(); else d.setAttribute('open', ''); }
-  function closeModal(d) { if (typeof d.close === 'function') d.close(); else d.removeAttribute('open'); }
+  /* ---------- Ventanas (reglamento / confirmación) ---------- */
+  function openModal(dlg) {
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  function closeModal(dlg) {
+    if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open');
+  }
   function initModals() {
-    $$('[data-open]').forEach(function (a) {
-      a.addEventListener('click', function (e) { e.preventDefault(); openModal(document.getElementById(a.getAttribute('data-open'))); });
+    $$('[data-open-rules]').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); openModal($('#reglamento')); });
     });
-    $$('dialog').forEach(function (d) {
-      $$('[data-close]', d).forEach(function (b) { b.addEventListener('click', function () { closeModal(d); }); });
-      d.addEventListener('click', function (e) { if (e.target === d) closeModal(d); });
+    $$('dialog').forEach(function (dlg) {
+      $$('[data-close]', dlg).forEach(function (b) { b.addEventListener('click', function () { closeModal(dlg); }); });
+      dlg.addEventListener('click', function (e) { if (e.target === dlg) closeModal(dlg); }); // clic fuera
     });
     $('#copyData').addEventListener('click', function () {
       var ta = $('#dataOutput'), btn = this;
       var done = function () { btn.textContent = '✅ ¡Copiado!'; setTimeout(function () { btn.textContent = '📋 Copiar datos'; }, 2000); };
-      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); document.execCommand('copy'); done(); });
-      else { ta.select(); document.execCommand('copy'); done(); }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); document.execCommand('copy'); done(); });
+      } else { ta.select(); document.execCommand('copy'); done(); }
     });
   }
 
-  /* ---------- Formulario de registro ---------- */
-  var onlyDigits = function (s) { return String(s).replace(/\D/g, ''); };
-  function diasElegidos(form) {
-    return $$('input[name="dias"]:checked', form).map(function (c) { return c.value; });
-  }
-  function renderTotal(form) {
-    var n = diasElegidos(form).length, out = $('#diasTotal');
-    out.innerHTML = n
-      ? n + (n === 1 ? ' día' : ' días') + ' × ' + pesos(CONFIG.precioPorDia) + ' = <strong>' + pesos(n * CONFIG.precioPorDia) + '</strong>'
-      : 'Elige al menos un día · ' + pesos(CONFIG.precioPorDia) + ' por día';
-  }
-  function fillForm(form) {
-    var g = '<option value="">Selecciona…</option>';
-    CONFIG.giros.forEach(function (x) { g += '<option value="' + x.id + '">' + x.emoji + ' ' + esc(x.nombre) + '</option>'; });
-    $('[data-opciones="giros"]', form).innerHTML = g;
-    $('#diasChips').innerHTML = CONFIG.dias.map(function (d) {
-      return '<label class="chip"><input type="checkbox" name="dias" value="' + esc(d.id) + '"><span>📅 ' + esc(d.nombre) + '</span></label>';
-    }).join('');
-    renderTotal(form);
-  }
-  function fieldError(input) {
-    var v = (input.value || '').trim();
-    if (input.type === 'checkbox') return input.required && !input.checked ? 'Debes marcar esta casilla.' : '';
-    if (input.type === 'file') {
-      var f = input.files && input.files[0];
-      if (!f) return '';
-      if (!/^image\//.test(f.type)) return 'Sube una imagen (JPG o PNG).';
-      return f.size > 15 * 1024 * 1024 ? 'La imagen pesa más de 15 MB.' : '';
+  /* ---------- Opciones de los <select> ---------- */
+  function optionsHTML(tipo) {
+    var html = '<option value="">Selecciona…</option>';
+    if (tipo === 'categorias') {
+      CONFIG.categorias.forEach(function (c) { html += '<option value="' + esc(c.id) + '">' + esc(c.nombre) + ' — ' + pesos(c.precio) + '</option>'; });
+    } else {
+      CONFIG[tipo].forEach(function (v) { html += '<option>' + esc(v) + '</option>'; });
     }
+    return html;
+  }
+  function fillSelects(ctx) {
+    $$('select[data-opciones]', ctx).forEach(function (s) {
+      if (s.options.length > 0) return;
+      s.innerHTML = optionsHTML(s.getAttribute('data-opciones'));
+    });
+  }
+  function categoria(id) {
+    for (var i = 0; i < CONFIG.categorias.length; i++) if (CONFIG.categorias[i].id === id) return CONFIG.categorias[i];
+    return null;
+  }
+
+  /* ---------- Número de corredor disponible ----------
+     Sin conexión se usa CONFIG.siguienteNumero y se guarda en este navegador
+     para que las pruebas sigan siendo consecutivas. Con Google Sheets la hoja
+     informa y asigna el número real. */
+  var STORE_KEY = 'ccv_siguiente_numero';
+  var nextBib = CONFIG.siguienteNumero;
+  function readLocalBib() {
+    try { var v = parseInt(localStorage.getItem(STORE_KEY), 10); if (v > nextBib) nextBib = v; } catch (e) { /* sin almacenamiento */ }
+  }
+  function saveLocalBib(n) {
+    nextBib = n;
+    try { localStorage.setItem(STORE_KEY, String(n)); } catch (e) { /* sin almacenamiento */ }
+  }
+  function fetchServerBib() {
+    if (CONFIG.modo !== 'sheets' || !CONFIG.urlGoogleSheets) return;
+    fetch(CONFIG.urlGoogleSheets + '?accion=siguiente')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.siguiente) { nextBib = parseInt(d.siguiente, 10); updateAll(); } })
+      .catch(function () { /* se queda el número local */ });
+  }
+
+  /* ---------- Validación ---------- */
+  var onlyDigits = function (s) { return String(s).replace(/\D/g, ''); };
+  function fieldError(input) {
+    var v = input.value.trim();
+    if (input.type === 'checkbox') return input.checked ? '' : 'Debes aceptar para continuar.';
     if (input.required && !v) return 'Este campo es obligatorio.';
     if (!v) return '';
     if (input.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return 'Escribe un correo válido.';
     if (input.hasAttribute('data-telefono') && onlyDigits(v).length !== 10) return 'Escribe 10 dígitos.';
-    if (input.hasAttribute('data-red') && !urlRed(v, input.getAttribute('data-red'))) return 'Escribe tu usuario (@minegocio) o el enlace a tu página.';
+    if (input.hasAttribute('data-edad')) {
+      var n = Number(v);
+      if (!Number.isInteger(n) || n < CONFIG.edadMinima || n > CONFIG.edadMaxima) return 'Edad entre ' + CONFIG.edadMinima + ' y ' + CONFIG.edadMaxima + ' años.';
+    }
     if (input.minLength > 0 && v.length < input.minLength) return 'Escribe al menos ' + input.minLength + ' caracteres.';
     return '';
   }
@@ -348,155 +295,242 @@ var EMPRENDEDORES = [];
     var wrap = input.type === 'checkbox' ? input.closest('.check') : input.closest('.field');
     if (!wrap) return;
     wrap.classList.toggle('has-error', !!msg);
-    if (input.type === 'checkbox') return;
     var err = wrap.querySelector('.field__error');
+    if (input.type === 'checkbox') return;
     if (msg && !err) { err = document.createElement('span'); err.className = 'field__error'; wrap.appendChild(err); }
     if (err) err.textContent = msg;
     input.setAttribute('aria-invalid', msg ? 'true' : 'false');
   }
-  function showDiasError(form, show) {
-    var out = $('#diasTotal');
-    out.classList.toggle('is-error', show);
-    if (show) out.textContent = 'Elige al menos un día para participar.';
-    else renderTotal(form);
-  }
-  function validate(form) {
+  function validateForm(form) {
     var first = null;
-    $$('input, select, textarea', form).forEach(function (inp) {
-      if (inp.name === 'dias') return;
+    $$('input[required], select[required], input[data-telefono], input[data-edad]', form).forEach(function (inp) {
       var msg = fieldError(inp);
       showError(inp, msg);
       if (msg && !first) first = inp;
     });
-    var sinDias = diasElegidos(form).length === 0;
-    showDiasError(form, sinDias);
-    if (sinDias && !first) first = $('#diasChips input');
     if (first) {
       first.scrollIntoView({ behavior: 'smooth', block: 'center' });
       setTimeout(function () { first.focus({ preventScroll: true }); }, 400);
     }
     return !first;
   }
-
-  /* ---------- Logo: se reduce y comprime en el navegador antes de enviarlo ----------
-     Resultado: JPEG de máx. 800 px (normalmente 50–150 KB) en base64, listo para que
-     Apps Script lo guarde como archivo en Google Drive. */
-  var LOGO_MAX_PX = 800, LOGO_CALIDAD = 0.82;
-  function comprimirImagen(file) {
-    return new Promise(function (resolve, reject) {
-      var url = URL.createObjectURL(file);
-      var img = new Image();
-      img.onload = function () {
-        var escala = Math.min(1, LOGO_MAX_PX / Math.max(img.naturalWidth, img.naturalHeight));
-        var w = Math.max(1, Math.round(img.naturalWidth * escala));
-        var h = Math.max(1, Math.round(img.naturalHeight * escala));
-        var canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';            // fondo blanco para logos con transparencia
-        ctx.fillRect(0, 0, w, h);
-        ctx.drawImage(img, 0, 0, w, h);
-        URL.revokeObjectURL(url);
-        var dataUrl = canvas.toDataURL('image/jpeg', LOGO_CALIDAD);
-        resolve({ base64: dataUrl.split(',')[1], mime: 'image/jpeg', nombre: file.name.replace(/\.[^.]+$/, '') + '.jpg', dataUrl: dataUrl });
-      };
-      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('No se pudo leer la imagen. Usa un archivo JPG o PNG.')); };
-      img.src = url;
-    });
-  }
-  function initLogoPreview(form) {
-    var input = form.elements.logoArchivo, prev = $('#logoPreview');
-    if (!input || !prev) return;
-    input.addEventListener('change', function () {
-      var f = input.files && input.files[0];
-      if (!f || fieldError(input)) { prev.hidden = true; prev.removeAttribute('src'); return; }
-      comprimirImagen(f).then(function (r) { prev.src = r.dataUrl; prev.hidden = false; })
-        .catch(function (err) { prev.hidden = true; showError(input, err.message); });
-    });
-  }
-
-  function initForm() {
-    var form = $('#formRegistro');
-    fillForm(form);
-    initLogoPreview(form);
-    renderContador(); // desactiva los días que ya estén llenos
-    var desc = $('#r-desc'), count = $('#descCount');
-    desc.addEventListener('input', function () {
-      count.textContent = desc.value.length + ' / 150';
-      count.classList.toggle('is-limit', desc.value.length >= 140);
-    });
+  function liveValidation(form) {
     form.addEventListener('input', function (e) {
       var t = e.target;
       if (t.hasAttribute('data-telefono')) t.value = onlyDigits(t.value).slice(0, 10);
       if (t.closest('.has-error')) showError(t, fieldError(t));
     });
-    form.addEventListener('change', function (e) {
-      if (e.target.name === 'dias') { showDiasError(form, false); return; }
-      if (e.target.closest('.has-error') || e.target.type === 'file') showError(e.target, fieldError(e.target));
+    form.addEventListener('change', function (e) { if (e.target.closest('.has-error')) showError(e.target, fieldError(e.target)); });
+    form.addEventListener('focusout', function (e) {
+      var t = e.target;
+      if ((t.matches('input, select')) && t.type !== 'checkbox' && t.value) showError(t, fieldError(t));
     });
+  }
+
+  /* ---------- Pestañas ---------- */
+  function initTabs() {
+    var tabs = [$('#tabIndividual'), $('#tabGrupo')], panels = [$('#formIndividual'), $('#formGrupo')];
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t, j) {
+          t.classList.toggle('is-active', i === j);
+          t.setAttribute('aria-selected', String(i === j));
+          panels[j].hidden = i !== j;
+        });
+      });
+    });
+  }
+
+  /* ---------- Inscripción individual ---------- */
+  function renderSummaryIndividual() {
+    var form = $('#formIndividual'), cat = categoria(form.categoria.value), box = $('#summaryIndividual');
+    if (!cat) { box.innerHTML = ''; return; }
+    box.innerHTML =
+      '<h4>Resumen</h4>' +
+      '<div class="summary__row"><span>' + esc(cat.nombre) + '</span><span>' + pesos(cat.precio) + '</span></div>' +
+      '<div class="summary__row"><span>Número de corredor (preliminar)</span><span class="bib">#' + nextBib + '</span></div>' +
+      '<div class="summary__row summary__row--total"><span>Total a pagar</span><span>' + pesos(cat.precio) + '</span></div>';
+  }
+  function initIndividual() {
+    var form = $('#formIndividual');
+    fillSelects(form);
+    liveValidation(form);
+    form.categoria.addEventListener('change', renderSummaryIndividual);
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!validateForm(form)) return;
+      var f = form.elements, cat = categoria(f.categoria.value);
+      var data = {
+        tipo: 'Individual',
+        fecha: new Date().toLocaleString('es-MX'),
+        corredores: [{
+          numero: nextBib,
+          nombre: f.nombre.value.trim(), edad: f.edad.value, sexo: f.sexo.value,
+          correo: f.correo.value.trim(), telefono: f.telefono.value,
+          talla: f.talla.value, categoria: cat.id,
+          emergenciaNombre: f.emergenciaNombre.value.trim(), emergenciaTelefono: f.emergenciaTelefono.value
+        }],
+        total: cat.precio
+      };
+      submitData(data, form, function () { renderSummaryIndividual(); });
+    });
+  }
+
+  /* ---------- Inscripción en grupo ---------- */
+  function clampCount(n) {
+    n = parseInt(n, 10);
+    if (isNaN(n)) n = CONFIG.grupoMinimo;
+    return Math.max(CONFIG.grupoMinimo, Math.min(CONFIG.grupoMaximo, n));
+  }
+  function runnerHTML(i) {
+    var p = 'r' + i + '-';
+    return '' +
+      '<div class="runner" data-index="' + i + '">' +
+        '<div class="runner__head"><h4>Corredor ' + (i + 1) + '</h4><span class="bib" data-bib>#—</span></div>' +
+        '<div class="runner__grid">' +
+          '<div class="field field--full field--half"><label for="' + p + 'nombre">Nombre completo *</label><input id="' + p + 'nombre" data-k="nombre" type="text" required minlength="5"></div>' +
+          '<div class="field"><label for="' + p + 'edad">Edad *</label><input id="' + p + 'edad" data-k="edad" type="number" inputmode="numeric" required data-edad></div>' +
+          '<div class="field"><label for="' + p + 'sexo">Sexo *</label><select id="' + p + 'sexo" data-k="sexo" required data-opciones="sexos"></select></div>' +
+          '<div class="field"><label for="' + p + 'talla">Talla *</label><select id="' + p + 'talla" data-k="talla" required data-opciones="tallas"></select></div>' +
+          '<div class="field"><label for="' + p + 'cat">Distancia *</label><select id="' + p + 'cat" data-k="categoria" required data-opciones="categorias"></select></div>' +
+          '<div class="field"><label for="' + p + 'en">Contacto de emergencia *</label><input id="' + p + 'en" data-k="emergenciaNombre" type="text" required minlength="3"></div>' +
+          '<div class="field"><label for="' + p + 'et">Tel. emergencia *</label><input id="' + p + 'et" data-k="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono></div>' +
+        '</div>' +
+      '</div>';
+  }
+  // Agrega o quita filas sin borrar lo que ya se escribió
+  function renderRunners(n) {
+    var box = $('#runners'), current = box.children.length;
+    for (var i = current; i < n; i++) {
+      box.insertAdjacentHTML('beforeend', runnerHTML(i));
+      fillSelects(box.lastElementChild);
+    }
+    while (box.children.length > n) box.removeChild(box.lastElementChild);
+  }
+  function groupDiscount(n) {
+    var pct = 0;
+    CONFIG.descuentosGrupo.forEach(function (d) { if (n >= d.desde && d.porcentaje > pct) pct = d.porcentaje; });
+    return pct;
+  }
+  function renderSummaryGrupo() {
+    var rows = $$('#runners .runner'), n = rows.length, subtotal = 0, faltan = 0, bibs = [];
+    var porCat = {};
+    rows.forEach(function (row, i) {
+      var num = nextBib + i;
+      bibs.push(num);
+      $('[data-bib]', row).textContent = '#' + num;
+      var cat = categoria($('[data-k="categoria"]', row).value);
+      if (cat) { subtotal += cat.precio; porCat[cat.nombre] = porCat[cat.nombre] || { n: 0, precio: cat.precio }; porCat[cat.nombre].n++; }
+      else faltan++;
+    });
+    var pct = groupDiscount(n), desc = Math.round(subtotal * pct / 100), total = subtotal - desc;
+
+    var html = '<h4>Números asignados</h4>' +
+      '<p class="bibs-range">Del <strong>#' + bibs[0] + '</strong> al <strong>#' + bibs[n - 1] + '</strong> · ' + n + ' corredores consecutivos</p>' +
+      '<div class="bibs-preview">' + bibs.map(function (b) { return '<span class="bib">#' + b + '</span>'; }).join('') + '</div>' +
+      '<h4>Total a pagar</h4>';
+    Object.keys(porCat).forEach(function (k) {
+      html += '<div class="summary__row"><span>' + esc(k) + ' × ' + porCat[k].n + '</span><span>' + pesos(porCat[k].n * porCat[k].precio) + '</span></div>';
+    });
+    if (faltan) html += '<div class="summary__row"><span>Sin distancia elegida</span><span>' + faltan + '</span></div>';
+    if (pct) html += '<div class="summary__row"><span>Subtotal</span><span>' + pesos(subtotal) + '</span></div>';
+    if (pct) html += '<div class="summary__row summary__row--discount"><span>Descuento por grupo (' + pct + '%)</span><span>−' + pesos(desc) + '</span></div>';
+    else if (CONFIG.descuentosGrupo.length) {
+      var nextD = CONFIG.descuentosGrupo.filter(function (d) { return d.desde > n; }).sort(function (a, b) { return a.desde - b.desde; })[0];
+      if (nextD) html += '<div class="summary__row"><span>💡 Con ' + nextD.desde + ' corredores obtienen ' + nextD.porcentaje + '% de descuento</span><span></span></div>';
+    }
+    html += '<div class="summary__row summary__row--total"><span>Total</span><span>' + pesos(total) + '</span></div>';
+    html += '<p class="hint" style="color:rgba(255,255,255,.6);margin-top:8px">Los números son preliminares y se confirman al enviar.</p>';
+    $('#summaryGrupo').innerHTML = html;
+    return { subtotal: subtotal, descuento: desc, porcentaje: pct, total: total };
+  }
+  function initGroup() {
+    var form = $('#formGrupo'), input = $('#g-cantidad');
+    $('#countHint').textContent = 'Mínimo ' + CONFIG.grupoMinimo + ', máximo ' + CONFIG.grupoMaximo + ' corredores.';
+    input.min = CONFIG.grupoMinimo; input.max = CONFIG.grupoMaximo;
+    function setCount(n) {
+      n = clampCount(n);
+      input.value = n;
+      renderRunners(n);
+      renderSummaryGrupo();
+    }
+    $('#countMinus').addEventListener('click', function () { setCount(Number(input.value) - 1); });
+    $('#countPlus').addEventListener('click', function () { setCount(Number(input.value) + 1); });
+    input.addEventListener('change', function () { setCount(input.value); });
+    form.addEventListener('change', function (e) { if (e.target.getAttribute('data-k') === 'categoria') renderSummaryGrupo(); });
+    liveValidation(form);
+    setCount(CONFIG.grupoMinimo);
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (!validate(form)) return;
-      var f = form.elements, g = giro(f.giro.value);
-      var ids = diasElegidos(form);
-      var nombresDias = CONFIG.dias.filter(function (d) { return ids.indexOf(d.id) !== -1; }).map(function (d) { return d.nombre; });
-      var archivo = f.logoArchivo.files && f.logoArchivo.files[0];
-      var limite = new Date(Date.now() + CONFIG.diasParaPagar * 864e5);
+      if (!validateForm(form)) return;
+      var f = form.elements, totals = renderSummaryGrupo();
+      var corredores = $$('#runners .runner').map(function (row, i) {
+        var r = { numero: nextBib + i };
+        $$('[data-k]', row).forEach(function (inp) { r[inp.getAttribute('data-k')] = inp.value.trim(); });
+        return r;
+      });
       var data = {
+        tipo: 'Grupo',
         fecha: new Date().toLocaleString('es-MX'),
-        pagarAntesDe: limite.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-        negocio: f.negocio.value.trim(),
-        giro: g.nombre,
-        dias: nombresDias.join(', '),
-        numDias: ids.length,
-        total: ids.length * CONFIG.precioPorDia,
-        descripcion: f.descripcion.value.trim(),
-        instagram: urlRed(f.instagram.value, 'instagram'),
-        facebook: urlRed(f.facebook.value, 'facebook'),
-        logoArchivo: archivo ? archivo.name : '',
+        grupo: f.grupo.value.trim(),
         responsable: f.responsable.value.trim(),
-        telefono: f.telefono.value,
         correo: f.correo.value.trim(),
-        aceptaReglas: 'Sí',
-        autorizaPublicar: 'Sí'
+        telefono: f.telefono.value,
+        corredores: corredores,
+        subtotal: totals.subtotal,
+        descuento: totals.descuento,
+        total: totals.total
       };
-      var btn = $('button[type="submit"]', form), label = btn.textContent;
-      btn.disabled = true; btn.textContent = archivo ? 'Subiendo logo…' : 'Enviando…';
-      // Si subieron un logo, se comprime y se manda junto con el registro (solo en modo 'sheets')
-      var preparar = (archivo && CONFIG.modo === 'sheets' && CONFIG.urlGoogleSheets)
-        ? comprimirImagen(archivo).then(function (r) { data.logoBase64 = r.base64; data.logoMime = r.mime; data.logoNombre = r.nombre; })
-        : Promise.resolve();
-      preparar.then(function () { btn.textContent = 'Enviando…'; return send(data); }).then(function (res) {
-        data.logoSubido = !!(res && res.logo);
-        delete data.logoBase64;
-        showConfirmation(data, !res || res.offline, false);
-        form.reset();
-        $('#logoPreview').hidden = true;
-        count.textContent = '0 / 150';
-        renderTotal(form);
-      }).catch(function (err) {
-        console.error(err);
-        showConfirmation(data, true, true);
-      }).then(function () { btn.disabled = false; btn.textContent = label; });
+      submitData(data, form, function () { $('#runners').innerHTML = ''; setCount(CONFIG.grupoMinimo); });
     });
   }
 
+  /* ---------- Texto plano para copiar / WhatsApp ---------- */
   function toText(d) {
-    return '🛍️ ' + CONFIG.nombreExpo + ' · Registro de emprendedor\n' +
-      'Fecha: ' + d.fecha + '\n\n' +
-      'Negocio: ' + d.negocio + '\nGiro: ' + d.giro + '\n' +
-      'Días: ' + d.dias + ' (' + d.numDias + ' × ' + pesos(CONFIG.precioPorDia) + ' = ' + pesos(d.total) + ')\n' +
-      'Pagar antes de: ' + d.pagarAntesDe + '\n' +
-      'Descripción: ' + d.descripcion + '\n' +
-      'Instagram: ' + (d.instagram || '—') + '\nFacebook: ' + (d.facebook || '—') + '\n' +
-      'Logo/foto: ' + (d.logoArchivo || 'No enviado') + '\n\n' +
-      'Responsable: ' + d.responsable + '\nTeléfono: ' + d.telefono + '\nCorreo: ' + d.correo + '\n' +
-      'Acepta reglas: ' + d.aceptaReglas + ' · Autoriza publicar: ' + d.autorizaPublicar;
+    var t = '🏃 ' + CONFIG.nombreCarrera + '\nInscripción: ' + d.tipo + '\nFecha: ' + d.fecha + '\n';
+    if (d.tipo === 'Grupo') {
+      t += '\nGrupo: ' + d.grupo + '\nResponsable: ' + d.responsable + '\nCorreo: ' + d.correo + '\nTeléfono: ' + d.telefono + '\n';
+    }
+    d.corredores.forEach(function (r) {
+      t += '\n#' + r.numero + ' · ' + r.nombre + ' · ' + r.edad + ' años · ' + r.sexo + ' · ' + r.categoria + ' · Talla ' + r.talla;
+      if (r.correo) t += '\n   ' + r.correo + ' · ' + r.telefono;
+      t += '\n   Emergencia: ' + r.emergenciaNombre + ' (' + r.emergenciaTelefono + ')';
+    });
+    if (d.descuento) t += '\n\nSubtotal: ' + pesos(d.subtotal) + '\nDescuento: −' + pesos(d.descuento);
+    t += '\nTOTAL: ' + pesos(d.total);
+    return t;
   }
-  function toSheetRow(d) {
-    return [d.fecha, d.negocio, d.giro, d.dias, d.numDias, d.total, d.pagarAntesDe, d.descripcion, d.instagram, d.facebook, d.logoArchivo,
-      d.responsable, d.telefono, d.correo, d.aceptaReglas, d.autorizaPublicar].join('\t');
+  // Formato CSV (separado por tabuladores) para pegar directo en Excel o Google Sheets
+  function toSheetRows(d) {
+    return d.corredores.map(function (r) {
+      return [d.fecha, d.tipo, d.grupo || '', r.numero, r.nombre, r.edad, r.sexo, r.categoria, r.talla,
+        r.correo || d.correo, r.telefono || d.telefono, r.emergenciaNombre, r.emergenciaTelefono].join('\t');
+    }).join('\n');
+  }
+
+  /* ---------- Envío ---------- */
+  function submitData(data, form, onReset) {
+    var btn = $('button[type="submit"]', form), label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Enviando…';
+
+    send(data).then(function (res) {
+      // Si el servidor (Google Sheets) devolvió números definitivos, se usan esos.
+      if (res && res.numeros && res.numeros.length === data.corredores.length) {
+        data.corredores.forEach(function (r, i) { r.numero = res.numeros[i]; });
+      }
+      var last = data.corredores[data.corredores.length - 1].numero;
+      saveLocalBib(Math.max(nextBib, last + 1));
+      showConfirmation(data, !res || res.offline);
+      form.reset();
+      onReset();
+    }).catch(function (err) {
+      console.error(err);
+      // Si falla la conexión no se pierden los datos: se muestran para copiarlos.
+      showConfirmation(data, true, true);
+    }).then(function () {
+      btn.disabled = false; btn.textContent = label;
+    });
   }
 
   function send(data) {
@@ -508,97 +542,61 @@ var EMPRENDEDORES = [];
     }
     if (CONFIG.modo === 'formspree' && CONFIG.urlFormspree) {
       return fetch(CONFIG.urlFormspree, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ _subject: 'Registro emprendedor — ' + data.negocio, email: data.correo, resumen: toText(data), datos: data })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ _subject: 'Inscripción ' + data.tipo + ' — ' + CONFIG.nombreCarrera, email: data.correo || data.corredores[0].correo, resumen: toText(data), datos: data })
       }).then(function (r) { if (!r.ok) throw new Error('Error en Formspree'); return {}; });
     }
     if (CONFIG.modo === 'whatsapp') {
-      window.open('https://wa.me/' + CONFIG.whatsappOrganizacion + '?text=' + encodeURIComponent(toText(data)), '_blank');
+      window.open('https://wa.me/' + CONFIG.whatsappOrganizador + '?text=' + encodeURIComponent(toText(data)), '_blank');
       return Promise.resolve({});
     }
-    return Promise.resolve({ offline: true }); // modo 'pantalla'
+    // Modo 'pantalla' (sin conexión)
+    return Promise.resolve({ offline: true });
   }
 
   function showConfirmation(data, showData, failed) {
-    $('#confTitle').textContent = failed ? 'No pudimos enviar tu registro' : '¡Registro recibido!';
-    // ✏️ CAMBIAR: pasos para pagar y confirmar el lugar
-    $('#confBody').innerHTML = failed
-      ? '<p>Hubo un problema de conexión. Copia tus datos y envíalos por WhatsApp o correo a la organización.</p>'
-      : '<p>Gracias, <strong>' + esc(data.negocio) + '</strong>. Recibimos tu solicitud para participar: <strong>' + esc(data.dias) + '</strong>.</p>' +
-        '<p>Total: ' + data.numDias + (data.numDias === 1 ? ' día' : ' días') + ' × ' + pesos(CONFIG.precioPorDia) + ' = <strong>' + pesos(data.total) + '</strong></p>' +
-        '<p><strong>Para confirmar tu lugar:</strong></p>' +
-        '<ol>' +
-          '<li>Nos pondremos en contacto contigo por WhatsApp o correo para darte los datos de pago.</li>' +
-          '<li>Realiza el pago de <strong>' + pesos(data.total) + '</strong> a más tardar el <strong>' + esc(data.pagarAntesDe) + '</strong>. Si no se recibe el pago en ' + CONFIG.diasParaPagar + ' días, tu registro se cancela y el lugar se libera.</li>' +
-          '<li>Envía tu comprobante y el nombre de tu negocio por WhatsApp al ' + esc(CONFIG.pago.whatsapp) + '.' + (data.logoArchivo && !data.logoSubido ? ' Incluye también tu logo o foto.' : '') + '</li>' +
-          '<li>Te confirmaremos tu lugar y publicaremos tu tarjeta en la sección de emprendedores.</li>' +
-        '</ol>' +
-        '<p>Lo que pagas por tu lugar apoya a 10 jóvenes voluntarios de Granito de Arena. ¡Gracias por sumar! 💛</p>';
+    var nums = data.corredores.map(function (r) { return r.numero; });
+    var numTxt = nums.length > 1 ? 'Números del <strong>#' + nums[0] + '</strong> al <strong>#' + nums[nums.length - 1] + '</strong>' : 'Tu número: <strong>#' + nums[0] + '</strong>';
+    var who = data.tipo === 'Grupo' ? 'Grupo <strong>' + esc(data.grupo) + '</strong> (' + nums.length + ' corredores)' : '<strong>' + esc(data.corredores[0].nombre) + '</strong>';
+    // ✏️ CAMBIAR: textos del mensaje de confirmación
+    $('#confirmTitle').textContent = failed ? 'No pudimos enviar tu inscripción' : '¡Gracias por sumar tu paso!';
+    $('#confirmBody').innerHTML = failed
+      ? '<p>Hubo un problema de conexión. Copia tus datos y envíalos por WhatsApp o correo al organizador.</p>'
+      : '<p><span lang="ko" style="font-size:1.5rem">감사합니다!</span> Tu inscripción a <strong>HANGUK RUN</strong> quedó registrada.</p>' +
+        '<p>' + who + '<br>' + numTxt + '<br>Total a pagar: <strong>' + pesos(data.total) + '</strong></p>' +
+        '<p>Cada inscripción apoya a los <strong>10 jóvenes voluntarios de Granito de Arena</strong> que representarán a su comunidad en un encuentro internacional en Corea del Sur. Te contactaremos al correo registrado con las instrucciones de pago. <span lang="ko">가자!</span> 🏁</p>';
     $('#dataBlock').hidden = !showData;
-    if (showData) $('#dataOutput').value = toText(data) + '\n\n--- Fila para hoja de cálculo ---\n' + toSheetRow(data);
+    if (showData) $('#dataOutput').value = toText(data) + '\n\n--- Filas para hoja de cálculo ---\n' + toSheetRows(data);
     openModal($('#confirmacion'));
   }
 
-  /* ---------- Carrusel del equipo ----------
-     Flechas, puntitos y avance automático cada 5 s (se pausa al tocarlo, pasar el mouse o desplazarlo a mano). */
-  function initCarrusel() {
-    var track = $('#equipoTrack'), dotsBox = $('#equipoDots');
-    if (!track) return;
-    var slides = $$('.equipo__slide', track);
-    if (!slides.length) return;
-    var paso = function () { return slides[0].getBoundingClientRect().width + 14; };
-    var visibles = function () { return Math.max(1, Math.round(track.clientWidth / paso())); };
-    var totalPos = function () { return Math.max(1, slides.length - visibles() + 1); };
-    var actual = function () { return Math.min(totalPos() - 1, Math.round(track.scrollLeft / paso())); };
-    function irA(i) {
-      var n = totalPos();
-      i = (i + n) % n;                       // al llegar al final, vuelve al inicio
-      track.scrollTo({ left: i * paso(), behavior: 'smooth' });
-    }
-    function renderDots() {
-      var n = totalPos(), a = actual();
-      if (dotsBox.children.length !== n) {
-        dotsBox.innerHTML = '';
-        for (var i = 0; i < n; i++) {
-          var b = document.createElement('button');
-          b.type = 'button'; b.className = 'equipo__dot'; b.setAttribute('aria-label', 'Ir a la foto ' + (i + 1));
-          (function (k) { b.addEventListener('click', function () { pausar(); irA(k); }); })(i);
-          dotsBox.appendChild(b);
-        }
-      }
-      $$('.equipo__dot', dotsBox).forEach(function (d, i) { d.classList.toggle('is-active', i === a); d.setAttribute('aria-current', i === a ? 'true' : 'false'); });
-    }
-    $$('.equipo__arrow').forEach(function (btn) {
-      btn.addEventListener('click', function () { pausar(); irA(actual() + Number(btn.getAttribute('data-dir'))); });
-    });
-    var t;
-    track.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(renderDots, 80); }, { passive: true });
-    window.addEventListener('resize', renderDots);
+  function updateAll() { renderSummaryIndividual(); renderSummaryGrupo(); }
 
-    // Avance automático suave
-    var timer = null, pausado = false;
-    function iniciar() { if (!timer && !pausado) timer = setInterval(function () { irA(actual() + 1); }, 5000); }
-    function detener() { clearInterval(timer); timer = null; }
-    function pausar() { pausado = true; detener(); }
-    ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) { track.addEventListener(ev, pausar, { passive: true }); });
-    track.addEventListener('mouseenter', detener);
-    track.addEventListener('mouseleave', iniciar);
-    // Solo avanza cuando el carrusel está a la vista
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) { if (en[0].isIntersecting) iniciar(); else detener(); }, { threshold: 0.3 }).observe(track);
-    } else iniciar();
-    renderDots();
+  /* ---------- Compromisos "Lo que regresa a la comunidad" ----------
+     Oculta los marcados data-estado="por-confirmar" si CONFIG.mostrarPorConfirmar es false,
+     y oculta la sección completa si no queda ninguno visible. */
+  function initCompromisos() {
+    var section = $('#compromisos');
+    if (!section || CONFIG.mostrarPorConfirmar) return;
+    $$('[data-estado="por-confirmar"]', section).forEach(function (el) { el.hidden = true; });
+    if (!$$('.compromiso:not([hidden])', section).length) section.hidden = true;
   }
+
 
   /* ---------- Arranque ---------- */
   function init() {
+    readLocalBib();
     safe(initNav, 'nav');
-    safe(initEmprendedores, 'emprendedores');
     safe(initReveal, 'reveal');
     safe(initCountdown, 'countdown');
+    safe(initInstagram, 'instagram');
+    safe(initCompromisos, 'compromisos');
     safe(initModals, 'modals');
-    safe(initCarrusel, 'carrusel');
-    safe(initForm, 'form');
+    safe(initTabs, 'tabs');
+    safe(initIndividual, 'individual');
+    safe(initGroup, 'group');
+    safe(fetchServerBib, 'bib');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

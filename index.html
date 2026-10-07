@@ -4,20 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- ✏️ CAMBIAR: título y descripción que aparecen en Google y al compartir en WhatsApp -->
-  <title>Expo Emprendedores con Causa · Perro Caffé · San Martín Texmelucan</title>
-  <meta name="description" content="Expo de emprendedores locales el 6, 7 y 8 de noviembre de 2026 en Perro Caffé, San Martín Texmelucan. Entrada gratuita. Organiza Granito de Arena. Lo recaudado por los lugares apoya a 10 jóvenes voluntarios.">
-  <meta property="og:title" content="Expo Emprendedores con Causa · Perro Caffé">
-  <meta property="og:description" content="Compra local, conoce a los emprendedores de Texmelucan y apoya a 10 jóvenes voluntarios de Granito de Arena.">
-  <meta property="og:image" content="assets/img/perro-cafe-logo.webp">
-  <meta name="theme-color" content="#3d2600">
+  <title>HANGUK RUN 한국 · De aquí para el mundo · 3K, 5K y 10K</title>
+  <meta name="description" content="HANGUK RUN 한국, carrera con causa de Granito de Arena: 3K, 5K y 10K el domingo 6 de diciembre de 2026. Cada inscripción apoya a 10 jóvenes voluntarios de San Martín Texmelucan que representarán a su comunidad en un encuentro internacional de intercambio cultural y liderazgo juvenil en Corea del Sur.">
+  <meta property="og:title" content="HANGUK RUN 한국 · De aquí para el mundo">
+  <meta property="og:description" content="Carrera con causa · Granito de Arena. 3K, 5K y 10K · Domingo 6 de diciembre de 2026. Corre por los 10 jóvenes voluntarios que representarán a su comunidad en Corea del Sur.">
+  <meta property="og:image" content="assets/img/logo-granito-de-arena.png">
+  <meta name="theme-color" content="#1B2A49">
   <link rel="icon" type="image/png" href="assets/img/logo-granito-de-arena.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Black Han Sans: tipografía coreana para los textos en hangul -->
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Black+Han+Sans&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- El "?v=" evita que el navegador muestre una versión vieja. Cambia el número cada vez que subas cambios. -->
-  <link rel="stylesheet" href="styles.css?v=20261010g">
+  <link rel="stylesheet" href="style.css?v=20261008a">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -25,25 +26,25 @@
   <!-- ===================== MENÚ FIJO ===================== -->
   <header class="nav" id="nav">
     <div class="nav__inner container">
-      <!-- Marca del organizador: Granito de Arena -->
-      <a href="#inicio" class="nav__brand">
-        <img src="assets/img/logo-granito-de-arena.png" alt="" width="40" height="40">
-        <!-- ✏️ CAMBIAR: nombre corto de la expo -->
-        <span>Expo <b>con Causa</b></span>
-      </a>
+      <!-- ✏️ CAMBIAR: nombre del menú. Si tienen el logo de HANGUK RUN, reemplaza los <span> por
+           <img src="assets/img/logo-hanguk-run.png" alt="HANGUK RUN" height="40"> -->
+      <a href="#inicio" class="nav__logo" aria-label="HANGUK RUN, ir al inicio"><span>HANGUK <em>RUN</em></span><span class="nav__ko" lang="ko">한국</span></a>
+
       <button class="nav__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="navMenu">
         <span></span><span></span><span></span>
       </button>
+
       <nav class="nav__menu" id="navMenu">
         <a href="#inicio">Inicio</a>
-        <a href="#sobre">La expo</a>
-        <a href="#emprendedores">Emprendedores</a>
-        <a href="#causa">La causa</a>
-        <a href="#perro-cafe">Perro Caffé</a>
-        <a href="#participa">Participa</a>
+        <a href="#por-que">¿Por qué corremos?</a>
+        <a href="#organizador">Organizador</a>
         <a href="#fechas">Fechas</a>
-        <a href="#ubicacion">Ubicación</a>
-        <a href="#registro" class="nav__cta">Registrarme</a>
+        <a href="#sede">Sede</a>
+        <a href="#ruta">Ruta</a>
+        <a href="#kit">Kit</a>
+        <a href="#premios">Premios</a>
+        <a href="#patrocinadores">Patrocinadores</a>
+        <a href="#inscripcion" class="nav__cta">Corre por ellos</a>
       </nav>
     </div>
   </header>
@@ -52,382 +53,615 @@
 
     <!-- ===================== 1. INICIO ===================== -->
     <section class="hero" id="inicio">
-      <!-- Banderines de feria -->
-      <div class="banderines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <!-- ✏️ IMAGEN DE FONDO: pon tu foto en assets/img/hero.jpg y quita el comentario de la línea "background" en style.css (.hero__bg) -->
+      <div class="hero__bg" aria-hidden="true"></div>
+      <!-- "가자!" (¡Gaja! = ¡vamos!) como detalle gráfico de fondo -->
+      <span class="hero__hangul" aria-hidden="true" lang="ko">가자!</span>
+      <!-- Pétalos de mugunghwa (flor nacional de Corea) cayendo -->
+      <div class="petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="container hero__content">
+        <!-- ✏️ CAMBIAR: distancias -->
+        <p class="hero__tag reveal">3K · 5K · 10K</p>
+        <!-- ✏️ CAMBIAR: nombre de la carrera -->
+        <h1 class="hero__title reveal"><span class="hero__name">HANGUK RUN</span> <span class="hero__name-ko" lang="ko">한국</span></h1>
+        <p class="hero__lema reveal">De aquí para el mundo</p>
+        <p class="hero__subtitle reveal"><img src="assets/img/logo-granito-de-arena.png" alt="" width="40" height="40"> Carrera con causa · Granito de Arena</p>
 
-      <div class="container hero__grid">
-        <!-- ✏️ LOGO DE PERRO CAFFÉ: archivo en assets/img/perro-cafe-logo.webp
-             (si lo cambias por .png o .svg, actualiza el src aquí, en "Gracias, Perro Caffé" y en el pie de página).
-             No modificar ni redibujar el logo. -->
-        <figure class="hero__logo reveal">
-          <span class="hero__badge">Sede oficial · Nos abre sus puertas</span>
-          <img src="assets/img/perro-cafe-logo.webp" alt="Logo de Perro Caffé" width="1024" height="1024">
-        </figure>
+        <!-- ✏️ CAMBIAR: descripción corta (1-2 frases) -->
+        <p class="hero__lead reveal">Corre por los <strong>10 jóvenes voluntarios</strong> de Granito de Arena que representarán a San Martín Texmelucan en un encuentro internacional de intercambio cultural y liderazgo juvenil en Corea del Sur.</p>
 
-        <div class="hero__text">
-          <p class="hero__kicker reveal"><img src="assets/img/logo-granito-de-arena.png" alt="" width="36" height="36"> Granito de Arena presenta</p>
-          <!-- ✏️ CAMBIAR: nombre de la expo -->
-          <h1 class="hero__title reveal">Expo Emprendedores <span>con Causa</span></h1>
-          <p class="hero__lead reveal">Compra local, conoce a los emprendedores de Texmelucan y ayuda a que una idea nacida en nuestra comunidad llegue más lejos.</p>
+        <ul class="hero__meta reveal">
+          <!-- ✏️ CAMBIAR: fecha y lugar visibles -->
+          <li><strong>📅 Domingo 6 de diciembre de 2026</strong><span>Salida 7:00 a.m. · <span lang="ko">가자!</span> ¡Gaja!</span></li>
+          <li><strong>📍 <a href="#sede">Ex Hacienda de Chautla</a></strong><span>San Salvador el Verde, Puebla · sujeto a autorización</span></li>
+        </ul>
 
-          <!-- ✏️ CAMBIAR: fecha, horario y lugar visibles -->
-          <ul class="hero__meta reveal">
-            <li><span>📅</span><div><strong>Viernes 6, sábado 7 y domingo 8 de noviembre de 2026</strong>De 10:00 a 17:00 h</div></li>
-            <li><span>📍</span><div><strong>Perro Caffé · sección de atrás</strong>Prof. Florencio Espinosa Pte. 7, Col. Centro, San Martín Texmelucan, Pue.</div></li>
-          </ul>
+        <!-- ✏️ CAMBIAR: fecha y hora EXACTA de la salida para la cuenta regresiva.
+             Formato: AAAA-MM-DDTHH:MM:SS-06:00  (-06:00 = hora del centro de México) -->
+        <div class="countdown reveal" id="countdown" data-fecha="2026-12-06T07:00:00-06:00" aria-live="polite">
+          <div><span data-cd="d">--</span><small>días</small></div>
+          <div><span data-cd="h">--</span><small>horas</small></div>
+          <div><span data-cd="m">--</span><small>min</small></div>
+          <div><span data-cd="s">--</span><small>seg</small></div>
+        </div>
 
-          <!-- ✏️ CUENTA REGRESIVA: cambia data-fecha a la fecha y hora de inicio.
-               Formato: AAAA-MM-DDTHH:MM:SS-06:00 (-06:00 = hora del centro de México) -->
-          <div class="countdown reveal" id="countdown" data-fecha="2026-11-06T10:00:00-06:00" aria-live="polite">
-            <div><b data-cd="d">--</b><small>días</small></div>
-            <div><b data-cd="h">--</b><small>horas</small></div>
-            <div><b data-cd="m">--</b><small>min</small></div>
-            <div><b data-cd="s">--</b><small>seg</small></div>
-          </div>
-
-          <div class="hero__ctas reveal">
-            <a href="#registro" class="btn btn--primary btn--lg">Quiero participar como emprendedor</a>
-            <a href="#ubicacion" class="btn btn--outline btn--lg">📍 Cómo llegar</a>
-          </div>
+        <div class="hero__ctas reveal">
+          <a href="#inscripcion" class="btn btn--primary btn--xl">Inscríbete y suma tu paso</a>
+          <a href="#por-que" class="btn btn--light">¿Por qué corremos?</a>
         </div>
       </div>
+      <!-- Franja "saekdong": las rayas de colores de las mangas del hanbok tradicional -->
+      <div class="saekdong" aria-hidden="true"></div>
     </section>
 
-    <!-- ===================== 2. SOBRE LA EXPO ===================== -->
-    <section class="section" id="sobre">
-      <div class="container">
-        <p class="eyebrow reveal">Sobre la expo</p>
-        <h2 class="reveal">Un mercado local con causa</h2>
-        <!-- ✏️ CAMBIAR: descripción de la expo -->
-        <p class="lead reveal">Tres días para descubrir y apoyar a negocios de San Martín Texmelucan y la región, dentro de Perro Caffé: artesanías, ropa y accesorios, belleza, servicios y más, hechos por emprendedores locales. Está pensada para familias, amigos, vecinos y cualquier persona que quiera comprar local.</p>
-
-        <div class="features features--2">
-          <article class="feature reveal">
-            <span class="feature__icon">🛍️</span>
-            <h3>Compras locales</h3>
-            <p>Productos y servicios de emprendedores de la región, en un solo lugar.</p>
-          </article>
-          <article class="feature feature--entrada reveal">
-            <span class="feature__icon">🎟️</span>
-            <h3>Entrada gratuita</h3>
-            <p>Ven el viernes 6, sábado 7 o domingo 8 de noviembre, de 10:00 a 17:00 h.</p>
-          </article>
-        </div>
+    <!-- Cinta animada. ✏️ Para cambiar el texto, edita AMBOS <span> (son iguales para que el giro sea continuo) -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span>¡GAJA! <b lang="ko">가자</b> ★ HANGUK RUN ★ 3K · 5K · 10K ★ DE AQUÍ PARA EL MUNDO ★ CARRERA CON CAUSA ★ </span>
+        <span>¡GAJA! <b lang="ko">가자</b> ★ HANGUK RUN ★ 3K · 5K · 10K ★ DE AQUÍ PARA EL MUNDO ★ CARRERA CON CAUSA ★ </span>
       </div>
-    </section>
+    </div>
 
-    <!-- ===================== 3. CONOCE A LOS EMPRENDEDORES ===================== -->
-    <!-- ✏️ La lista de emprendedores, las mesas por día y los giros se editan en script.js (arreglo EMPRENDEDORES y CONFIG.mesasPorDia). -->
-    <section class="section section--soft" id="emprendedores">
-      <div class="container">
-        <p class="eyebrow reveal">Conoce a los emprendedores</p>
-        <h2 class="reveal">Quiénes nos acompañan</h2>
-        <p class="contador reveal" id="contador" aria-live="polite">— negocios confirmados · — lugares disponibles</p>
+    <!-- ===================== 2. ¿POR QUÉ CORREMOS? ===================== -->
+    <section class="section porque" id="por-que">
+      <div class="container porque__grid">
+        <div class="porque__text">
+          <p class="eyebrow reveal">La causa <span class="ko" lang="ko">우리의 목표</span></p>
+          <h2 class="reveal">¿Por qué corremos?</h2>
+          <!-- ✏️ CAMBIAR: texto de la causa (máximo 3 párrafos) -->
+          <p class="section__lead reveal">Corremos por <strong>10 jóvenes voluntarios de Granito de Arena</strong> que dedican su tiempo a proyectos comunitarios y sociales en San Martín Texmelucan, vinculados con la educación, el trabajo digno, la innovación y la construcción de ciudades más sostenibles.</p>
+          <p class="reveal">Estos jóvenes representarán a su comunidad en <strong>un encuentro internacional de intercambio cultural y liderazgo juvenil en Corea del Sur</strong>, donde participantes de distintos países comparten sus proyectos y desarrollan estrategias para el cambio sostenible. Que Puebla tenga voz en ese espacio es mostrar el talento y el trabajo comunitario que nace aquí.</p>
+          <p class="reveal">Para la región es una oportunidad de demostrar que las ideas que surgen en nuestras comunidades pueden trascender fronteras, generar vínculos y volver con nuevas herramientas para seguir trabajando en casa. Lo recaudado se destina exclusivamente a cubrir los gastos de representación de la delegación.</p>
 
-        <div class="filtros reveal" id="filtros" role="toolbar" aria-label="Filtrar por giro"></div>
-
-        <div class="grid-emp" id="gridEmprendedores" aria-live="polite">
-          <!-- Las tarjetas se generan desde script.js. Si no hay JavaScript, se muestra este mensaje. -->
-          <div class="vacio">
-            <p>Muy pronto conocerás a los emprendedores que nos acompañan.</p>
-            <a href="#registro" class="btn btn--primary">Quiero registrar mi negocio</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== 4. UNA EXPO CON CAUSA ===================== -->
-    <section class="section" id="causa">
-      <div class="container causa">
-        <div class="causa__text">
-          <p class="eyebrow reveal">Una expo con causa</p>
-          <h2 class="reveal">Tu compra y tu lugar suman</h2>
-          <!-- ✏️ CAMBIAR: texto de la causa (máximo 2 párrafos) -->
-          <p class="reveal"><strong>Granito de Arena</strong> es un colectivo ciudadano, apartidista y sin fines de lucro de San Martín Texmelucan, Puebla. Lo que los emprendedores pagan por su lugar en la expo se destina a apoyar a <strong>10 jóvenes voluntarios</strong> del colectivo, que llevarán sus proyectos comunitarios a un encuentro internacional de intercambio cultural y liderazgo juvenil en el extranjero.</p>
-          <p class="reveal">Cada emprendedor que participa y cada persona que visita, compra y comparte la expo ayuda a que el trabajo que estos jóvenes hacen aquí tenga voz más allá de nuestra ciudad.</p>
-          <ul class="ods reveal" aria-label="Objetivos de Desarrollo Sostenible relacionados">
-            <li class="ods--4"><b>ODS 4</b>Educación de calidad</li>
-            <li class="ods--8"><b>ODS 8</b>Trabajo decente y crecimiento económico</li>
-            <li class="ods--9"><b>ODS 9</b>Industria, innovación e infraestructura</li>
-            <li class="ods--11"><b>ODS 11</b>Ciudades y comunidades sostenibles</li>
+          <p class="porque__ods-title reveal">Sus proyectos se relacionan con los Objetivos de Desarrollo Sostenible:</p>
+          <ul class="ods reveal">
+            <li class="ods--4"><b>ODS 4</b> Educación de calidad</li>
+            <li class="ods--8"><b>ODS 8</b> Trabajo decente y crecimiento económico</li>
+            <li class="ods--9"><b>ODS 9</b> Industria, innovación e infraestructura</li>
+            <li class="ods--11"><b>ODS 11</b> Ciudades y comunidades sostenibles</li>
           </ul>
         </div>
-        <blockquote class="lema reveal">
-          <img src="assets/img/logo-granito-de-arena.png" alt="Logo de Granito de Arena" width="96" height="96">
-          <p>“Cada paso puede ayudar a que una idea nacida en nuestra comunidad llegue más lejos.”</p>
-          <cite>Granito de Arena</cite>
-        </blockquote>
-      </div>
 
-      <!-- ---------- Carrusel del equipo de Granito de Arena ----------
-           ✏️ FOTOS: están en assets/img/equipo/. Para agregar una, copia un <figure class="equipo__slide"> completo
-           y cambia el src y el alt. Para quitar una, borra su <figure>. Los puntitos y las flechas se ajustan solos. -->
-      <div class="container equipo reveal">
-        <div class="equipo__head">
-          <h3>Conoce al equipo de Granito de Arena</h3>
-          <div class="equipo__nav">
-            <button type="button" class="equipo__arrow" data-dir="-1" aria-label="Foto anterior">‹</button>
-            <button type="button" class="equipo__arrow" data-dir="1" aria-label="Foto siguiente">›</button>
-          </div>
-        </div>
-        <div class="equipo__track" id="equipoTrack" tabindex="0" aria-label="Fotos del equipo de Granito de Arena">
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-7.webp" alt="Equipo de Granito de Arena recibiendo un reconocimiento del Congreso del Estado de Puebla a la labor social de colectivos juveniles de la región de San Martín Texmelucan" loading="lazy"></figure>
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-1.jpg" alt="Voluntarias de Granito de Arena con sus playeras del colectivo frente a una cascada" loading="lazy"></figure>
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-2.jpg" alt="Equipo de Granito de Arena en su stand durante un evento comunitario" loading="lazy"></figure>
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-3.jpg" alt="Grupo de voluntarios de Granito de Arena en una jornada al aire libre" loading="lazy"></figure>
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-4.webp" alt="Integrantes de Granito de Arena en su stand con el banner del colectivo" loading="lazy"></figure>
-          <figure class="equipo__slide equipo__slide--alta"><img src="assets/img/equipo/equipo-5.webp" alt="Voluntarias de Granito de Arena dentro de una cueva durante una salida" loading="lazy"></figure>
-          <figure class="equipo__slide"><img src="assets/img/equipo/equipo-6.webp" alt="Equipo de Granito de Arena al atardecer en las montañas" loading="lazy"></figure>
-        </div>
-        <div class="equipo__dots" id="equipoDots" role="tablist" aria-label="Elegir foto"></div>
-      </div>
-    </section>
-
-    <!-- ===================== 5. GRACIAS, PERRO CAFFÉ ===================== -->
-    <section class="section gracias" id="perro-cafe">
-      <div class="container gracias__inner">
-        <figure class="gracias__logo reveal">
-          <img src="assets/img/perro-cafe-logo.webp" alt="Logo de Perro Caffé" width="1024" height="1024" loading="lazy">
-        </figure>
-        <div class="gracias__text reveal">
-          <p class="eyebrow eyebrow--light">Sede oficial</p>
-          <h2>¡Gracias, Perro Caffé!</h2>
-          <!-- ✏️ CAMBIAR: mensaje de agradecimiento -->
-          <p>Gracias por abrirnos las puertas y prestar su espacio para que los emprendedores de Texmelucan se encuentren con su comunidad. Sin anfitriones como ustedes, esta expo no sería posible.</p>
-          <p>Aprovecha tu visita: pásate por un café y conoce su espacio.</p>
-          <!-- ✏️ CAMBIAR: redes de Perro Caffé -->
-          <div class="gracias__redes">
-            <a class="btn btn--white" href="https://www.facebook.com/PerroCaffeSanMartin/" target="_blank" rel="noopener">Facebook</a>
-            <a class="btn btn--white" href="https://www.instagram.com/perrocaffetex/" target="_blank" rel="noopener">Instagram</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== 6. PARA EMPRENDEDORES ===================== -->
-    <section class="section" id="participa">
-      <div class="container">
-        <p class="eyebrow reveal">Para emprendedores</p>
-        <h2 class="reveal">Reserva tu lugar</h2>
-        <p class="lead reveal">Solo hay <strong>7 mesas por día</strong>. Lo que pagas por tu lugar se destina a la causa.</p>
-        <!-- Lugares disponibles por día: se calculan solos (CONFIG.mesasPorDia en script.js) -->
-        <div class="cupo-dias reveal" data-contador-dias></div>
-
-        <!-- ✏️ CAMBIAR: precio por día (debe coincidir con CONFIG.precioPorDia en script.js) y qué incluye -->
-        <div class="espacios espacios--uno">
-          <article class="espacio espacio--destacado reveal">
-            <h3>Mesa por día</h3>
-            <p class="espacio__precio">$300 <small>por día</small></p>
-            <ul>
-              <li>Mesa y silla incluidas</li>
-              <li>En la sección de atrás de Perro Caffé</li>
-              <li>Puedes participar 1, 2 o los 3 días (6, 7 y 8 de noviembre)</li>
-              <li>Tu negocio aparece en esta página</li>
-            </ul>
-          </article>
-        </div>
-
-        <!-- ✏️ CAMBIAR: requisitos y reglas -->
-        <div class="reglas reveal">
-          <h3>Requisitos y reglas</h3>
-          <ul>
-            <li>🕘 Montaje a las 9:00 h, cada día que participes. La expo abre de 10:00 a 17:00 h.</li>
-            <li>💳 Al enviar tu solicitud tienes <strong>4 días para pagar</strong>; si no se recibe el pago en ese plazo, tu registro se cancela y el lugar se libera.</li>
-            <li>🧹 Cada puesto es responsable de dejar su espacio limpio.</li>
-            <li>🚫 No se permite la venta de productos ilegales ni de artículos que pongan en riesgo a los asistentes.</li>
+        <aside class="delegacion reveal" aria-label="La delegación">
+          <!-- ✏️ FOTO DE LA DELEGACIÓN (opcional): agrega aquí
+               <img class="delegacion__foto" src="assets/img/delegacion.jpg" alt="Jóvenes voluntarios de Granito de Arena"> -->
+          <p class="delegacion__num">10</p>
+          <p class="delegacion__label">jóvenes voluntarios</p>
+          <ul class="delegacion__datos">
+            <li><span>🏡</span> Una comunidad: San Martín Texmelucan, Puebla</li>
+            <li><span>🌏</span> Un encuentro internacional en Corea del Sur</li>
+            <li><span>🤝</span> Proyectos comunitarios que ya están en marcha</li>
           </ul>
+          <blockquote class="delegacion__lema">“Cada paso puede ayudar a que una idea nacida en nuestra comunidad llegue más lejos.”</blockquote>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===================== 3. LO QUE REGRESA A LA COMUNIDAD ===================== -->
+    <!-- ✏️ COMPROMISOS: todos son EJEMPLOS marcados como data-estado="por-confirmar".
+         - Cuando Granito de Arena confirme uno: borra data-estado="por-confirmar" y la etiqueta [POR CONFIRMAR] de ese <li>.
+         - Antes de publicar, pon CONFIG.mostrarPorConfirmar = false en script.js:
+           así solo se ven los compromisos confirmados (y si no hay ninguno, la sección se oculta sola). -->
+    <section class="section section--alt compromisos" id="compromisos">
+      <div class="container">
+        <p class="eyebrow reveal">Compromisos <span class="ko" lang="ko">약속</span></p>
+        <h2 class="reveal">Lo que regresa a la comunidad</h2>
+        <p class="section__lead reveal">Al volver, la delegación compartirá lo aprendido con San Martín Texmelucan y la región.</p>
+
+        <ul class="compromisos__lista">
+          <li class="compromiso reveal" data-estado="por-confirmar">
+            <span class="compromiso__icono">📚</span>
+            <h3>Talleres abiertos</h3>
+            <p>Talleres gratuitos para jóvenes de la región sobre liderazgo y proyectos comunitarios.</p>
+            <span class="pendiente">[POR CONFIRMAR: número de talleres, fechas y sede]</span>
+          </li>
+          <li class="compromiso reveal" data-estado="por-confirmar">
+            <span class="compromiso__icono">🎤</span>
+            <h3>Presentación pública</h3>
+            <p>Una presentación abierta a la comunidad para compartir la experiencia y los aprendizajes del encuentro.</p>
+            <span class="pendiente">[POR CONFIRMAR: fecha y lugar]</span>
+          </li>
+          <li class="compromiso reveal" data-estado="por-confirmar">
+            <span class="compromiso__icono">🤝</span>
+            <h3>Red con otros jóvenes</h3>
+            <p>Compartir metodologías y contactos con otros colectivos y escuelas de la región.</p>
+            <span class="pendiente">[POR CONFIRMAR]</span>
+          </li>
+          <li class="compromiso reveal" data-estado="por-confirmar">
+            <span class="compromiso__icono">📄</span>
+            <h3>Informe de transparencia</h3>
+            <p>Un informe público sobre cómo se utilizaron los recursos recaudados.</p>
+            <span class="pendiente">[POR CONFIRMAR]</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== 4. ORGANIZADOR ===================== -->
+    <section class="section" id="organizador">
+      <div class="container org">
+        <div class="org__photo reveal">
+          <!-- ✏️ LOGO/FOTO DEL ORGANIZADOR: cambia el src si quieres usar una foto del equipo -->
+          <img src="assets/img/logo-granito-de-arena.png" alt="Logo de Granito de Arena" width="600" height="600">
+        </div>
+        <div class="org__text reveal">
+          <p class="eyebrow">Organizador <span class="ko" lang="ko">주최</span></p>
+          <!-- ✏️ CAMBIAR: presentación, misión y trayectoria del organizador -->
+          <h2>Granito de Arena</h2>
+          <p class="org__motto">🫀 Visibilizamos, apoyamos y difundimos los derechos humanos y las buenas causas ✨</p>
+          <p>Granito de Arena es un <strong>colectivo ciudadano, apartidista y sin fines de lucro</strong> de San Martín Texmelucan, Puebla, dedicado a los derechos humanos, la participación comunitaria y la sensibilización social.</p>
+          <dl class="org__datos">
+            <div><dt>Misión</dt><dd>💡 Crear espacios para accionar y reflexionar 💛 a favor de los derechos humanos y las buenas causas.</dd></div>
+            <div><dt>Trayectoria</dt><dd><span class="pendiente">[POR CONFIRMAR: año de inicio, principales proyectos realizados y personas o comunidades con las que han trabajado]</span></dd></div>
+          </dl>
+
+          <!-- ✏️ CAMBIAR: datos de contacto -->
+          <ul class="contact-list">
+            <li><span>✉️</span> <a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a></li>
+            <!-- Para agregar WhatsApp, quita los símbolos de comentario de la línea siguiente.
+                 El número va como 52 + 10 dígitos, sin "+" ni espacios.
+            <li><span>💬</span> <a href="https://wa.me/52XXXXXXXXXX" target="_blank" rel="noopener">WhatsApp XX XXXX XXXX</a></li>
+            -->
+          </ul>
+          <div class="socials">
+            <!-- ✏️ CAMBIAR: enlaces a tus redes -->
+            <a href="https://www.facebook.com/profile.php?id=100075559972420" target="_blank" rel="noopener">Facebook</a>
+            <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">Instagram</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- Carrusel de Instagram (se llena solo) ----------
+           Se configura en script.js → CONFIG.instagram. Si no hay feed conectado,
+           se muestra esta tarjeta para invitar a seguir la cuenta. -->
+      <div class="container ig reveal" id="instagram">
+        <div class="ig__head">
+          <div>
+            <p class="eyebrow">Instagram</p>
+            <h3 class="ig__title">Lo último de <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">@granitodearena.sm</a></h3>
+          </div>
+          <div class="ig__nav" hidden>
+            <button type="button" class="ig__arrow" data-dir="-1" aria-label="Publicaciones anteriores">‹</button>
+            <button type="button" class="ig__arrow" data-dir="1" aria-label="Publicaciones siguientes">›</button>
+          </div>
+        </div>
+        <div class="ig__track" id="igTrack" tabindex="0" aria-label="Publicaciones recientes de Instagram">
+          <a class="ig__fallback" href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">
+            <img src="assets/img/logo-granito-de-arena.png" alt="" width="72" height="72">
+            <span><strong>Síguenos en Instagram</strong>Novedades de HANGUK RUN y del trabajo de la delegación</span>
+            <span class="btn btn--primary">Ver perfil</span>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- ===================== 7. FECHAS IMPORTANTES ===================== -->
-    <section class="section section--soft" id="fechas">
+    <!-- ===================== 5. FECHAS IMPORTANTES ===================== -->
+    <section class="section section--alt" id="fechas">
       <div class="container">
-        <p class="eyebrow reveal">Fechas importantes</p>
-        <h2 class="reveal">Agenda</h2>
-        <!-- ✏️ CAMBIAR: fechas -->
+        <p class="eyebrow reveal">Agenda <span class="ko" lang="ko">일정</span></p>
+        <h2 class="reveal">Fechas importantes</h2>
+
+        <!-- ✏️ CAMBIAR: fechas. Para agregar otra, copia un <li class="timeline__item"> completo. -->
         <ol class="timeline">
-          <li class="reveal"><span class="timeline__date">9 oct 2026</span><h3>Abre el registro</h3><p>Llena el formulario en esta página. Hasta agotar las 7 mesas de cada día.</p></li>
-          <li class="reveal"><span class="timeline__date">4 días después de tu solicitud</span><h3>Fecha límite de pago</h3><p>Nos pondremos en contacto contigo para el pago. Si no se paga en 4 días, el registro se cancela.</p></li>
-          <li class="reveal"><span class="timeline__date">6, 7 y 8 nov · 9:00 h</span><h3>Montaje</h3><p>Llegada de emprendedores y acomodo en la sección de atrás de Perro Caffé.</p></li>
-          <li class="timeline__main reveal"><span class="timeline__date">6, 7 y 8 nov · 10:00 a 17:00 h</span><h3>¡Días de la expo!</h3><p>Te esperamos en Perro Caffé, en la sección de atrás. Entrada gratuita.</p></li>
+          <li class="timeline__item reveal">
+            <span class="timeline__date">1 oct 2026</span>
+            <h3>Apertura de inscripciones</h3>
+            <p>Inscripción en línea en esta página.</p>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__date">29 nov 2026</span>
+            <h3>Cierre de inscripciones</h3>
+            <p>O antes, si se agotan los lugares.</p>
+          </li>
+          <li class="timeline__item reveal">
+            <span class="timeline__date">4 y 5 dic 2026</span>
+            <h3>Entrega de kits</h3>
+            <p>10:00 a 18:00 h · <span class="pendiente">[POR CONFIRMAR: lugar de entrega]</span>. Presenta tu confirmación e identificación.</p>
+          </li>
+          <li class="timeline__item timeline__item--main reveal">
+            <span class="timeline__date">6 dic 2026 · 7:00 a.m.</span>
+            <h3>¡Día de la carrera! <span lang="ko">가자!</span></h3>
+            <!-- ✏️ CAMBIAR: horarios y actividades (ejemplo) -->
+            <p>Salida 10K a las 7:00, 5K a las 7:15 y 3K a las 7:30. Al terminar: convivencia K-culture con música, baile y comida coreana.</p>
+          </li>
+          <li class="timeline__item timeline__item--korea reveal">
+            <span class="timeline__date">2027 · Corea del Sur</span>
+            <h3>Encuentro internacional</h3>
+            <p>La delegación de 10 jóvenes voluntarios representa a San Martín Texmelucan. <span lang="ko">감사합니다!</span></p>
+          </li>
         </ol>
       </div>
     </section>
 
-    <!-- ===================== 8. REGISTRO DE EMPRENDEDORES ===================== -->
-    <section class="section" id="registro">
-      <div class="container container--narrow">
-        <p class="eyebrow reveal">Registro de emprendedores</p>
-        <h2 class="reveal">Quiero participar</h2>
-        <p class="lead reveal">Llena tus datos y nos pondremos en contacto contigo para el pago. Tienes 4 días a partir de tu solicitud para pagar y confirmar tu lugar.</p>
-        <div class="cupo-dias reveal" data-contador-dias></div>
+    <!-- ===================== 6. SEDE: EX HACIENDA DE CHAUTLA ===================== -->
+    <section class="section section--oscuro sede" id="sede">
+      <div class="container">
+        <p class="eyebrow reveal">La sede <span class="ko" lang="ko">장소</span></p>
+        <h2 class="reveal">Ex Hacienda de Chautla</h2>
+        <p class="sede__aviso reveal">Sede sujeta a autorización</p>
+        <!-- ✏️ CAMBIAR: descripción de la sede -->
+        <p class="section__lead reveal">Corremos entre jardines, árboles y un lago con un <strong>castillo de estilo inglés</strong> en medio. Uno de los lugares con más historia y belleza de Puebla.</p>
 
-        <form class="form reveal" id="formRegistro" novalidate>
-          <fieldset>
-            <legend>Tu negocio</legend>
-            <div class="field field--full">
-              <label for="r-negocio">Nombre del negocio *</label>
-              <input id="r-negocio" name="negocio" type="text" required minlength="2" maxlength="60">
-            </div>
-            <div class="field field--full">
-              <label for="r-giro">Giro *</label>
-              <select id="r-giro" name="giro" required data-opciones="giros"></select>
-              <small class="hint">No se permite la venta de alimentos preparados ni de bebidas.</small>
-            </div>
-            <div class="field field--full">
-              <label for="r-desc">¿Qué venderás? * <small>(será el texto de tu tarjeta)</small></label>
-              <textarea id="r-desc" name="descripcion" rows="3" required minlength="10" maxlength="150"></textarea>
-              <small class="field__count" id="descCount">0 / 150</small>
-            </div>
-            <div class="field">
-              <label for="r-ig">Instagram del negocio <small>(opcional)</small></label>
-              <input id="r-ig" name="instagram" type="text" inputmode="url" autocapitalize="none" autocomplete="off" placeholder="@tunegocio o enlace" data-red="instagram">
-            </div>
-            <div class="field">
-              <label for="r-fb">Facebook del negocio <small>(opcional)</small></label>
-              <input id="r-fb" name="facebook" type="text" inputmode="url" autocapitalize="none" autocomplete="off" placeholder="Enlace a tu página" data-red="facebook">
-            </div>
-            <div class="field field--full">
-              <label for="r-logo-file">Logo o foto del negocio <small>(opcional · JPG o PNG)</small></label>
-              <input id="r-logo-file" name="logoArchivo" type="file" accept="image/*">
-              <img id="logoPreview" class="logo-preview" alt="Vista previa de tu logo" hidden>
-              <small class="hint">La imagen se ajusta automáticamente y se usará en tu tarjeta de la página.</small>
-            </div>
-          </fieldset>
+        <div class="sede__grid">
+          <figure class="sede__art reveal">
+            <!-- ✏️ FOTO PRINCIPAL DE LA SEDE (assets/img/chautla-castillo-lago.webp) -->
+            <img src="assets/img/chautla-castillo-lago.webp" alt="Castillo de la Ex Hacienda de Chautla reflejado en el lago" width="1200" height="675" loading="lazy">
+            <figcaption>Castillo Gillow · Ex Hacienda de Chautla</figcaption>
+          </figure>
 
-          <fieldset>
-            <legend>Responsable</legend>
-            <div class="field field--full">
-              <label for="r-resp">Nombre del responsable *</label>
-              <input id="r-resp" name="responsable" type="text" autocomplete="name" required minlength="5">
+          <div class="sede__info reveal">
+            <!-- ✏️ CAMBIAR: datos de la sede -->
+            <ul class="sede__facts">
+              <li><span>📍</span><div><strong>San Salvador el Verde, Puebla</strong>A 8 km de San Martín Texmelucan, sobre la carretera federal México–Puebla.</div></li>
+              <li><span>🏰</span><div><strong>Castillo Gillow</strong>Castillo de estilo inglés de finales del siglo XIX, de tabique rojo y cuatro torres, en medio de un lago artificial.</div></li>
+              <li><span>📜</span><div><strong>Hacienda desde 1777</strong>Antigua hacienda productora de trigo y maíz, hoy un espacio histórico y cultural.</div></li>
+              <li><span>🌳</span><div><strong>Naturaleza</strong>Jardines, lago y áreas verdes ideales para correr y convivir en familia.</div></li>
+            </ul>
+            <div class="sede__ctas">
+              <a class="btn btn--primary" href="https://www.google.com/maps/search/?api=1&amp;query=Ex+Hacienda+de+Chautla,+San+Salvador+el+Verde,+Puebla" target="_blank" rel="noopener">📍 Abrir en Google Maps</a>
+              <a class="btn btn--light" href="https://waze.com/ul?ll=19.3158,-98.4711&amp;navigate=yes" target="_blank" rel="noopener">🚗 Ir con Waze</a>
             </div>
-            <div class="field">
-              <label for="r-tel">Teléfono / WhatsApp (10 dígitos) *</label>
-              <input id="r-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
-            </div>
-            <div class="field">
-              <label for="r-correo">Correo electrónico *</label>
-              <input id="r-correo" name="correo" type="email" autocomplete="email" required>
-            </div>
-          </fieldset>
+            <!-- ✏️ CAMBIAR: indicaciones de llegada y estacionamiento -->
+            <p class="sede__nota">ℹ️ Llega con al menos 45 minutos de anticipación. Estacionamiento y transporte: <span class="pendiente">[POR CONFIRMAR]</span>.</p>
+          </div>
+        </div>
 
-          <!-- Los días se generan desde CONFIG.dias en script.js -->
-          <fieldset>
-            <legend>¿Qué días quieres participar? *</legend>
-            <div class="chips chips--dias" id="diasChips" data-dias></div>
-            <p class="dias__total" id="diasTotal" aria-live="polite">Elige al menos un día · $300 por día</p>
-          </fieldset>
-
-          <label class="check">
-            <input type="checkbox" name="aceptaReglas" required>
-            <span>Leí y acepto los <a href="#participa">requisitos y reglas</a> de la expo. *</span>
-          </label>
-          <label class="check">
-            <input type="checkbox" name="autorizaPublicar" required>
-            <span>Autorizo publicar el nombre, logo, descripción y redes de mi negocio en esta página. *</span>
-          </label>
-
-          <button type="submit" class="btn btn--primary btn--lg btn--block">Enviar registro</button>
-        </form>
+        <!-- ✏️ GALERÍA DE LA SEDE: para cambiar una foto, pon la imagen en assets/img/ y cambia su src y alt -->
+        <div class="sede__fotos reveal">
+          <figure><img src="assets/img/chautla-castillo-frente.webp" alt="Fachada del castillo con su camino de entrada entre jardines" loading="lazy"><figcaption>El castillo</figcaption></figure>
+          <figure><img src="assets/img/chautla-lago-arboles.png" alt="Lago de la hacienda rodeado de árboles" loading="lazy"><figcaption>El lago</figcaption></figure>
+          <figure><img src="assets/img/chautla-muelle.webp" alt="Muelle rojo sobre el lago de la hacienda" loading="lazy"><figcaption>El muelle</figcaption></figure>
+        </div>
       </div>
     </section>
 
-    <!-- ===================== 9. UBICACIÓN ===================== -->
-    <section class="section section--soft" id="ubicacion">
+    <!-- ===================== 7. RUTA ===================== -->
+    <section class="section section--alt" id="ruta">
       <div class="container">
-        <p class="eyebrow reveal">Ubicación</p>
-        <h2 class="reveal">Cómo llegar</h2>
-        <div class="ubicacion">
-          <div class="mapa reveal">
-            <!-- ✏️ MAPA: para cambiarlo, en Google Maps busca el lugar → Compartir → Insertar un mapa → copia el valor de src="..." -->
-            <iframe src="https://www.google.com/maps?q=Prof.+Florencio+Espinosa+Pte.+7,+Centro,+74000+San+Mart%C3%ADn+Texmelucan+de+Labastida,+Pue.&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de la ubicación de la expo"></iframe>
+        <p class="eyebrow reveal">Recorrido <span class="ko" lang="ko">코스</span></p>
+        <h2 class="reveal">La ruta</h2>
+
+        <div class="route">
+          <div class="route__map reveal">
+            <!-- ✏️ MAPA: opción A (Google Maps). En Google Maps busca el lugar → Compartir → Insertar un mapa → copia solo el valor de src="..." y pégalo aquí.
+                 Si creaste la ruta en "Mis Mapas" de Google, usa su enlace de inserción.
+                 Opción B (imagen): borra el <iframe> y pon <img src="assets/img/ruta.jpg" alt="Mapa de la ruta"> -->
+            <iframe
+              src="https://www.google.com/maps?q=Ex+Hacienda+de+Chautla,+San+Salvador+el+Verde,+Puebla&amp;output=embed"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="Mapa de la ruta"></iframe>
           </div>
-          <div class="ubicacion__info reveal">
-            <h3>Perro Caffé</h3>
-            <p>Prof. Florencio Espinosa Pte. 7, Col. Centro, 74000 San Martín Texmelucan de Labastida, Pue.</p>
-            <!-- ✏️ CAMBIAR: indicaciones para visitantes -->
-            <ul>
-              <li>🚪 La expo está en la <strong>sección de atrás</strong> de Perro Caffé. Si no la encuentras, pregunta en el mostrador.</li>
-              <li>🕙 Viernes 6, sábado 7 y domingo 8 de noviembre, de 10:00 a 17:00 h.</li>
-              <li>🎟️ Entrada gratuita.</li>
-            </ul>
-            <div class="ubicacion__ctas">
-              <a class="btn btn--primary" href="https://www.google.com/maps/search/?api=1&amp;query=Prof.+Florencio+Espinosa+Pte.+7,+Centro,+San+Mart%C3%ADn+Texmelucan,+Puebla" target="_blank" rel="noopener">Abrir en Google Maps</a>
-              <a class="btn btn--outline" href="https://waze.com/ul?q=Prof.%20Florencio%20Espinosa%20Pte.%207%2C%20San%20Mart%C3%ADn%20Texmelucan&amp;navigate=yes" target="_blank" rel="noopener">Ir con Waze</a>
+
+          <!-- ✏️ CAMBIAR: datos de la ruta -->
+          <div class="route__info reveal">
+            <div class="stat-grid">
+              <div class="stat"><strong>3 km</strong><span>Ruta Jeju</span></div>
+              <div class="stat"><strong>5 km</strong><span>Ruta Seúl</span></div>
+              <div class="stat"><strong>10 km</strong><span>Ruta Busan</span></div>
             </div>
+            <dl class="route__list">
+              <div><dt>🚩 Salida</dt><dd>Ex Hacienda de Chautla · <span class="pendiente">[POR CONFIRMAR: punto exacto]</span></dd></div>
+              <div><dt>🏁 Meta</dt><dd>Mismo punto de salida, con convivencia K-culture</dd></div>
+              <div><dt>💧 Hidratación</dt><dd>Km 2.5, Km 5 y Km 7.5 · agua y bebida isotónica en meta</dd></div>
+              <div><dt>🎶 Animación</dt><dd>Puntos con música y porras en la ruta</dd></div>
+              <div><dt>🩺 Servicio médico</dt><dd>Ambulancia en salida/meta y unidad móvil en ruta</dd></div>
+            </dl>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- ===================== 8. KIT ===================== -->
+    <section class="section" id="kit">
+      <div class="container">
+        <p class="eyebrow reveal">Lo que recibes <span class="ko" lang="ko">기념품</span></p>
+        <h2 class="reveal">Kit de la carrera</h2>
+
+        <!-- ✏️ FOTOS DEL KIT: en cada tarjeta reemplaza <div class="placeholder">…</div>
+             por <img src="assets/img/kit-playera.jpg" alt="Playera oficial"> -->
+        <div class="cards cards--kit">
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">👕</div></div>
+            <h3>Playera oficial</h3><p>Diseño HANGUK RUN, tela dry-fit.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🔢</div></div>
+            <h3>Número de corredor</h3><p>Con tu nombre en español y en hangul.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🏅</div></div>
+            <h3>Medalla temática</h3><p>Diseño coreano para todos los que crucen la meta.</p>
+          </article>
+          <article class="card reveal">
+            <div class="card__media"><div class="placeholder">🍙</div></div>
+            <h3>Snack coreano</h3><p>Hidratación y un antojo coreano en la meta.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 9. PREMIOS ===================== -->
+    <section class="section section--alt" id="premios">
+      <div class="container">
+        <p class="eyebrow reveal">Reconocimientos <span class="ko" lang="ko">시상</span></p>
+        <h2 class="reveal">Premios</h2>
+        <p class="section__lead reveal">Premios en efectivo para los tres primeros lugares de cada distancia, en rama varonil y femenil.</p>
+
+        <!-- ✏️ CAMBIAR: bolsa total y reparto de premios (todo en efectivo). Suma actual: $20,000 -->
+        <div class="prize-pool reveal">
+          <span class="prize-pool__label">Bolsa total de premios</span>
+          <strong class="prize-pool__amount">$20,000</strong>
+          <span class="prize-pool__note">en efectivo</span>
+        </div>
+
+        <div class="prizes">
+          <article class="prize reveal">
+            <h3>10K</h3>
+            <p class="prize__sub">Ruta Busan · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $2,400</li>
+              <li><span class="medal medal--2">2º</span> $1,400</li>
+              <li><span class="medal medal--3">3º</span> $900</li>
+            </ol>
+          </article>
+          <article class="prize reveal">
+            <h3>5K</h3>
+            <p class="prize__sub">Ruta Seúl · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $1,700</li>
+              <li><span class="medal medal--2">2º</span> $1,100</li>
+              <li><span class="medal medal--3">3º</span> $600</li>
+            </ol>
+          </article>
+          <article class="prize reveal">
+            <h3>3K</h3>
+            <p class="prize__sub">Ruta Jeju · por rama (varonil y femenil)</p>
+            <ol>
+              <li><span class="medal medal--1">1º</span> $1,000</li>
+              <li><span class="medal medal--2">2º</span> $600</li>
+              <li><span class="medal medal--3">3º</span> $300</li>
+            </ol>
+          </article>
+          <!-- ✏️ Premio especial: cuando haya patrocinador, cambia el texto por los premios -->
+          <article class="prize prize--special reveal">
+            <h3>Mejor outfit K-culture</h3>
+            <p class="prize__sub">Cualquier distancia · hanbok, K-pop, K-drama… ¡sorpréndenos!</p>
+            <p class="prize__soon">Premios por anunciar</p>
+            <p class="prize__sponsor">¿Tu marca quiere patrocinar este premio? <a href="mailto:granitodearena.sm@gmail.com?subject=Patrocinio%20HANGUK%20RUN">Escríbenos</a></p>
+          </article>
+        </div>
+        <p class="prizes__note reveal">Los premios de 3K, 5K y 10K se entregan únicamente en efectivo, presentando identificación oficial.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 10. PATROCINADORES ===================== -->
+    <section class="section" id="patrocinadores">
+      <div class="container">
+        <p class="eyebrow reveal">Gracias a <span class="ko" lang="ko">후원</span></p>
+        <h2 class="reveal">Patrocinadores</h2>
+
+        <!-- ✏️ CAMBIAR: invitación y correo para empresas -->
+        <div class="patrocina reveal">
+          <div>
+            <h3 class="patrocina__title">Sé parte de que una idea de Texmelucan llegue más lejos</h3>
+            <p>Buscamos empresas, instituciones y aliados socialmente responsables que quieran sumarse a HANGUK RUN y respaldar a los 10 jóvenes voluntarios que representarán a su comunidad.</p>
+          </div>
+          <a class="btn btn--primary" href="mailto:granitodearena.sm@gmail.com?subject=Patrocinio%20HANGUK%20RUN">✉️ Contacto para empresas</a>
+        </div>
+
+        <!-- ✏️ LOGOS: reemplaza cada <div class="placeholder">…</div> por
+             <a href="https://sitio-del-patrocinador.com" target="_blank" rel="noopener"><img src="assets/img/logo-patrocinador.png" alt="Nombre del patrocinador"></a>
+             Para agregar más, copia un <div class="sponsor">. Si no usas niveles, deja solo un bloque. -->
+        <h3 class="tier-title reveal">Oro</h3>
+        <div class="sponsors sponsors--gold">
+          <div class="sponsor reveal"><div class="placeholder">Tu logo aquí</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Tu logo aquí</div></div>
+        </div>
+
+        <h3 class="tier-title reveal">Plata</h3>
+        <div class="sponsors">
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+        </div>
+
+        <h3 class="tier-title reveal">Bronce</h3>
+        <div class="sponsors sponsors--small">
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+          <div class="sponsor reveal"><div class="placeholder">Logo</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 11. INSCRIPCIÓN ===================== -->
+    <!-- Precios, categorías, tallas y límites se cambian en script.js → objeto CONFIG -->
+    <section class="section section--signup" id="inscripcion">
+      <div class="container container--narrow">
+        <p class="eyebrow reveal">Asegura tu lugar <span class="ko" lang="ko">참가 신청</span></p>
+        <h2 class="reveal">Inscríbete y suma tu paso</h2>
+        <!-- ✏️ CAMBIAR: precios visibles (deben coincidir con CONFIG.categorias en script.js) -->
+        <p class="section__lead reveal" id="priceLead">3K: $250 · 5K: $350 · 10K: $450 · Individual o en grupo. Cada inscripción apoya a los 10 jóvenes voluntarios de Granito de Arena.</p>
+
+        <div class="tabs reveal" role="tablist">
+          <button class="tab is-active" role="tab" aria-selected="true" aria-controls="formIndividual" id="tabIndividual">🏃 Individual</button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="formGrupo" id="tabGrupo">👥 En grupo</button>
+        </div>
+
+        <!-- ---------- A) INDIVIDUAL ---------- -->
+        <form class="form" id="formIndividual" role="tabpanel" aria-labelledby="tabIndividual" novalidate>
+          <fieldset>
+            <legend>Tus datos</legend>
+            <div class="field field--full">
+              <label for="i-nombre">Nombre completo *</label>
+              <input id="i-nombre" name="nombre" type="text" autocomplete="name" required minlength="5">
+            </div>
+            <div class="field">
+              <label for="i-edad">Edad *</label>
+              <input id="i-edad" name="edad" type="number" inputmode="numeric" required data-edad>
+            </div>
+            <div class="field">
+              <label for="i-sexo">Sexo *</label>
+              <select id="i-sexo" name="sexo" required data-opciones="sexos"></select>
+            </div>
+            <div class="field">
+              <label for="i-correo">Correo electrónico *</label>
+              <input id="i-correo" name="correo" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="i-tel">Teléfono (10 dígitos) *</label>
+              <input id="i-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+            </div>
+            <div class="field">
+              <label for="i-talla">Talla de playera *</label>
+              <select id="i-talla" name="talla" required data-opciones="tallas"></select>
+            </div>
+            <div class="field">
+              <label for="i-cat">Distancia / categoría *</label>
+              <select id="i-cat" name="categoria" required data-opciones="categorias"></select>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Contacto de emergencia</legend>
+            <div class="field">
+              <label for="i-emerg-nombre">Nombre *</label>
+              <input id="i-emerg-nombre" name="emergenciaNombre" type="text" required minlength="3">
+            </div>
+            <div class="field">
+              <label for="i-emerg-tel">Teléfono (10 dígitos) *</label>
+              <input id="i-emerg-tel" name="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono>
+            </div>
+          </fieldset>
+
+          <div class="summary" id="summaryIndividual" aria-live="polite"></div>
+
+          <label class="check">
+            <input type="checkbox" name="acepta" required>
+            <span>He leído y acepto el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--xl btn--block">Inscríbete y suma tu paso</button>
+        </form>
+
+        <!-- ---------- B) GRUPO ---------- -->
+        <form class="form" id="formGrupo" role="tabpanel" aria-labelledby="tabGrupo" novalidate hidden>
+          <fieldset>
+            <legend>Responsable del grupo</legend>
+            <div class="field field--full">
+              <label for="g-grupo">Nombre del grupo (equipo, empresa, familia, fandom…) *</label>
+              <input id="g-grupo" name="grupo" type="text" required minlength="2">
+            </div>
+            <div class="field field--full">
+              <label for="g-resp">Nombre del responsable *</label>
+              <input id="g-resp" name="responsable" type="text" autocomplete="name" required minlength="5">
+            </div>
+            <div class="field">
+              <label for="g-correo">Correo electrónico *</label>
+              <input id="g-correo" name="correo" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="g-tel">Teléfono (10 dígitos) *</label>
+              <input id="g-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>¿Cuántos corredores?</legend>
+            <div class="stepper">
+              <button type="button" class="stepper__btn" id="countMinus" aria-label="Quitar corredor">−</button>
+              <input id="g-cantidad" name="cantidad" type="number" inputmode="numeric" value="2" aria-label="Número de corredores">
+              <button type="button" class="stepper__btn" id="countPlus" aria-label="Agregar corredor">+</button>
+            </div>
+            <p class="hint" id="countHint">Mínimo 2, máximo 20 corredores.</p>
+          </fieldset>
+
+          <!-- Aquí se generan automáticamente las filas de cada corredor -->
+          <div id="runners" class="runners"></div>
+
+          <div class="summary" id="summaryGrupo" aria-live="polite"></div>
+
+          <label class="check">
+            <input type="checkbox" name="acepta" required>
+            <span>Como responsable, confirmo que todos los integrantes leyeron y aceptan el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
+          </label>
+
+          <button type="submit" class="btn btn--primary btn--xl btn--block">Corre por ellos: inscribir al grupo</button>
+        </form>
+      </div>
+    </section>
   </main>
 
-  <!-- ===================== 10. PIE DE PÁGINA ===================== -->
+  <!-- ===================== PIE DE PÁGINA ===================== -->
   <footer class="footer">
+    <div class="saekdong" aria-hidden="true"></div>
     <div class="container footer__grid">
-      <div class="footer__logos">
-        <img src="assets/img/perro-cafe-logo.webp" alt="Logo de Perro Caffé" width="120" height="120" loading="lazy">
-        <img src="assets/img/logo-granito-de-arena.png" alt="Logo de Granito de Arena" width="120" height="120" loading="lazy">
+      <div>
+        <a href="#inicio" class="nav__logo"><span>HANGUK <em>RUN</em></span><span class="nav__ko" lang="ko">한국</span></a>
+        <p>De aquí para el mundo<br>Carrera con causa · Granito de Arena<br>6 de diciembre de 2026 · Ex Hacienda de Chautla, Puebla</p>
+        <p class="footer__ko"><span lang="ko">가자!</span> ¡Gaja!</p>
       </div>
       <div>
         <h4>Contacto</h4>
-        <!-- ✏️ CAMBIAR: contacto -->
-        <p>
-          💬 WhatsApp: <span class="pendiente">[POR CONFIRMAR]</span><br>
-          ✉️ <a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a>
+        <!-- ✏️ CAMBIAR: contacto del pie -->
+        <p><a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a></p>
+      </div>
+      <div>
+        <h4>Síguenos</h4>
+        <p class="socials socials--footer">
+          <a href="https://www.facebook.com/profile.php?id=100075559972420" target="_blank" rel="noopener">Facebook</a>
+          <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">Instagram</a>
         </p>
       </div>
       <div>
-        <h4>Redes</h4>
-        <p>
-          Granito de Arena: <a href="https://www.facebook.com/profile.php?id=100075559972420" target="_blank" rel="noopener">Facebook</a> · <a href="https://www.instagram.com/granitodearena.sm/" target="_blank" rel="noopener">Instagram</a><br>
-          Perro Caffé: <a href="https://www.facebook.com/PerroCaffeSanMartin/" target="_blank" rel="noopener">Facebook</a> · <a href="https://www.instagram.com/perrocaffetex/" target="_blank" rel="noopener">Instagram</a>
-        </p>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <p><a href="#privacidad" data-open="privacidad">Aviso de privacidad</a></p>
+        <h4>Documentos</h4>
+        <!-- Si tienes el reglamento en PDF, cambia href a "assets/reglamento.pdf" y quita data-open-rules -->
+        <p><a href="#reglamento" data-open-rules>Reglamento y responsiva</a></p>
       </div>
     </div>
-    <p class="footer__copy container">Organiza Granito de Arena · Sede: Perro Caffé · San Martín Texmelucan, Puebla</p>
+    <p class="footer__copy container">© 2026 HANGUK RUN · Granito de Arena. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- ===================== AVISO DE PRIVACIDAD (ventana) ===================== -->
-  <dialog class="modal" id="privacidad" aria-labelledby="privTitle">
+  <!-- ===================== REGLAMENTO (ventana) ===================== -->
+  <dialog class="modal" id="reglamento" aria-labelledby="rulesTitle">
     <div class="modal__box">
       <button class="modal__close" data-close aria-label="Cerrar">×</button>
-      <h2 id="privTitle">Aviso de privacidad</h2>
-      <!-- ✏️ CAMBIAR: texto del aviso de privacidad -->
-      <div class="modal__body aviso">
-        <p><strong>Responsable.</strong> Granito de Arena, colectivo ciudadano apartidista y sin fines de lucro con domicilio en San Martín Texmelucan, Puebla, es responsable del uso y protección de los datos personales que proporcionas en esta página, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
-        <p><strong>Datos que recabamos.</strong> Nombre del responsable, teléfono o WhatsApp, correo electrónico y los datos de tu negocio: nombre, giro, descripción, redes sociales, logo o fotografía y días de participación. No solicitamos datos personales sensibles.</p>
-        <p><strong>Finalidades.</strong> Usamos tus datos para: (1) registrar tu solicitud y contactarte para el pago y la confirmación de tu lugar; (2) organizar y enviarte avisos sobre la expo; y (3) solo si lo autorizas en el formulario, publicar el nombre, giro, descripción, logo y redes de tu negocio en esta página para darlo a conocer.</p>
-        <p><strong>Transferencias.</strong> No vendemos, rentamos ni compartimos tus datos personales con terceros, salvo cuando lo exija una autoridad competente. Los datos se guardan en herramientas digitales de uso común (por ejemplo, hojas de cálculo en línea) con acceso limitado al equipo organizador.</p>
-        <p><strong>Derechos ARCO.</strong> Puedes acceder a tus datos, rectificarlos, cancelarlos u oponerte a su uso, así como revocar tu consentimiento o pedir que retiremos la publicación de tu negocio, escribiendo a <a href="mailto:granitodearena.sm@gmail.com">granitodearena.sm@gmail.com</a> con tu nombre, el nombre de tu negocio y tu solicitud. Te responderemos en un plazo máximo de 20 días hábiles.</p>
-        <p><strong>Conservación.</strong> Conservaremos tus datos solo el tiempo necesario para la organización de la expo y sus cuentas, y después los eliminaremos.</p>
-        <p><strong>Cambios.</strong> Cualquier cambio a este aviso se publicará en esta misma página.</p>
-        <p class="hint">Última actualización: octubre de 2026.</p>
+      <h2 id="rulesTitle">Reglamento y carta responsiva</h2>
+      <!-- ✏️ CAMBIAR: texto del reglamento -->
+      <div class="modal__body">
+        <ol>
+          <li>La edad mínima para participar es de 12 años. Menores de 18 requieren autorización de padre o tutor.</li>
+          <li>El número de corredor es personal e intransferible y debe portarse al frente, visible.</li>
+          <li>El tiempo límite para completar la ruta es de 1 hora 30 minutos.</li>
+          <li>Es obligatorio seguir la ruta marcada y las indicaciones de jueces y personal de apoyo.</li>
+          <li>Se permite correr con vestuario temático, siempre que no ponga en riesgo tu seguridad ni la de otros corredores.</li>
+          <li>No hay reembolsos: tu inscripción es un donativo que apoya la representación de los 10 jóvenes voluntarios de Granito de Arena. Los cambios de distancia o talla están sujetos a disponibilidad.</li>
+          <li>Los premios son únicamente en efectivo (bolsa total de $20,000) y se entregan presentando identificación oficial.</li>
+        </ol>
+        <h3>Carta responsiva</h3>
+        <p>Declaro que me encuentro en condiciones físicas y de salud adecuadas para participar en HANGUK RUN. Participo de forma voluntaria y bajo mi propio riesgo, y libero al comité organizador, patrocinadores y autoridades de cualquier responsabilidad por lesiones o daños que pudiera sufrir antes, durante o después del evento. Autorizo el uso de mi imagen en fotografías y videos del evento.</p>
       </div>
       <button class="btn btn--primary" data-close>Entendido</button>
     </div>
   </dialog>
 
-  <!-- ===================== CONFIRMACIÓN DE REGISTRO (ventana) ===================== -->
-  <dialog class="modal" id="confirmacion" aria-labelledby="confTitle">
+  <!-- ===================== CONFIRMACIÓN (ventana) ===================== -->
+  <dialog class="modal" id="confirmacion" aria-labelledby="confirmTitle">
     <div class="modal__box">
       <button class="modal__close" data-close aria-label="Cerrar">×</button>
-      <div class="confirm__icon">🎉</div>
-      <h2 id="confTitle">¡Registro recibido!</h2>
-      <div class="modal__body" id="confBody"></div>
+      <div class="confirm__icon">✅</div>
+      <h2 id="confirmTitle">¡Inscripción recibida!</h2>
+      <div class="modal__body" id="confirmBody"></div>
       <div id="dataBlock" hidden>
         <p class="hint">Vista de datos (modo sin conexión). Cópialos y pégalos en tu hoja de cálculo o WhatsApp:</p>
         <textarea id="dataOutput" readonly rows="8"></textarea>
-        <button class="btn btn--outline btn--block" id="copyData" type="button">📋 Copiar datos</button>
+        <button class="btn btn--ghost btn--block" id="copyData" type="button">📋 Copiar datos</button>
       </div>
       <button class="btn btn--primary btn--block" data-close>Listo</button>
     </div>
   </dialog>
 
-  <script src="script.js?v=20261010g" defer></script>
+  <script src="script.js?v=20261008a" defer></script>
 </body>
 </html>
