@@ -1,12 +1,12 @@
 /* ==========================================================================
    HANGUK RUN 한국 — script.js
-   JavaScript puro, sin librerías.
+   JavaScript puro, sin librerías. Firebase se carga solo si está configurado.
    ========================================================================== */
 (function () {
   'use strict';
 
   /* ========================================================================
-     ✏️ CONFIGURACIÓN — CAMBIA AQUÍ PRECIOS, CATEGORÍAS, TALLAS Y CONEXIÓN
+     ✏️ CONFIGURACIÓN — CAMBIA AQUÍ PRECIOS, CATEGORÍAS, TALLAS, NÚMEROS Y CONEXIÓN
      ======================================================================== */
   var CONFIG = {
     nombreCarrera: 'HANGUK RUN 한국 2026',
@@ -18,42 +18,69 @@
 
     // Categorías / distancias y su precio por corredor (MXN)
     categorias: [
-      { id: '3K', nombre: '3K · Ruta Jeju', precio: 250 },   // ✏️ precio de ejemplo, confirmar
-      { id: '5K', nombre: '5K · Ruta Seúl', precio: 350 },
-      { id: '10K', nombre: '10K · Ruta Busan', precio: 450 }
+      { id: '3K', nombre: '3K · Ruta Jeju', precio: 400 },
+      { id: '5K', nombre: '5K · Ruta Seúl', precio: 400 },
+      { id: '10K', nombre: '10K · Ruta Busan', precio: 400 }
     ],
 
-    tallas: ['Infantil', 'XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    // Tallas de playera (unisex)
+    tallas: ['S', 'M', 'L', 'XL'],
     sexos: ['Femenino', 'Masculino'],
 
     edadMinima: 12,
     edadMaxima: 90,
 
-    // Inscripción en grupo
-    grupoMinimo: 2,
-    grupoMaximo: 20,
+    // Corredores por inscripción (1 = individual; 2 o más = grupo)
+    corredoresMaximo: 20,
     // Descuento por tamaño del grupo: actualmente SIN descuento.
     // Para activarlo en el futuro, por ejemplo: [{ desde: 5, porcentaje: 10 }, { desde: 10, porcentaje: 15 }]
     descuentosGrupo: [],
 
-    // Números de corredor: primer número disponible.
-    // Si conectas Google Sheets, el número real lo asigna la hoja (ver apps-script.gs).
-    siguienteNumero: 101,
+    /* --------------------------------------------------------------------
+       💳 PAGO
+       Después de inscribirse, la persona envía un WhatsApp para pedir el
+       número de cuenta. Tiene "diasParaPagar" días desde que aparta su número.
+       👉 PEGA AQUÍ el WhatsApp: 52 + 10 dígitos, sin espacios ni "+".
+          Mientras esté vacío, la confirmación muestra el aviso [POR CONFIRMAR].
+       -------------------------------------------------------------------- */
+    pago: {
+      whatsapp: '',          // [POR CONFIRMAR] ej. '5212223334444'
+      diasParaPagar: 4
+    },
 
     /* --------------------------------------------------------------------
-       🔌 CONEXIÓN PARA GUARDAR LAS INSCRIPCIONES
-       modo:
-         'pantalla'  → (actual) no envía nada; muestra los datos para copiarlos.
-         'sheets'    → Google Sheets. Pega en urlGoogleSheets la URL de tu
-                       Apps Script (termina en /exec). Instrucciones en apps-script.gs
-         'formspree' → Formspree. Pega en urlFormspree tu endpoint
-                       (ej. https://formspree.io/f/abcdwxyz)
-         'whatsapp'  → abre WhatsApp con los datos para enviarlos al organizador.
+       🔢 NÚMEROS DE CORREDOR (cada participante elige el suyo)
+       ✏️ minimo / maximo: rango de números que se pueden elegir.
+       ✏️ reservados: números que nadie puede elegir (organizadores, invitados…).
+          En el tablero se ven igual que los ocupados.
+          Si cambias el rango o los reservados, cámbialos también en firestore.rules.
        -------------------------------------------------------------------- */
-    modo: 'pantalla',
-    urlGoogleSheets: '',   // 👉 PEGA AQUÍ la URL de Google Apps Script
-    urlFormspree: '',      // 👉 PEGA AQUÍ el endpoint de Formspree
-    whatsappOrganizador: '52XXXXXXXXXX', // 👉 52 + 10 dígitos, sin espacios ni "+" (solo para modo 'whatsapp')
+    numeros: {
+      minimo: 1,
+      maximo: 700,
+      reservados: []        // ejemplo: [1, 2, 3, 100]
+    },
+
+    /* --------------------------------------------------------------------
+       🔌 BASE DE DATOS (Firebase Firestore, no relacional)
+       modo:
+         'firebase' → guarda las inscripciones en Firestore y garantiza que cada
+                      número sea único (instrucciones paso a paso en FIREBASE.md).
+         'pantalla' → modo demostración: no guarda nada en internet; los números
+                      ocupados solo se recuerdan en este navegador.
+       👉 PEGA AQUÍ la configuración web de tu proyecto de Firebase
+          (Consola de Firebase → Configuración del proyecto → Tus apps → Web).
+          Estos datos son públicos por diseño; la seguridad la dan las reglas
+          de firestore.rules.
+       -------------------------------------------------------------------- */
+    modo: 'firebase',
+    firebase: {
+      apiKey: 'AIzaSyCENeangPCyAKQX9ylKP1cLCO-pfg1hAWI',
+      authDomain: 'hanguk-run.firebaseapp.com',
+      projectId: 'hanguk-run',
+      appId: '1:336183514717:web:ec68ceb51e93ae74121fb4'
+    },
+    firebaseVersion: '10.12.2',
 
     /* --------------------------------------------------------------------
        📸 CARRUSEL DE INSTAGRAM (se actualiza solo con las últimas publicaciones)
@@ -78,6 +105,7 @@
   var $ = function (sel, ctx) { return (ctx || document).querySelector(sel); };
   var $$ = function (sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); };
   var pesos = function (n) { return n.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }); };
+  var miles = function (n) { return Number(n || 0).toLocaleString('es-MX'); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
 
   // Cada inicialización va protegida: si una falla, las demás siguen funcionando.
@@ -233,49 +261,100 @@
     });
   }
 
-  /* ---------- Opciones de los <select> ---------- */
-  function optionsHTML(tipo) {
-    var html = '<option value="">Selecciona…</option>';
-    if (tipo === 'categorias') {
-      CONFIG.categorias.forEach(function (c) { html += '<option value="' + esc(c.id) + '">' + esc(c.nombre) + ' — ' + pesos(c.precio) + '</option>'; });
-    } else {
-      CONFIG[tipo].forEach(function (v) { html += '<option>' + esc(v) + '</option>'; });
-    }
-    return html;
+  /* ---------- Compromisos "Lo que regresa a la comunidad" ----------
+     Oculta los marcados data-estado="por-confirmar" si CONFIG.mostrarPorConfirmar es false,
+     y oculta la sección completa si no queda ninguno visible. */
+  function initCompromisos() {
+    var section = $('#compromisos');
+    if (!section || CONFIG.mostrarPorConfirmar) return;
+    $$('[data-estado="por-confirmar"]', section).forEach(function (el) { el.hidden = true; });
+    if (!$$('.compromiso:not([hidden])', section).length) section.hidden = true;
   }
-  function fillSelects(ctx) {
-    $$('select[data-opciones]', ctx).forEach(function (s) {
-      if (s.options.length > 0) return;
-      s.innerHTML = optionsHTML(s.getAttribute('data-opciones'));
+
+  /* ========================================================================
+     🔌 FIREBASE (se carga una sola vez)
+     ======================================================================== */
+  var fbPromesa = null;
+  function firebaseConfigurado() {
+    var f = CONFIG.firebase || {};
+    return CONFIG.modo === 'firebase' && f.apiKey && f.projectId;
+  }
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = resolve; s.onerror = function () { reject(new Error('No se pudo cargar ' + src)); };
+      document.head.appendChild(s);
     });
   }
-  function categoria(id) {
-    for (var i = 0; i < CONFIG.categorias.length; i++) if (CONFIG.categorias[i].id === id) return CONFIG.categorias[i];
-    return null;
+  function conectarFirebase() {
+    if (fbPromesa) return fbPromesa;
+    var base = 'https://www.gstatic.com/firebasejs/' + CONFIG.firebaseVersion + '/';
+    fbPromesa = loadScript(base + 'firebase-app-compat.js')
+      .then(function () { return loadScript(base + 'firebase-firestore-compat.js'); })
+      .then(function () {
+        if (!window.firebase.apps.length) window.firebase.initializeApp(CONFIG.firebase);
+        return window.firebase.firestore();
+      });
+    return fbPromesa;
   }
 
-  /* ---------- Número de corredor disponible ----------
-     Sin conexión se usa CONFIG.siguienteNumero y se guarda en este navegador
-     para que las pruebas sigan siendo consecutivas. Con Google Sheets la hoja
-     informa y asigna el número real. */
-  var STORE_KEY = 'ccv_siguiente_numero';
-  var nextBib = CONFIG.siguienteNumero;
-  function readLocalBib() {
-    try { var v = parseInt(localStorage.getItem(STORE_KEY), 10); if (v > nextBib) nextBib = v; } catch (e) { /* sin almacenamiento */ }
+  /* ========================================================================
+     🔢 NÚMEROS DE CORREDOR
+     - Colección "numeros": un documento por número tomado (id = el número).
+       Es pública para saber qué números están ocupados, sin datos personales.
+     - Colección "inscripciones": datos de cada inscripción. Nadie puede leerla
+       desde la página (solo los organizadores en la consola de Firebase).
+     ======================================================================== */
+  var DB = { db: null, conectando: false, iniciado: false, tomados: new Set() };
+  var DEMO_KEY = 'hr_numeros_tomados_demo';
+
+  function setEstadoNumeros(html, tipo) {
+    var el = $('#numerosEstado');
+    if (!el) return;
+    el.innerHTML = html;
+    el.className = 'numeros-estado' + (tipo ? ' numeros-estado--' + tipo : '');
   }
-  function saveLocalBib(n) {
-    nextBib = n;
-    try { localStorage.setItem(STORE_KEY, String(n)); } catch (e) { /* sin almacenamiento */ }
-  }
-  function fetchServerBib() {
-    if (CONFIG.modo !== 'sheets' || !CONFIG.urlGoogleSheets) return;
-    fetch(CONFIG.urlGoogleSheets + '?accion=siguiente')
-      .then(function (r) { return r.json(); })
-      .then(function (d) { if (d && d.siguiente) { nextBib = parseInt(d.siguiente, 10); updateAll(); } })
-      .catch(function () { /* se queda el número local */ });
+  // Se llama al llegar al paso 2 (no al abrir la página), para no gastar lecturas
+  // de la base de datos con visitantes que solo están viendo la información.
+  function initNumeros() {
+    if (DB.iniciado) return;
+    DB.iniciado = true;
+    var rango = 'Números del <strong>' + CONFIG.numeros.minimo + '</strong> al <strong>' + CONFIG.numeros.maximo + '</strong>.';
+    if (!firebaseConfigurado()) {
+      // Modo demostración: los números ocupados se guardan solo en este navegador
+      try { (JSON.parse(localStorage.getItem(DEMO_KEY)) || []).forEach(function (n) { DB.tomados.add(n); }); } catch (e) { /* sin almacenamiento */ }
+      setEstadoNumeros('🧪 Modo demostración. ' + rango, 'demo');
+      return;
+    }
+    DB.conectando = true;
+    setEstadoNumeros('⏳ Consultando números disponibles…');
+    conectarFirebase().then(function (db) {
+      DB.db = db;
+      // Escucha en tiempo real los números ocupados
+      db.collection('numeros').onSnapshot(function (snap) {
+        DB.conectando = false;
+        DB.tomados = new Set(snap.docs.map(function (d) { return Number(d.id); }));
+        setEstadoNumeros('🟢 Disponibilidad en tiempo real. ' + rango, 'ok');
+        alCambiarOcupados();
+      }, function (err) {
+        DB.conectando = false;
+        console.error('[numeros]', err);
+        setEstadoNumeros('⚠️ No pudimos consultar los números disponibles. Recarga la página en unos momentos.', 'error');
+      });
+    }).catch(function (err) {
+      DB.conectando = false;
+      console.error('[firebase]', err);
+      setEstadoNumeros('⚠️ No pudimos conectar con la base de datos. Revisa tu conexión y recarga la página.', 'error');
+    });
   }
 
-  /* ---------- Validación ---------- */
+  function esReservado(n) { return CONFIG.numeros.reservados.indexOf(n) !== -1; }
+  function enRango(n) { return Number.isInteger(n) && n >= CONFIG.numeros.minimo && n <= CONFIG.numeros.maximo; }
+  // Para fines prácticos, reservado = ocupado
+  function estaOcupado(n) { return esReservado(n) || DB.tomados.has(n); }
+  function estaLibre(n) { return enRango(n) && !estaOcupado(n); }
+
+  /* ---------- Validación de campos ---------- */
   var onlyDigits = function (s) { return String(s).replace(/\D/g, ''); };
   function fieldError(input) {
     var v = input.value.trim();
@@ -301,9 +380,11 @@
     if (err) err.textContent = msg;
     input.setAttribute('aria-invalid', msg ? 'true' : 'false');
   }
-  function validateForm(form) {
+  // Valida los campos visibles de un contenedor (un paso del formulario)
+  function validar(container) {
     var first = null;
-    $$('input[required], select[required], input[data-telefono], input[data-edad]', form).forEach(function (inp) {
+    $$('input, select', container).forEach(function (inp) {
+      if (inp.closest('[hidden]') || inp.id === 'cantidad' || inp.id === 'desde' || inp.id === 'soloLibres') return;
       var msg = fieldError(inp);
       showError(inp, msg);
       if (msg && !first) first = inp;
@@ -323,170 +404,389 @@
     form.addEventListener('change', function (e) { if (e.target.closest('.has-error')) showError(e.target, fieldError(e.target)); });
     form.addEventListener('focusout', function (e) {
       var t = e.target;
-      if ((t.matches('input, select')) && t.type !== 'checkbox' && t.value) showError(t, fieldError(t));
+      if (t.matches('input, select') && t.type !== 'checkbox' && t.value && !t.closest('.tablero') && t.id !== 'cantidad') showError(t, fieldError(t));
     });
   }
+  function alerta(id, html) {
+    var el = $('#' + id);
+    if (!el) return;
+    el.innerHTML = html || '';
+    el.hidden = !html;
+  }
 
-  /* ---------- Pestañas ---------- */
-  function initTabs() {
-    var tabs = [$('#tabIndividual'), $('#tabGrupo')], panels = [$('#formIndividual'), $('#formGrupo')];
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener('click', function () {
-        tabs.forEach(function (t, j) {
-          t.classList.toggle('is-active', i === j);
-          t.setAttribute('aria-selected', String(i === j));
-          panels[j].hidden = i !== j;
-        });
-      });
+  /* ---------- Opciones de los <select> ---------- */
+  function optionsHTML(tipo) {
+    var html = '<option value="">Selecciona…</option>';
+    if (tipo === 'categorias') {
+      CONFIG.categorias.forEach(function (c) { html += '<option value="' + esc(c.id) + '">' + esc(c.nombre) + ' — ' + pesos(c.precio) + '</option>'; });
+    } else {
+      CONFIG[tipo].forEach(function (v) { html += '<option>' + esc(v) + '</option>'; });
+    }
+    return html;
+  }
+  function fillSelects(ctx) {
+    $$('select[data-opciones]', ctx).forEach(function (s) {
+      if (s.options.length > 0) return;
+      s.innerHTML = optionsHTML(s.getAttribute('data-opciones'));
     });
   }
-
-  /* ---------- Inscripción individual ---------- */
-  function renderSummaryIndividual() {
-    var form = $('#formIndividual'), cat = categoria(form.categoria.value), box = $('#summaryIndividual');
-    if (!cat) { box.innerHTML = ''; return; }
-    box.innerHTML =
-      '<h4>Resumen</h4>' +
-      '<div class="summary__row"><span>' + esc(cat.nombre) + '</span><span>' + pesos(cat.precio) + '</span></div>' +
-      '<div class="summary__row"><span>Número de corredor (preliminar)</span><span class="bib">#' + nextBib + '</span></div>' +
-      '<div class="summary__row summary__row--total"><span>Total a pagar</span><span>' + pesos(cat.precio) + '</span></div>';
+  function categoria(id) {
+    for (var i = 0; i < CONFIG.categorias.length; i++) if (CONFIG.categorias[i].id === id) return CONFIG.categorias[i];
+    return null;
   }
-  function initIndividual() {
-    var form = $('#formIndividual');
-    fillSelects(form);
-    liveValidation(form);
-    form.categoria.addEventListener('change', renderSummaryIndividual);
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!validateForm(form)) return;
-      var f = form.elements, cat = categoria(f.categoria.value);
-      var data = {
-        tipo: 'Individual',
-        fecha: new Date().toLocaleString('es-MX'),
-        corredores: [{
-          numero: nextBib,
-          nombre: f.nombre.value.trim(), edad: f.edad.value, sexo: f.sexo.value,
-          correo: f.correo.value.trim(), telefono: f.telefono.value,
-          talla: f.talla.value, categoria: cat.id,
-          emergenciaNombre: f.emergenciaNombre.value.trim(), emergenciaTelefono: f.emergenciaTelefono.value
-        }],
-        total: cat.precio
-      };
-      submitData(data, form, function () { renderSummaryIndividual(); });
+
+  /* ========================================================================
+     📝 INSCRIPCIÓN EN 4 PASOS
+     1. ¿Cuántos corredores?  2. Elegir números  3. Datos  4. Revisar y confirmar
+     ======================================================================== */
+  var W = { paso: 1, cantidad: 1, seleccion: [], rango: 'todos', cache: [] };
+
+  function form() { return $('#formInscripcion'); }
+  function esGrupo() { return W.cantidad > 1; }
+
+  function irAPaso(n, sinScroll) {
+    W.paso = n;
+    $$('.paso', form()).forEach(function (p) { p.hidden = Number(p.getAttribute('data-paso')) !== n; });
+    $$('#wizardPasos li').forEach(function (li) {
+      var k = Number(li.getAttribute('data-paso'));
+      li.classList.toggle('is-actual', k === n);
+      li.classList.toggle('is-hecho', k < n);
     });
+    if (n === 2) { safe(initNumeros, 'numeros'); pintarTablero(); pintarSeleccion(); }
+    if (n === 3) construirCorredores();
+    if (n === 4) pintarResumen();
+    if (!sinScroll) $('#wizardPasos').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* ---------- Inscripción en grupo ---------- */
-  function clampCount(n) {
+  /* La selección tiene un LUGAR FIJO por corredor: W.seleccion[0] es el número del
+     Corredor 1, W.seleccion[1] el del Corredor 2… Un lugar vacío es null.
+     Así, si un corredor pierde su número, sus datos no se mezclan con los de otro. */
+  function elegidos() { return W.seleccion.filter(function (n) { return n !== null; }); }
+  function vacios() { return W.seleccion.filter(function (n) { return n === null; }).length; }
+  // Deja vacíos los lugares cuyo número cumpla la condición y devuelve qué se liberó
+  function liberarLugares(condicion) {
+    var perdidos = [];
+    W.seleccion = W.seleccion.map(function (n, i) {
+      if (n !== null && condicion(n)) { perdidos.push({ numero: n, corredor: i + 1 }); return null; }
+      return n;
+    });
+    return perdidos;
+  }
+  function textoPerdidos(perdidos, final) {
+    return '😅 ' + perdidos.map(function (p) {
+      return '#' + p.numero + (W.cantidad > 1 ? ' (Corredor ' + p.corredor + ')' : '');
+    }).join(', ') + (perdidos.length > 1 ? ' acaban' : ' acaba') + ' de ser apartado' + (perdidos.length > 1 ? 's' : '') +
+      ' por otra persona. ' + final;
+  }
+
+  // Revisa si se puede avanzar al paso "destino"
+  function puedeAvanzar(destino) {
+    if (destino <= W.paso) return true;
+    if (W.paso === 1) return true;
+    if (W.paso === 2) {
+      alerta('alertaNumeros', '');
+      var perdidos = liberarLugares(estaOcupado);
+      if (perdidos.length) {
+        pintarTablero(); pintarSeleccion();
+        alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro.'));
+        return false;
+      }
+      var faltan = vacios();
+      if (faltan) {
+        alerta('alertaNumeros', 'Te falta' + (faltan > 1 ? 'n' : '') + ' elegir <strong>' + faltan + '</strong> número' + (faltan > 1 ? 's' : '') + '.');
+        return false;
+      }
+      return true;
+    }
+    if (W.paso === 3) {
+      alerta('alertaDatos', '');
+      var ok = validar($('.paso[data-paso="3"]', form()));
+      if (!ok) alerta('alertaDatos', 'Revisa los campos marcados en rojo.');
+      return ok;
+    }
+    return true;
+  }
+
+  /* ---------- Paso 1: cantidad ---------- */
+  function setCantidad(n) {
     n = parseInt(n, 10);
-    if (isNaN(n)) n = CONFIG.grupoMinimo;
-    return Math.max(CONFIG.grupoMinimo, Math.min(CONFIG.grupoMaximo, n));
+    if (isNaN(n)) n = 1;
+    n = Math.max(1, Math.min(CONFIG.corredoresMaximo, n));
+    W.cantidad = n;
+    $('#cantidad').value = n;
+    // Ajusta los lugares: al reducir se conservan los números ya elegidos primero
+    if (W.seleccion.length > n) W.seleccion = elegidos().concat(W.seleccion.map(function () { return null; })).slice(0, n);
+    while (W.seleccion.length < n) W.seleccion.push(null);
+    var total = n * (CONFIG.categorias[0] ? CONFIG.categorias[0].precio : 0);
+    $('#cantidadNota').innerHTML = n === 1
+      ? 'Inscripción <strong>individual</strong> · ' + pesos(total)
+      : 'Inscripción en <strong>grupo</strong> de ' + n + ' corredores · ' + pesos(total);
+    $('[data-ir="2"]', $('.paso[data-paso="1"]')).textContent = n === 1 ? 'Siguiente: elegir número →' : 'Siguiente: elegir ' + n + ' números →';
+    $('#consecutivosBox').hidden = n === 1;
   }
-  function runnerHTML(i) {
+
+  /* ---------- Paso 2: tablero y selección ---------- */
+  var BOTONES = [];
+  function initTablero() {
+    var grid = $('#tableroGrid');
+    var min = CONFIG.numeros.minimo, max = CONFIG.numeros.maximo, frag = document.createDocumentFragment();
+    for (var n = min; n <= max; n++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'num'; b.textContent = n; b.setAttribute('data-n', n);
+      frag.appendChild(b);
+      BOTONES.push(b);
+    }
+    grid.appendChild(frag);
+
+    // Filtros por centenas
+    var rangos = $('#tableroRangos'), html = '<button type="button" class="chip is-active" data-rango="todos">Todos</button>';
+    for (var s = min; s <= max; s += 100) {
+      var e = Math.min(s + 99, max);
+      html += '<button type="button" class="chip" data-rango="' + s + '-' + e + '">' + s + '–' + e + '</button>';
+    }
+    rangos.innerHTML = html;
+    rangos.addEventListener('click', function (ev) {
+      var chip = ev.target.closest('[data-rango]');
+      if (!chip) return;
+      $$('.chip', rangos).forEach(function (c) { c.classList.toggle('is-active', c === chip); });
+      W.rango = chip.getAttribute('data-rango');
+      pintarTablero();
+      grid.scrollTop = 0;
+    });
+    $('#soloLibres').addEventListener('change', function () { grid.classList.toggle('solo-libres', this.checked); });
+
+    // Tocar un número: si está libre se agrega; si ya es tuyo, se quita
+    grid.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.num');
+      if (!b || b.disabled) return;
+      alternarNumero(Number(b.getAttribute('data-n')));
+    });
+    // Quitar desde las fichas de la selección
+    $('#seleccionChips').addEventListener('click', function (ev) {
+      var x = ev.target.closest('[data-quitar]');
+      if (!x) return;
+      alternarNumero(Number(x.getAttribute('data-quitar')));
+    });
+
+    $('#alAzar').addEventListener('click', function () {
+      if (!vacios()) { alerta('alertaNumeros', 'Ya elegiste tus ' + W.cantidad + ' número' + (W.cantidad > 1 ? 's' : '') + '. Quita uno si quieres cambiarlo.'); return; }
+      var libres = [];
+      for (var k = CONFIG.numeros.minimo; k <= CONFIG.numeros.maximo; k++) if (estaLibre(k) && W.seleccion.indexOf(k) === -1) libres.push(k);
+      // Llena solo los lugares vacíos
+      W.seleccion = W.seleccion.map(function (n) {
+        if (n !== null || !libres.length) return n;
+        return libres.splice(Math.floor(Math.random() * libres.length), 1)[0];
+      });
+      alerta('alertaNumeros', '');
+      pintarTablero(); pintarSeleccion();
+    });
+
+    var desde = $('#desde');
+    desde.min = min; desde.max = max;
+    $('#asignarConsecutivos').addEventListener('click', function () {
+      var inicio = parseInt(desde.value, 10);
+      if (isNaN(inicio)) inicio = min;
+      var s = bloqueConsecutivo(W.cantidad, inicio);
+      if (s === -1) { alerta('alertaNumeros', 'No hay ' + W.cantidad + ' números consecutivos libres. Elígelos uno por uno.'); return; }
+      W.seleccion = [];
+      for (var k = 0; k < W.cantidad; k++) W.seleccion.push(s + k);
+      alerta('alertaNumeros', s === inicio ? '' : 'Desde el #' + inicio + ' no había ' + W.cantidad + ' números seguidos libres; te asignamos del <strong>#' + s + '</strong> al <strong>#' + (s + W.cantidad - 1) + '</strong>.');
+      pintarTablero(); pintarSeleccion();
+    });
+  }
+  // Primer bloque de "cantidad" números libres y consecutivos a partir de "desde"
+  function bloqueConsecutivo(cantidad, desde) {
+    var min = CONFIG.numeros.minimo, max = CONFIG.numeros.maximo;
+    function libreDesde(s) { for (var k = 0; k < cantidad; k++) if (!estaLibre(s + k)) return false; return true; }
+    for (var s = Math.max(min, desde); s + cantidad - 1 <= max; s++) if (libreDesde(s)) return s;
+    for (s = min; s < desde && s + cantidad - 1 <= max; s++) if (libreDesde(s)) return s;
+    return -1;
+  }
+  function alternarNumero(n) {
+    var i = W.seleccion.indexOf(n);
+    alerta('alertaNumeros', '');
+    if (i !== -1) W.seleccion[i] = null;                // ya era tuyo: se quita (su lugar queda vacío)
+    else {
+      var lugar = W.seleccion.indexOf(null);
+      if (lugar !== -1) W.seleccion[lugar] = n;           // se asigna al primer corredor sin número
+      else if (W.cantidad === 1) W.seleccion = [n];      // individual: cambia directo
+      else { alerta('alertaNumeros', 'Ya elegiste ' + W.cantidad + ' números. Quita uno (toca la ✕) para cambiarlo.'); return; }
+    }
+    pintarTablero(); pintarSeleccion();
+  }
+  function pintarSeleccion() {
+    var faltan = vacios(), listos = W.cantidad - faltan;
+    $('#seleccionCuenta').innerHTML = faltan > 0
+      ? 'Elegidos <strong>' + listos + '</strong> de ' + W.cantidad + ' · ' + (listos ? 'te falta' + (faltan > 1 ? 'n ' : ' ') + faltan : 'toca un número libre en el tablero')
+      : '✅ Listo: elegiste ' + (W.cantidad === 1 ? 'tu número' : 'tus ' + W.cantidad + ' números');
+    $('#seleccionCuenta').classList.toggle('is-completo', faltan <= 0);
+    // Una ficha por corredor, en su lugar
+    $('#seleccionChips').innerHTML = W.seleccion.map(function (n, i) {
+      var quien = W.cantidad > 1 ? '<small>C' + (i + 1) + '</small>' : '';
+      if (n === null) return '<span class="sel-chip sel-chip--vacio">' + quien + '#—</span>';
+      return '<span class="sel-chip">' + quien + '#' + n + '<button type="button" data-quitar="' + n + '" aria-label="Quitar el número ' + n + '">✕</button></span>';
+    }).join('');
+    $('#irDatos').disabled = faltan > 0;
+  }
+  function pintarTablero() {
+    if (!BOTONES.length) return;
+    var r = W.rango === 'todos' ? null : W.rango.split('-').map(Number);
+    var libres = 0;
+    BOTONES.forEach(function (b) {
+      var n = Number(b.getAttribute('data-n'));
+      var ocupado = estaOcupado(n), sel = W.seleccion.indexOf(n) !== -1 && !ocupado;
+      if (!ocupado) libres++;
+      b.classList.toggle('is-ocupado', ocupado);
+      b.classList.toggle('is-sel', sel);
+      b.disabled = ocupado;
+      b.hidden = !!r && (n < r[0] || n > r[1]);
+      b.setAttribute('aria-pressed', sel ? 'true' : 'false');
+      b.setAttribute('aria-label', 'Número ' + n + (ocupado ? ', ocupado' : sel ? ', seleccionado' : ', libre'));
+    });
+    $('#tableroConteo').innerHTML = '<strong>' + miles(libres) + '</strong> libres de ' + miles(CONFIG.numeros.maximo - CONFIG.numeros.minimo + 1);
+  }
+  // Cuando cambia la lista de ocupados (tiempo real): quita de tu selección lo que ya no está libre
+  function alCambiarOcupados() {
+    var perdidos = liberarLugares(estaOcupado);
+    if (perdidos.length) {
+      if (W.paso > 2) irAPaso(2);   // regresa a elegir; los datos ya escritos se conservan
+      alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro; tus datos se conservan.'));
+    }
+    pintarTablero(); pintarSeleccion();
+  }
+
+  /* ---------- Paso 3: datos ---------- */
+  function corredorHTML(i, numero) {
     var p = 'r' + i + '-';
+    var titulo = esGrupo() ? 'Corredor ' + (i + 1) : 'Tus datos';
     return '' +
-      '<div class="runner" data-index="' + i + '">' +
-        '<div class="runner__head"><h4>Corredor ' + (i + 1) + '</h4><span class="bib" data-bib>#—</span></div>' +
+      '<div class="runner" data-i="' + i + '">' +
+        '<div class="runner__head"><h4>' + titulo + '</h4><span class="bib">#' + numero + '</span></div>' +
         '<div class="runner__grid">' +
-          '<div class="field field--full field--half"><label for="' + p + 'nombre">Nombre completo *</label><input id="' + p + 'nombre" data-k="nombre" type="text" required minlength="5"></div>' +
+          '<div class="field field--full field--half"><label for="' + p + 'nombre">Nombre completo *</label><input id="' + p + 'nombre" data-k="nombre" type="text" required minlength="5"' + (esGrupo() ? '' : ' autocomplete="name"') + '></div>' +
           '<div class="field"><label for="' + p + 'edad">Edad *</label><input id="' + p + 'edad" data-k="edad" type="number" inputmode="numeric" required data-edad></div>' +
           '<div class="field"><label for="' + p + 'sexo">Sexo *</label><select id="' + p + 'sexo" data-k="sexo" required data-opciones="sexos"></select></div>' +
-          '<div class="field"><label for="' + p + 'talla">Talla *</label><select id="' + p + 'talla" data-k="talla" required data-opciones="tallas"></select></div>' +
           '<div class="field"><label for="' + p + 'cat">Distancia *</label><select id="' + p + 'cat" data-k="categoria" required data-opciones="categorias"></select></div>' +
+          '<div class="field"><label for="' + p + 'talla">Talla de playera (unisex) *</label><select id="' + p + 'talla" data-k="talla" required data-opciones="tallas"></select></div>' +
           '<div class="field"><label for="' + p + 'en">Contacto de emergencia *</label><input id="' + p + 'en" data-k="emergenciaNombre" type="text" required minlength="3"></div>' +
-          '<div class="field"><label for="' + p + 'et">Tel. emergencia *</label><input id="' + p + 'et" data-k="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono></div>' +
+          '<div class="field"><label for="' + p + 'et">Tel. de emergencia *</label><input id="' + p + 'et" data-k="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono></div>' +
         '</div>' +
       '</div>';
   }
-  // Agrega o quita filas sin borrar lo que ya se escribió
-  function renderRunners(n) {
-    var box = $('#runners'), current = box.children.length;
-    for (var i = current; i < n; i++) {
-      box.insertAdjacentHTML('beforeend', runnerHTML(i));
-      fillSelects(box.lastElementChild);
-    }
-    while (box.children.length > n) box.removeChild(box.lastElementChild);
+  // Construye una tarjeta por número elegido, conservando lo que ya se había escrito
+  function construirCorredores() {
+    var box = $('#corredores');
+    $$('.runner', box).forEach(function (row) {
+      var i = Number(row.getAttribute('data-i')), datos = {};
+      $$('[data-k]', row).forEach(function (inp) { datos[inp.getAttribute('data-k')] = inp.value; });
+      W.cache[i] = datos;
+    });
+    box.innerHTML = W.seleccion.map(function (n, i) { return corredorHTML(i, n); }).join('');
+    fillSelects(box);
+    $$('.runner', box).forEach(function (row) {
+      var datos = W.cache[Number(row.getAttribute('data-i'))];
+      if (!datos) return;
+      $$('[data-k]', row).forEach(function (inp) { var v = datos[inp.getAttribute('data-k')]; if (v) inp.value = v; });
+    });
+    // Contacto: individual o responsable de grupo
+    $('#contactoTitulo').textContent = esGrupo() ? 'Responsable del grupo' : 'Tus datos de contacto';
+    $$('[data-solo-grupo]', form()).forEach(function (f) {
+      f.hidden = !esGrupo();
+      $$('input', f).forEach(function (inp) { inp.required = esGrupo(); });
+    });
   }
-  function groupDiscount(n) {
+
+  /* ---------- Paso 4: resumen ---------- */
+  function datosInscripcion() {
+    var f = form().elements;
+    var corredores = $$('#corredores .runner').map(function (row, i) {
+      var r = { numero: W.seleccion[i] };
+      $$('[data-k]', row).forEach(function (inp) { r[inp.getAttribute('data-k')] = inp.value.trim(); });
+      return r;
+    });
+    var subtotal = corredores.reduce(function (s, r) { var c = categoria(r.categoria); return s + (c ? c.precio : 0); }, 0);
     var pct = 0;
-    CONFIG.descuentosGrupo.forEach(function (d) { if (n >= d.desde && d.porcentaje > pct) pct = d.porcentaje; });
-    return pct;
-  }
-  function renderSummaryGrupo() {
-    var rows = $$('#runners .runner'), n = rows.length, subtotal = 0, faltan = 0, bibs = [];
-    var porCat = {};
-    rows.forEach(function (row, i) {
-      var num = nextBib + i;
-      bibs.push(num);
-      $('[data-bib]', row).textContent = '#' + num;
-      var cat = categoria($('[data-k="categoria"]', row).value);
-      if (cat) { subtotal += cat.precio; porCat[cat.nombre] = porCat[cat.nombre] || { n: 0, precio: cat.precio }; porCat[cat.nombre].n++; }
-      else faltan++;
-    });
-    var pct = groupDiscount(n), desc = Math.round(subtotal * pct / 100), total = subtotal - desc;
-
-    var html = '<h4>Números asignados</h4>' +
-      '<p class="bibs-range">Del <strong>#' + bibs[0] + '</strong> al <strong>#' + bibs[n - 1] + '</strong> · ' + n + ' corredores consecutivos</p>' +
-      '<div class="bibs-preview">' + bibs.map(function (b) { return '<span class="bib">#' + b + '</span>'; }).join('') + '</div>' +
-      '<h4>Total a pagar</h4>';
-    Object.keys(porCat).forEach(function (k) {
-      html += '<div class="summary__row"><span>' + esc(k) + ' × ' + porCat[k].n + '</span><span>' + pesos(porCat[k].n * porCat[k].precio) + '</span></div>';
-    });
-    if (faltan) html += '<div class="summary__row"><span>Sin distancia elegida</span><span>' + faltan + '</span></div>';
-    if (pct) html += '<div class="summary__row"><span>Subtotal</span><span>' + pesos(subtotal) + '</span></div>';
-    if (pct) html += '<div class="summary__row summary__row--discount"><span>Descuento por grupo (' + pct + '%)</span><span>−' + pesos(desc) + '</span></div>';
-    else if (CONFIG.descuentosGrupo.length) {
-      var nextD = CONFIG.descuentosGrupo.filter(function (d) { return d.desde > n; }).sort(function (a, b) { return a.desde - b.desde; })[0];
-      if (nextD) html += '<div class="summary__row"><span>💡 Con ' + nextD.desde + ' corredores obtienen ' + nextD.porcentaje + '% de descuento</span><span></span></div>';
+    if (esGrupo()) CONFIG.descuentosGrupo.forEach(function (d) { if (corredores.length >= d.desde && d.porcentaje > pct) pct = d.porcentaje; });
+    var descuento = Math.round(subtotal * pct / 100);
+    var base = { fecha: new Date().toLocaleString('es-MX'), corredores: corredores, total: subtotal - descuento };
+    if (!esGrupo()) {
+      corredores[0].correo = f.correo.value.trim();
+      corredores[0].telefono = f.telefono.value;
+      return Object.assign({ tipo: 'Individual' }, base);
     }
-    html += '<div class="summary__row summary__row--total"><span>Total</span><span>' + pesos(total) + '</span></div>';
-    html += '<p class="hint" style="color:rgba(255,255,255,.6);margin-top:8px">Los números son preliminares y se confirman al enviar.</p>';
-    $('#summaryGrupo').innerHTML = html;
-    return { subtotal: subtotal, descuento: desc, porcentaje: pct, total: total };
+    return Object.assign({
+      tipo: 'Grupo',
+      grupo: f.grupo.value.trim(),
+      responsable: f.responsable.value.trim(),
+      correo: f.correo.value.trim(),
+      telefono: f.telefono.value,
+      subtotal: subtotal,
+      descuento: descuento
+    }, base);
   }
-  function initGroup() {
-    var form = $('#formGrupo'), input = $('#g-cantidad');
-    $('#countHint').textContent = 'Mínimo ' + CONFIG.grupoMinimo + ', máximo ' + CONFIG.grupoMaximo + ' corredores.';
-    input.min = CONFIG.grupoMinimo; input.max = CONFIG.grupoMaximo;
-    function setCount(n) {
-      n = clampCount(n);
-      input.value = n;
-      renderRunners(n);
-      renderSummaryGrupo();
-    }
-    $('#countMinus').addEventListener('click', function () { setCount(Number(input.value) - 1); });
-    $('#countPlus').addEventListener('click', function () { setCount(Number(input.value) + 1); });
-    input.addEventListener('change', function () { setCount(input.value); });
-    form.addEventListener('change', function (e) { if (e.target.getAttribute('data-k') === 'categoria') renderSummaryGrupo(); });
-    liveValidation(form);
-    setCount(CONFIG.grupoMinimo);
+  function pintarResumen() {
+    var d = datosInscripcion();
+    var html = '<h4>' + (d.tipo === 'Grupo' ? 'Grupo «' + esc(d.grupo) + '»' : 'Tu inscripción') + '</h4>';
+    d.corredores.forEach(function (r) {
+      var c = categoria(r.categoria);
+      html += '<div class="summary__row"><span><span class="bib">#' + r.numero + '</span> ' + esc(r.nombre) + ' · ' + esc(r.categoria) + ' · Talla ' + esc(r.talla) + '</span><span>' + pesos(c ? c.precio : 0) + '</span></div>';
+    });
+    if (d.descuento) html += '<div class="summary__row summary__row--discount"><span>Descuento por grupo</span><span>−' + pesos(d.descuento) + '</span></div>';
+    html += '<div class="summary__row summary__row--total"><span>Total a pagar</span><span>' + pesos(d.total) + '</span></div>';
+    html += '<p class="summary__contacto">Contacto: ' + esc(d.tipo === 'Grupo' ? d.responsable + ' · ' + d.correo + ' · ' + d.telefono : d.corredores[0].correo + ' · ' + d.corredores[0].telefono) + '</p>';
+    $('#resumen').innerHTML = html;
+    $('#aceptaTexto').innerHTML = (esGrupo() ? 'Como responsable, confirmo que todos los integrantes leyeron y aceptan el ' : 'He leído y acepto el ') +
+      '<a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *';
+    $('[data-open-rules]', $('#aceptaTexto')).addEventListener('click', function (e) { e.preventDefault(); openModal($('#reglamento')); });
+    $('#btnEnviar').textContent = esGrupo() ? 'Corre por ellos: inscribir al grupo' : 'Inscríbete y suma tu paso';
+  }
 
-    form.addEventListener('submit', function (e) {
+  function reiniciarWizard() {
+    form().reset();
+    W.seleccion = []; W.cache = [];
+    $('#corredores').innerHTML = '';
+    ['alertaNumeros', 'alertaDatos', 'alertaEnvio'].forEach(function (id) { alerta(id, ''); });
+    setCantidad(1);
+    irAPaso(1, true);
+  }
+
+  function initInscripcion() {
+    var f = form();
+    fillSelects(f);
+    liveValidation(f);
+    $$('[data-max-corredores]').forEach(function (el) { el.textContent = CONFIG.corredoresMaximo; });
+    $('#cantidad').min = 1; $('#cantidad').max = CONFIG.corredoresMaximo;
+    $('#cantMenos').addEventListener('click', function () { setCantidad(W.cantidad - 1); });
+    $('#cantMas').addEventListener('click', function () { setCantidad(W.cantidad + 1); });
+    $('#cantidad').addEventListener('change', function () { setCantidad(this.value); });
+    setCantidad(1);
+    initTablero();
+    pintarSeleccion();
+
+    // Botones Siguiente / Atrás
+    f.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-ir]');
+      if (!b) return;
+      var destino = Number(b.getAttribute('data-ir'));
+      if (puedeAvanzar(destino)) irAPaso(destino);
+    });
+    // También se puede volver tocando un paso ya completado en el indicador
+    $('#wizardPasos').addEventListener('click', function (e) {
+      var li = e.target.closest('li.is-hecho');
+      if (li) irAPaso(Number(li.getAttribute('data-paso')));
+    });
+
+    f.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (!validateForm(form)) return;
-      var f = form.elements, totals = renderSummaryGrupo();
-      var corredores = $$('#runners .runner').map(function (row, i) {
-        var r = { numero: nextBib + i };
-        $$('[data-k]', row).forEach(function (inp) { r[inp.getAttribute('data-k')] = inp.value.trim(); });
-        return r;
-      });
-      var data = {
-        tipo: 'Grupo',
-        fecha: new Date().toLocaleString('es-MX'),
-        grupo: f.grupo.value.trim(),
-        responsable: f.responsable.value.trim(),
-        correo: f.correo.value.trim(),
-        telefono: f.telefono.value,
-        corredores: corredores,
-        subtotal: totals.subtotal,
-        descuento: totals.descuento,
-        total: totals.total
-      };
-      submitData(data, form, function () { $('#runners').innerHTML = ''; setCount(CONFIG.grupoMinimo); });
+      alerta('alertaEnvio', '');
+      var acepta = $('#acepta');
+      showError(acepta, fieldError(acepta));
+      if (!acepta.checked) { alerta('alertaEnvio', 'Para continuar, acepta el reglamento y la carta responsiva.'); return; }
+      submitData(datosInscripcion());
     });
   }
 
-  /* ---------- Texto plano para copiar / WhatsApp ---------- */
+  /* ---------- Texto plano para copiar ---------- */
   function toText(d) {
     var t = '🏃 ' + CONFIG.nombreCarrera + '\nInscripción: ' + d.tipo + '\nFecha: ' + d.fecha + '\n';
     if (d.tipo === 'Grupo') {
@@ -499,9 +799,10 @@
     });
     if (d.descuento) t += '\n\nSubtotal: ' + pesos(d.subtotal) + '\nDescuento: −' + pesos(d.descuento);
     t += '\nTOTAL: ' + pesos(d.total);
+    if (d.pagarAntesDe) t += '\nPagar antes del: ' + d.pagarAntesDe;
     return t;
   }
-  // Formato CSV (separado por tabuladores) para pegar directo en Excel o Google Sheets
+  // Formato separado por tabuladores para pegar directo en Excel
   function toSheetRows(d) {
     return d.corredores.map(function (r) {
       return [d.fecha, d.tipo, d.grupo || '', r.numero, r.nombre, r.edad, r.sexo, r.categoria, r.talla,
@@ -510,21 +811,38 @@
   }
 
   /* ---------- Envío ---------- */
-  function submitData(data, form, onReset) {
-    var btn = $('button[type="submit"]', form), label = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Enviando…';
+  function errorOcupados(numeros) {
+    var e = new Error('Números ocupados: ' + numeros.join(', '));
+    e.code = 'numeros-ocupados';
+    e.numeros = numeros;
+    return e;
+  }
+  function submitData(data) {
+    var btn = $('#btnEnviar'), label = btn.textContent;
+    if (firebaseConfigurado() && !DB.db) {
+      alerta('alertaEnvio', '⏳ Todavía estamos conectando con la base de datos. Intenta de nuevo en unos segundos.');
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Apartando tus números…';
+
+    // Fecha límite de pago (se guarda con la inscripción para que los organizadores la vean)
+    var limite = new Date(Date.now() + CONFIG.pago.diasParaPagar * 864e5);
+    data.estadoPago = 'pendiente';
+    data.pagarAntesDe = limite.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     send(data).then(function (res) {
-      // Si el servidor (Google Sheets) devolvió números definitivos, se usan esos.
-      if (res && res.numeros && res.numeros.length === data.corredores.length) {
-        data.corredores.forEach(function (r, i) { r.numero = res.numeros[i]; });
-      }
-      var last = data.corredores[data.corredores.length - 1].numero;
-      saveLocalBib(Math.max(nextBib, last + 1));
-      showConfirmation(data, !res || res.offline);
-      form.reset();
-      onReset();
+      showConfirmation(data, !!(res && res.offline));
+      reiniciarWizard();
+      pintarTablero();
     }).catch(function (err) {
+      if (err && err.code === 'numeros-ocupados') {
+        // Alguien apartó ese número justo antes: se quita de la selección y se regresa al paso 2
+        err.numeros.forEach(function (n) { DB.tomados.add(n); });
+        var perdidos = liberarLugares(function (n) { return err.numeros.indexOf(n) !== -1; });
+        irAPaso(2);
+        alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro; tus datos se conservan.'));
+        return;
+      }
       console.error(err);
       // Si falla la conexión no se pierden los datos: se muestran para copiarlos.
       showConfirmation(data, true, true);
@@ -534,30 +852,63 @@
   }
 
   function send(data) {
-    if (CONFIG.modo === 'sheets' && CONFIG.urlGoogleSheets) {
-      // text/plain evita el bloqueo CORS de Google Apps Script
-      return fetch(CONFIG.urlGoogleSheets, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) })
-        .then(function (r) { return r.json(); })
-        .then(function (d) { if (!d.ok) throw new Error(d.error || 'Error en Google Sheets'); return d; });
+    var numeros = data.corredores.map(function (r) { return r.numero; });
+
+    if (DB.db) {
+      // Transacción: comprueba que TODOS los números sigan libres y, solo entonces,
+      // guarda la inscripción y aparta los números al mismo tiempo.
+      var db = DB.db, FieldValue = window.firebase.firestore.FieldValue;
+      var refs = numeros.map(function (n) { return db.collection('numeros').doc(String(n)); });
+      var inscRef = db.collection('inscripciones').doc();
+      return db.runTransaction(function (tx) {
+        return Promise.all(refs.map(function (r) { return tx.get(r); })).then(function (snaps) {
+          var ocupados = snaps.filter(function (s) { return s.exists; }).map(function (s) { return Number(s.id); });
+          if (ocupados.length) throw errorOcupados(ocupados);
+          tx.set(inscRef, Object.assign({}, data, { creado: FieldValue.serverTimestamp() }));
+          refs.forEach(function (r, i) {
+            tx.set(r, {
+              numero: numeros[i],
+              categoria: data.corredores[i].categoria,
+              inscripcion: inscRef.id,
+              creado: FieldValue.serverTimestamp()
+            });
+          });
+        });
+      }).then(function () { return { id: inscRef.id }; });
     }
-    if (CONFIG.modo === 'formspree' && CONFIG.urlFormspree) {
-      return fetch(CONFIG.urlFormspree, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ _subject: 'Inscripción ' + data.tipo + ' — ' + CONFIG.nombreCarrera, email: data.correo || data.corredores[0].correo, resumen: toText(data), datos: data })
-      }).then(function (r) { if (!r.ok) throw new Error('Error en Formspree'); return {}; });
-    }
-    if (CONFIG.modo === 'whatsapp') {
-      window.open('https://wa.me/' + CONFIG.whatsappOrganizador + '?text=' + encodeURIComponent(toText(data)), '_blank');
-      return Promise.resolve({});
-    }
-    // Modo 'pantalla' (sin conexión)
+
+    // Modo demostración: solo revisa y guarda en este navegador
+    var ocupados = numeros.filter(estaOcupado);
+    if (ocupados.length) return Promise.reject(errorOcupados(ocupados));
+    numeros.forEach(function (n) { DB.tomados.add(n); });
+    try { localStorage.setItem(DEMO_KEY, JSON.stringify(Array.from(DB.tomados))); } catch (e) { /* sin almacenamiento */ }
     return Promise.resolve({ offline: true });
+  }
+
+  // Instrucciones de pago + botón de WhatsApp con el mensaje ya escrito
+  function pagoHTML(data) {
+    var nums = data.corredores.map(function (r) { return '#' + r.numero; }).join(', ');
+    var quien = data.tipo === 'Grupo' ? 'el grupo "' + data.grupo + '" (responsable: ' + data.responsable + ')' : data.corredores[0].nombre;
+    var html = '<div class="pago">' +
+      '<p class="pago__titulo">💳 Siguiente paso: realiza tu pago</p>' +
+      '<p>Tienes <strong>' + CONFIG.pago.diasParaPagar + ' días</strong> para pagar, a más tardar el <strong>' + esc(data.pagarAntesDe) + '</strong>. ' +
+      'Envíanos un WhatsApp para recibir el número de cuenta, o paga en los locales que nos apoyan.</p>';
+    if (CONFIG.pago.whatsapp) {
+      var msg = 'Hola, me inscribí a ' + CONFIG.nombreCarrera + '. ' +
+        'Inscripción de ' + quien + ' · Número(s): ' + nums + ' · Total: ' + pesos(data.total) + '. ' +
+        '¿Me pueden compartir el número de cuenta para realizar el pago?';
+      html += '<a class="btn btn--primary btn--block pago__wa" href="https://wa.me/' + esc(CONFIG.pago.whatsapp) + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">💬 Pedir número de cuenta por WhatsApp</a>';
+    } else {
+      html += '<p class="pendiente">[POR CONFIRMAR: número de WhatsApp para pagos]</p>';
+    }
+    return html + '</div>';
   }
 
   function showConfirmation(data, showData, failed) {
     var nums = data.corredores.map(function (r) { return r.numero; });
-    var numTxt = nums.length > 1 ? 'Números del <strong>#' + nums[0] + '</strong> al <strong>#' + nums[nums.length - 1] + '</strong>' : 'Tu número: <strong>#' + nums[0] + '</strong>';
+    var numTxt = nums.length > 1
+      ? 'Números: ' + nums.map(function (n) { return '<strong>#' + n + '</strong>'; }).join(', ')
+      : 'Tu número: <strong>#' + nums[0] + '</strong>';
     var who = data.tipo === 'Grupo' ? 'Grupo <strong>' + esc(data.grupo) + '</strong> (' + nums.length + ' corredores)' : '<strong>' + esc(data.corredores[0].nombre) + '</strong>';
     // ✏️ CAMBIAR: textos del mensaje de confirmación
     $('#confirmTitle').textContent = failed ? 'No pudimos enviar tu inscripción' : '¡Gracias por sumar tu paso!';
@@ -565,38 +916,22 @@
       ? '<p>Hubo un problema de conexión. Copia tus datos y envíalos por WhatsApp o correo al organizador.</p>'
       : '<p><span lang="ko" style="font-size:1.5rem">감사합니다!</span> Tu inscripción a <strong>HANGUK RUN</strong> quedó registrada.</p>' +
         '<p>' + who + '<br>' + numTxt + '<br>Total a pagar: <strong>' + pesos(data.total) + '</strong></p>' +
-        '<p>Cada inscripción apoya a los <strong>10 jóvenes voluntarios de Granito de Arena</strong> que representarán a su comunidad en un encuentro internacional en Corea del Sur. Te contactaremos al correo registrado con las instrucciones de pago. <span lang="ko">가자!</span> 🏁</p>';
+        pagoHTML(data) +
+        '<p>Cada inscripción apoya a los <strong>10 jóvenes voluntarios de Granito de Arena</strong> que representarán a su comunidad en un encuentro internacional en Corea del Sur. <span lang="ko">가자!</span> 🏁</p>';
     $('#dataBlock').hidden = !showData;
     if (showData) $('#dataOutput').value = toText(data) + '\n\n--- Filas para hoja de cálculo ---\n' + toSheetRows(data);
     openModal($('#confirmacion'));
   }
 
-  function updateAll() { renderSummaryIndividual(); renderSummaryGrupo(); }
-
-  /* ---------- Compromisos "Lo que regresa a la comunidad" ----------
-     Oculta los marcados data-estado="por-confirmar" si CONFIG.mostrarPorConfirmar es false,
-     y oculta la sección completa si no queda ninguno visible. */
-  function initCompromisos() {
-    var section = $('#compromisos');
-    if (!section || CONFIG.mostrarPorConfirmar) return;
-    $$('[data-estado="por-confirmar"]', section).forEach(function (el) { el.hidden = true; });
-    if (!$$('.compromiso:not([hidden])', section).length) section.hidden = true;
-  }
-
-
   /* ---------- Arranque ---------- */
   function init() {
-    readLocalBib();
     safe(initNav, 'nav');
     safe(initReveal, 'reveal');
     safe(initCountdown, 'countdown');
     safe(initInstagram, 'instagram');
     safe(initCompromisos, 'compromisos');
     safe(initModals, 'modals');
-    safe(initTabs, 'tabs');
-    safe(initIndividual, 'individual');
-    safe(initGroup, 'group');
-    safe(fetchServerBib, 'bib');
+    safe(initInscripcion, 'inscripcion');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

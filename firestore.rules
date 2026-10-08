@@ -1,0 +1,53 @@
+// =============================================================================
+//  HANGUK RUN 한국 — Reglas de seguridad de Firestore
+//  Pega este archivo completo en: Consola de Firebase → Firestore Database → Reglas → Publicar
+//  (Este archivo NO se sube al hosting; no pasa nada si se sube, pero no se usa ahí.)
+//
+//  Qué permiten:
+//   • numeros/{n}       → cualquiera puede VER qué números están ocupados (no tienen datos personales)
+//                         y CREAR uno nuevo solo si no existe y viene junto con su inscripción.
+//                         Nadie puede modificarlos ni borrarlos desde la página.
+//   • inscripciones/{id}→ cualquiera puede CREAR su inscripción, pero NADIE puede leerlas,
+//                         modificarlas ni borrarlas desde la página. Los organizadores las ven
+//                         en la consola de Firebase.
+//
+//  ✏️ Si cambias el rango de números en script.js (CONFIG.numeros), cámbialo también aquí
+//     (MINIMO y MAXIMO), y agrega los números reservados en la lista RESERVADOS.
+// =============================================================================
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function MINIMO() { return 1; }
+    function MAXIMO() { return 700; }
+    function RESERVADOS() { return []; }   // ejemplo: [1, 2, 3, 100]
+
+    match /numeros/{numero} {
+      allow read: if true;
+
+      allow create: if request.resource.data.keys().hasOnly(['numero', 'categoria', 'inscripcion', 'creado'])
+        && request.resource.data.numero is int
+        && string(request.resource.data.numero) == numero
+        && request.resource.data.numero >= MINIMO()
+        && request.resource.data.numero <= MAXIMO()
+        && !(request.resource.data.numero in RESERVADOS())
+        && request.resource.data.categoria in ['3K', '5K', '10K']
+        && request.resource.data.creado == request.time
+        // El número solo se aparta si en la misma operación se guarda su inscripción
+        && existsAfter(/databases/$(database)/documents/inscripciones/$(request.resource.data.inscripcion));
+
+      allow update, delete: if false;
+    }
+
+    match /inscripciones/{id} {
+      allow create: if request.resource.data.keys().hasAll(['tipo', 'corredores', 'total', 'creado'])
+        && request.resource.data.tipo in ['Individual', 'Grupo']
+        && request.resource.data.corredores is list
+        && request.resource.data.corredores.size() >= 1
+        && request.resource.data.corredores.size() <= 20
+        && request.resource.data.creado == request.time;
+
+      allow read, update, delete: if false;
+    }
+  }
+}

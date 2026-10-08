@@ -9,7 +9,7 @@
   <meta property="og:title" content="HANGUK RUN 한국 · De aquí para el mundo">
   <meta property="og:description" content="Carrera con causa · Granito de Arena. 3K, 5K y 10K · Domingo 6 de diciembre de 2026. Corre por los 10 jóvenes voluntarios que representarán a su comunidad en Corea del Sur.">
   <meta property="og:image" content="assets/img/logo-granito-de-arena.png">
-  <meta name="theme-color" content="#1B2A49">
+  <meta name="theme-color" content="#3d2600">
   <link rel="icon" type="image/png" href="assets/img/logo-granito-de-arena.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Black+Han+Sans&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- El "?v=" evita que el navegador muestre una versión vieja. Cambia el número cada vez que subas cambios. -->
-  <link rel="stylesheet" href="style.css?v=20261008a">
+  <link rel="stylesheet" href="style.css?v=20261012c">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -36,7 +36,7 @@
 
       <nav class="nav__menu" id="navMenu">
         <a href="#inicio">Inicio</a>
-        <a href="#por-que">¿Por qué corremos?</a>
+        <a href="#por-que">La causa</a>
         <a href="#organizador">Organizador</a>
         <a href="#fechas">Fechas</a>
         <a href="#sede">Sede</a>
@@ -244,12 +244,12 @@
         <!-- ✏️ CAMBIAR: fechas. Para agregar otra, copia un <li class="timeline__item"> completo. -->
         <ol class="timeline">
           <li class="timeline__item reveal">
-            <span class="timeline__date">1 oct 2026</span>
+            <span class="timeline__date">25 oct 2026</span>
             <h3>Apertura de inscripciones</h3>
             <p>Inscripción en línea en esta página.</p>
           </li>
           <li class="timeline__item reveal">
-            <span class="timeline__date">29 nov 2026</span>
+            <span class="timeline__date">30 nov 2026</span>
             <h3>Cierre de inscripciones</h3>
             <p>O antes, si se agotan los lugares.</p>
           </li>
@@ -261,11 +261,11 @@
           <li class="timeline__item timeline__item--main reveal">
             <span class="timeline__date">6 dic 2026 · 7:00 a.m.</span>
             <h3>¡Día de la carrera! <span lang="ko">가자!</span></h3>
-            <!-- ✏️ CAMBIAR: horarios y actividades (ejemplo) -->
-            <p>Salida 10K a las 7:00, 5K a las 7:15 y 3K a las 7:30. Al terminar: convivencia K-culture con música, baile y comida coreana.</p>
+            <!-- ✏️ CAMBIAR: horarios de salida -->
+            <p>Salida 10K a las 7:00, 5K a las 7:15 y 3K a las 7:30. Llega con al menos 45 minutos de anticipación.</p>
           </li>
           <li class="timeline__item timeline__item--korea reveal">
-            <span class="timeline__date">2027 · Corea del Sur</span>
+            <span class="timeline__date">4 abr 2027 · Corea del Sur</span>
             <h3>Encuentro internacional</h3>
             <p>La delegación de 10 jóvenes voluntarios representa a San Martín Texmelucan. <span lang="ko">감사합니다!</span></p>
           </li>
@@ -341,10 +341,9 @@
             </div>
             <dl class="route__list">
               <div><dt>🚩 Salida</dt><dd>Ex Hacienda de Chautla · <span class="pendiente">[POR CONFIRMAR: punto exacto]</span></dd></div>
-              <div><dt>🏁 Meta</dt><dd>Mismo punto de salida, con convivencia K-culture</dd></div>
+              <div><dt>🏁 Meta</dt><dd>Mismo punto de salida</dd></div>
               <div><dt>💧 Hidratación</dt><dd>Km 2.5, Km 5 y Km 7.5 · agua y bebida isotónica en meta</dd></div>
-              <div><dt>🎶 Animación</dt><dd>Puntos con música y porras en la ruta</dd></div>
-              <div><dt>🩺 Servicio médico</dt><dd>Ambulancia en salida/meta y unidad móvil en ruta</dd></div>
+              <div><dt>🩺 Servicio médico</dt><dd>Ambulancia en salida y meta</dd></div>
             </dl>
           </div>
         </div>
@@ -366,7 +365,7 @@
           </article>
           <article class="card reveal">
             <div class="card__media"><div class="placeholder">🔢</div></div>
-            <h3>Número de corredor</h3><p>Con tu nombre en español y en hangul.</p>
+            <h3>Número de corredor</h3><p>El número que tú elijas, con tu nombre en español y en hangul.</p>
           </article>
           <article class="card reveal">
             <div class="card__media"><div class="placeholder">🏅</div></div>
@@ -475,119 +474,140 @@
       </div>
     </section>
 
-    <!-- ===================== 11. INSCRIPCIÓN ===================== -->
-    <!-- Precios, categorías, tallas y límites se cambian en script.js → objeto CONFIG -->
+    <!-- ===================== 11. INSCRIPCIÓN (en 4 pasos) =====================
+         Precios, categorías, tallas, rango de números y pago se cambian en script.js → objeto CONFIG -->
     <section class="section section--signup" id="inscripcion">
       <div class="container container--narrow">
         <p class="eyebrow reveal">Asegura tu lugar <span class="ko" lang="ko">참가 신청</span></p>
         <h2 class="reveal">Inscríbete y suma tu paso</h2>
-        <!-- ✏️ CAMBIAR: precios visibles (deben coincidir con CONFIG.categorias en script.js) -->
-        <p class="section__lead reveal" id="priceLead">3K: $250 · 5K: $350 · 10K: $450 · Individual o en grupo. Cada inscripción apoya a los 10 jóvenes voluntarios de Granito de Arena.</p>
+        <!-- ✏️ CAMBIAR: precio visible (debe coincidir con CONFIG.categorias en script.js) -->
+        <p class="section__lead reveal"><strong>$400 por corredor</strong> en cualquier distancia (3K, 5K o 10K). Inscríbete solo o en grupo y <strong>elige tu propio número</strong>. Cada inscripción apoya a los 10 jóvenes voluntarios de Granito de Arena.</p>
 
-        <div class="tabs reveal" role="tablist">
-          <button class="tab is-active" role="tab" aria-selected="true" aria-controls="formIndividual" id="tabIndividual">🏃 Individual</button>
-          <button class="tab" role="tab" aria-selected="false" aria-controls="formGrupo" id="tabGrupo">👥 En grupo</button>
-        </div>
+        <!-- Indicador de pasos -->
+        <ol class="wpasos reveal" id="wizardPasos" aria-label="Pasos de la inscripción">
+          <li class="is-actual" data-paso="1"><b>1</b><span>Corredores</span></li>
+          <li data-paso="2"><b>2</b><span>Números</span></li>
+          <li data-paso="3"><b>3</b><span>Datos</span></li>
+          <li data-paso="4"><b>4</b><span>Confirmar</span></li>
+        </ol>
 
-        <!-- ---------- A) INDIVIDUAL ---------- -->
-        <form class="form" id="formIndividual" role="tabpanel" aria-labelledby="tabIndividual" novalidate>
-          <fieldset>
-            <legend>Tus datos</legend>
-            <div class="field field--full">
-              <label for="i-nombre">Nombre completo *</label>
-              <input id="i-nombre" name="nombre" type="text" autocomplete="name" required minlength="5">
-            </div>
-            <div class="field">
-              <label for="i-edad">Edad *</label>
-              <input id="i-edad" name="edad" type="number" inputmode="numeric" required data-edad>
-            </div>
-            <div class="field">
-              <label for="i-sexo">Sexo *</label>
-              <select id="i-sexo" name="sexo" required data-opciones="sexos"></select>
-            </div>
-            <div class="field">
-              <label for="i-correo">Correo electrónico *</label>
-              <input id="i-correo" name="correo" type="email" autocomplete="email" required>
-            </div>
-            <div class="field">
-              <label for="i-tel">Teléfono (10 dígitos) *</label>
-              <input id="i-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
-            </div>
-            <div class="field">
-              <label for="i-talla">Talla de playera *</label>
-              <select id="i-talla" name="talla" required data-opciones="tallas"></select>
-            </div>
-            <div class="field">
-              <label for="i-cat">Distancia / categoría *</label>
-              <select id="i-cat" name="categoria" required data-opciones="categorias"></select>
-            </div>
-          </fieldset>
+        <form class="form wizard reveal" id="formInscripcion" novalidate>
 
-          <fieldset>
-            <legend>Contacto de emergencia</legend>
-            <div class="field">
-              <label for="i-emerg-nombre">Nombre *</label>
-              <input id="i-emerg-nombre" name="emergenciaNombre" type="text" required minlength="3">
+          <!-- ========== PASO 1: ¿Cuántos corredores? ========== -->
+          <div class="paso" data-paso="1">
+            <h3 class="paso__titulo">¿Cuántos corredores vas a inscribir?</h3>
+            <p class="paso__ayuda">Elige <strong>1</strong> si te inscribes solo. Si inscribes a tu familia, amigos o equipo, indica cuántos son (máximo <span data-max-corredores>20</span>).</p>
+            <div class="stepper stepper--grande">
+              <button type="button" class="stepper__btn" id="cantMenos" aria-label="Quitar un corredor">−</button>
+              <input id="cantidad" type="number" inputmode="numeric" value="1" aria-label="Número de corredores">
+              <button type="button" class="stepper__btn" id="cantMas" aria-label="Agregar un corredor">+</button>
             </div>
-            <div class="field">
-              <label for="i-emerg-tel">Teléfono (10 dígitos) *</label>
-              <input id="i-emerg-tel" name="emergenciaTelefono" type="tel" inputmode="numeric" required data-telefono>
+            <p class="paso__nota" id="cantidadNota" aria-live="polite">Inscripción individual · $400</p>
+            <div class="paso__acciones">
+              <button type="button" class="btn btn--primary btn--xl btn--block" data-ir="2">Siguiente: elegir número →</button>
             </div>
-          </fieldset>
+          </div>
 
-          <div class="summary" id="summaryIndividual" aria-live="polite"></div>
+          <!-- ========== PASO 2: Elegir números ========== -->
+          <div class="paso" data-paso="2" hidden>
+            <h3 class="paso__titulo">Elige tus números</h3>
+            <p class="numeros-estado" id="numerosEstado" aria-live="polite">Consultando números disponibles…</p>
 
-          <label class="check">
-            <input type="checkbox" name="acepta" required>
-            <span>He leído y acepto el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
-          </label>
-
-          <button type="submit" class="btn btn--primary btn--xl btn--block">Inscríbete y suma tu paso</button>
-        </form>
-
-        <!-- ---------- B) GRUPO ---------- -->
-        <form class="form" id="formGrupo" role="tabpanel" aria-labelledby="tabGrupo" novalidate hidden>
-          <fieldset>
-            <legend>Responsable del grupo</legend>
-            <div class="field field--full">
-              <label for="g-grupo">Nombre del grupo (equipo, empresa, familia, fandom…) *</label>
-              <input id="g-grupo" name="grupo" type="text" required minlength="2">
+            <!-- Números elegidos -->
+            <div class="seleccion">
+              <p class="seleccion__cuenta" id="seleccionCuenta" aria-live="polite"></p>
+              <div class="seleccion__chips" id="seleccionChips"></div>
             </div>
-            <div class="field field--full">
-              <label for="g-resp">Nombre del responsable *</label>
-              <input id="g-resp" name="responsable" type="text" autocomplete="name" required minlength="5">
+
+            <!-- Tablero -->
+            <div class="tablero" id="tablero">
+              <div class="tablero__head">
+                <div class="tablero__leyenda" aria-hidden="true">
+                  <span><i class="num-muestra"></i>Libre</span>
+                  <span><i class="num-muestra is-ocupado"></i>Ocupado</span>
+                  <span><i class="num-muestra is-sel"></i>Tu selección</span>
+                </div>
+                <p class="tablero__conteo" id="tableroConteo" aria-live="polite"></p>
+              </div>
+              <div class="tablero__herramientas">
+                <button type="button" class="btn btn--ghost btn--chico" id="alAzar">🎲 Al azar</button>
+                <div class="tablero__consec" id="consecutivosBox">
+                  <label for="desde">Consecutivos desde #</label>
+                  <input id="desde" type="number" inputmode="numeric" placeholder="Ej. 100">
+                  <button type="button" class="btn btn--ghost btn--chico" id="asignarConsecutivos">Aplicar</button>
+                </div>
+              </div>
+              <div class="tablero__filtros">
+                <div class="tablero__rangos" id="tableroRangos" role="group" aria-label="Filtrar por rango"></div>
+                <label class="tablero__solo"><input type="checkbox" id="soloLibres"> Solo libres</label>
+              </div>
+              <div class="tablero__grid" id="tableroGrid" aria-label="Números de corredor"></div>
             </div>
-            <div class="field">
-              <label for="g-correo">Correo electrónico *</label>
-              <input id="g-correo" name="correo" type="email" autocomplete="email" required>
+
+            <p class="form__alerta" id="alertaNumeros" role="alert" hidden></p>
+            <div class="paso__acciones">
+              <button type="button" class="btn btn--ghost" data-ir="1">← Atrás</button>
+              <button type="button" class="btn btn--primary" data-ir="3" id="irDatos">Siguiente: datos →</button>
             </div>
-            <div class="field">
-              <label for="g-tel">Teléfono (10 dígitos) *</label>
-              <input id="g-tel" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+          </div>
+
+          <!-- ========== PASO 3: Datos ========== -->
+          <div class="paso" data-paso="3" hidden>
+            <h3 class="paso__titulo">Datos de los corredores</h3>
+
+            <fieldset class="contacto">
+              <legend id="contactoTitulo">Tus datos de contacto</legend>
+              <div class="field field--full" data-solo-grupo hidden>
+                <label for="c-grupo">Nombre del grupo (equipo, empresa, familia…) *</label>
+                <input id="c-grupo" name="grupo" type="text" minlength="2">
+              </div>
+              <div class="field field--full" data-solo-grupo hidden>
+                <label for="c-responsable">Nombre del responsable *</label>
+                <input id="c-responsable" name="responsable" type="text" autocomplete="name" minlength="5">
+              </div>
+              <div class="field">
+                <label for="c-correo">Correo electrónico *</label>
+                <input id="c-correo" name="correo" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label for="c-telefono">WhatsApp / teléfono (10 dígitos) *</label>
+                <input id="c-telefono" name="telefono" type="tel" inputmode="numeric" autocomplete="tel" required data-telefono>
+              </div>
+            </fieldset>
+
+            <!-- Una tarjeta por corredor (la genera script.js con su número) -->
+            <div id="corredores" class="runners"></div>
+
+            <p class="form__alerta" id="alertaDatos" role="alert" hidden></p>
+            <div class="paso__acciones">
+              <button type="button" class="btn btn--ghost" data-ir="2">← Atrás</button>
+              <button type="button" class="btn btn--primary" data-ir="4">Siguiente: revisar →</button>
             </div>
-          </fieldset>
+          </div>
 
-          <fieldset>
-            <legend>¿Cuántos corredores?</legend>
-            <div class="stepper">
-              <button type="button" class="stepper__btn" id="countMinus" aria-label="Quitar corredor">−</button>
-              <input id="g-cantidad" name="cantidad" type="number" inputmode="numeric" value="2" aria-label="Número de corredores">
-              <button type="button" class="stepper__btn" id="countPlus" aria-label="Agregar corredor">+</button>
+          <!-- ========== PASO 4: Revisar y confirmar ========== -->
+          <div class="paso" data-paso="4" hidden>
+            <h3 class="paso__titulo">Revisa y confirma</h3>
+            <div class="summary" id="resumen" aria-live="polite"></div>
+
+            <!-- ✏️ CAMBIAR: instrucciones de pago (el WhatsApp se configura en script.js → CONFIG.pago) -->
+            <ol class="pasos-pago">
+              <li><b>1</b><div><strong>Aparta tus números</strong>Quedan apartados al confirmar esta inscripción.</div></li>
+              <li><b>2</b><div><strong>Envía un WhatsApp</strong>Al terminar aparece un botón para pedir el número de cuenta. WhatsApp: <span class="pendiente">[POR CONFIRMAR]</span></div></li>
+              <li><b>3</b><div><strong>Paga en máximo 4 días</strong>Por transferencia o en los locales que nos apoyan: <span class="pendiente">[POR CONFIRMAR: lista de locales]</span>. Si no se paga a tiempo, el número puede liberarse.</div></li>
+            </ol>
+
+            <label class="check">
+              <input type="checkbox" name="acepta" id="acepta" required>
+              <span id="aceptaTexto">He leído y acepto el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
+            </label>
+
+            <p class="form__alerta" id="alertaEnvio" role="alert" hidden></p>
+            <div class="paso__acciones">
+              <button type="button" class="btn btn--ghost" data-ir="3">← Atrás</button>
+              <button type="submit" class="btn btn--primary btn--xl" id="btnEnviar">Inscríbete y suma tu paso</button>
             </div>
-            <p class="hint" id="countHint">Mínimo 2, máximo 20 corredores.</p>
-          </fieldset>
-
-          <!-- Aquí se generan automáticamente las filas de cada corredor -->
-          <div id="runners" class="runners"></div>
-
-          <div class="summary" id="summaryGrupo" aria-live="polite"></div>
-
-          <label class="check">
-            <input type="checkbox" name="acepta" required>
-            <span>Como responsable, confirmo que todos los integrantes leyeron y aceptan el <a href="#reglamento" data-open-rules>reglamento y carta responsiva</a>. *</span>
-          </label>
-
-          <button type="submit" class="btn btn--primary btn--xl btn--block">Corre por ellos: inscribir al grupo</button>
+          </div>
         </form>
       </div>
     </section>
@@ -632,6 +652,7 @@
       <div class="modal__body">
         <ol>
           <li>La edad mínima para participar es de 12 años. Menores de 18 requieren autorización de padre o tutor.</li>
+          <li>Cada participante elige su número de corredor al inscribirse; los números se apartan en el orden en que se completan las inscripciones. Una vez apartado, tienes <strong>4 días</strong> para realizar el pago; si no se realiza en ese plazo, el número podrá liberarse.</li>
           <li>El número de corredor es personal e intransferible y debe portarse al frente, visible.</li>
           <li>El tiempo límite para completar la ruta es de 1 hora 30 minutos.</li>
           <li>Es obligatorio seguir la ruta marcada y las indicaciones de jueces y personal de apoyo.</li>
@@ -662,6 +683,6 @@
     </div>
   </dialog>
 
-  <script src="script.js?v=20261008a" defer></script>
+  <script src="script.js?v=20261012c" defer></script>
 </body>
 </html>
