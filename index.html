@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Black+Han+Sans&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- El "?v=" evita que el navegador muestre una versión vieja. Cambia el número cada vez que subas cambios. -->
-  <link rel="stylesheet" href="style.css?v=20261012c">
+  <link rel="stylesheet" href="style.css?v=20261014c">
   <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -493,6 +493,12 @@
 
         <form class="form wizard reveal" id="formInscripcion" novalidate>
 
+          <!-- ⏱ Temporizador del apartado (aparece al elegir el primer número; lo controla script.js) -->
+          <div class="temporizador" id="temporizador" role="timer" aria-live="off" hidden>
+            <span class="temporizador__icono" aria-hidden="true">⏱</span>
+            <span>Tus números están apartados para ti por <b id="tempRestante">6:00</b>. Termina tu registro antes de que se acabe el tiempo.</span>
+          </div>
+
           <!-- ========== PASO 1: ¿Cuántos corredores? ========== -->
           <div class="paso" data-paso="1">
             <h3 class="paso__titulo">¿Cuántos corredores vas a inscribir?</h3>
@@ -525,6 +531,7 @@
                 <div class="tablero__leyenda" aria-hidden="true">
                   <span><i class="num-muestra"></i>Libre</span>
                   <span><i class="num-muestra is-ocupado"></i>Ocupado</span>
+                  <span><i class="num-muestra is-proceso"></i>En proceso</span>
                   <span><i class="num-muestra is-sel"></i>Tu selección</span>
                 </div>
                 <p class="tablero__conteo" id="tableroConteo" aria-live="polite"></p>
@@ -683,6 +690,6 @@
     </div>
   </dialog>
 
-  <script src="script.js?v=20261012c" defer></script>
+  <script src="script.js?v=20261014c" defer></script>
 </body>
 </html>

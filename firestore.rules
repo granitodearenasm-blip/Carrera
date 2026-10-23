@@ -1,46 +1,134 @@
 // =============================================================================
-//  HANGUK RUN 한국 — Reglas de seguridad de Firestore
+//  Reglas de seguridad de Firestore — proyecto "hanguk-run"
+//  Incluye DOS páginas que comparten el mismo proyecto de Firebase:
+//    1) HANGUK RUN 한국 (carrera)
+//    2) Expo Emprendedores con Causa (y 3: su sorteo con etiquetas NFC)
+//
+//  ⚠️ Firebase solo tiene UN archivo de reglas por proyecto: si publicas uno que solo trae
+//     la carrera o solo la expo, la otra página deja de funcionar. Este mismo archivo está en
+//     carrera/firestore.rules y en expo/firestore.rules (son idénticos): publica cualquiera.
+//
 //  Pega este archivo completo en: Consola de Firebase → Firestore Database → Reglas → Publicar
-//  (Este archivo NO se sube al hosting; no pasa nada si se sube, pero no se usa ahí.)
+//  (Este archivo NO se sube al hosting.)
 //
-//  Qué permiten:
-//   • numeros/{n}       → cualquiera puede VER qué números están ocupados (no tienen datos personales)
-//                         y CREAR uno nuevo solo si no existe y viene junto con su inscripción.
-//                         Nadie puede modificarlos ni borrarlos desde la página.
-//   • inscripciones/{id}→ cualquiera puede CREAR su inscripción, pero NADIE puede leerlas,
-//                         modificarlas ni borrarlas desde la página. Los organizadores las ven
-//                         en la consola de Firebase.
-//
-//  ✏️ Si cambias el rango de números en script.js (CONFIG.numeros), cámbialo también aquí
-//     (MINIMO y MAXIMO), y agrega los números reservados en la lista RESERVADOS.
+//  Requiere en Authentication → Método de acceso:
+//    • "Anónimo"  ACTIVADO (carrera y formulario de la expo)
+//    • "Correo electrónico/contraseña" ACTIVADO (panel de administración de la expo)
 // =============================================================================
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function conSesion() { return request.auth != null; }
+
+    // =========================================================================
+    //  1) HANGUK RUN 한국
+    //   • numeros/{n}       → un documento por número con su estado:
+    //                           estado "apartado"   = alguien lo está registrando (vence a los 6 min)
+    //                           estado "confirmado" = inscripción terminada
+    //                         Es la fuente de verdad. La página casi no lo lee (para ahorrar lecturas).
+    //   • tablero/{bloque}  → RESUMEN de 7 documentos (1–100, 101–200, … 601–700) que la página lee
+    //                         para dibujar el tablero con muy pocas lecturas. Cada cambio en el resumen
+    //                         se valida contra numeros/{n}, así que nadie puede falsearlo.
+    //   • inscripciones/{id}→ datos personales. Se pueden CREAR, pero NADIE puede leerlas, cambiarlas
+    //                         ni borrarlas desde la página (solo los organizadores en la consola).
+    //  ✏️ Si cambias el rango de números o el tiempo de apartado en carrera/script.js, cámbialos aquí también.
+    // =========================================================================
     function MINIMO() { return 1; }
     function MAXIMO() { return 700; }
     function RESERVADOS() { return []; }   // ejemplo: [1, 2, 3, 100]
+    function MINUTOS_APARTADO() { return 6; }
+    function CATEGORIAS() { return ['3K', '5K', '10K']; }
 
+    function rutaNumero(n) { return /databases/$(database)/documents/numeros/$(n); }
+    function vencido(d) { return d.creado < request.time - duration.value(MINUTOS_APARTADO(), 'm'); }
+    function numeroValido(d, n) {
+      return d.numero is int
+        && string(d.numero) == n
+        && d.numero >= MINIMO()
+        && d.numero <= MAXIMO()
+        && !(d.numero in RESERVADOS());
+    }
+    // Nuevo apartado a mi nombre
+    function apartadoNuevo(n) {
+      return request.resource.data.keys().hasOnly(['numero', 'estado', 'uid', 'creado'])
+        && numeroValido(request.resource.data, n)
+        && request.resource.data.estado == 'apartado'
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.creado == request.time;
+    }
+
+    // ---------- Número (fuente de verdad) ----------
     match /numeros/{numero} {
       allow read: if true;
 
-      allow create: if request.resource.data.keys().hasOnly(['numero', 'categoria', 'inscripcion', 'creado'])
-        && request.resource.data.numero is int
-        && string(request.resource.data.numero) == numero
-        && request.resource.data.numero >= MINIMO()
-        && request.resource.data.numero <= MAXIMO()
-        && !(request.resource.data.numero in RESERVADOS())
-        && request.resource.data.categoria in ['3K', '5K', '10K']
-        && request.resource.data.creado == request.time
-        // El número solo se aparta si en la misma operación se guarda su inscripción
-        && existsAfter(/databases/$(database)/documents/inscripciones/$(request.resource.data.inscripcion));
+      // Apartar un número que nadie tiene
+      allow create: if conSesion() && apartadoNuevo(numero);
 
-      allow update, delete: if false;
+      allow update: if conSesion() && resource.data.estado == 'apartado' && (
+        // Tomar un apartado vencido (de otra persona o propio)
+        (vencido(resource.data) && apartadoNuevo(numero))
+        ||
+        // Confirmar mi apartado vigente, junto con mi inscripción
+        (resource.data.uid == request.auth.uid
+          && !vencido(resource.data)
+          && request.resource.data.keys().hasOnly(['numero', 'estado', 'uid', 'creado', 'categoria', 'inscripcion'])
+          && request.resource.data.estado == 'confirmado'
+          && request.resource.data.numero == resource.data.numero
+          && request.resource.data.uid == resource.data.uid
+          && request.resource.data.creado == resource.data.creado
+          && request.resource.data.categoria in CATEGORIAS()
+          && existsAfter(/databases/$(database)/documents/inscripciones/$(request.resource.data.inscripcion)))
+      );
+
+      // Soltar un apartado: quien lo apartó, o cualquiera si ya venció. Los confirmados no se borran.
+      allow delete: if conSesion()
+        && resource.data.estado == 'apartado'
+        && (resource.data.uid == request.auth.uid || vencido(resource.data));
     }
 
+    // ---------- Resumen del tablero (7 documentos) ----------
+    // Cada escritura cambia UNA sola clave (k) del mapa n, y su valor debe coincidir con numeros/{k}:
+    //   sin clave      → el número no existe o es un apartado vencido
+    //   {e:'a', t:…}   → apartado, t = hora del apartado
+    //   {e:'c'}        → confirmado
+    function claveDelBloque(bloque) {
+      return request.resource.data.keys().hasOnly(['n', 'k'])
+        && request.resource.data.n is map
+        && request.resource.data.k is string
+        && int(request.resource.data.k) >= (int(bloque) - 1) * 100 + 1
+        && int(request.resource.data.k) <= int(bloque) * 100;
+    }
+    function coincideConNumero(k) {
+      return (
+        !(k in request.resource.data.n)
+        && (!existsAfter(rutaNumero(k))
+            || (getAfter(rutaNumero(k)).data.estado == 'apartado' && vencido(getAfter(rutaNumero(k)).data)))
+      ) || (
+        k in request.resource.data.n
+        && existsAfter(rutaNumero(k))
+        && ((getAfter(rutaNumero(k)).data.estado == 'confirmado' && request.resource.data.n[k] == {'e': 'c'})
+            || (getAfter(rutaNumero(k)).data.estado == 'apartado'
+                && request.resource.data.n[k] == {'e': 'a', 't': getAfter(rutaNumero(k)).data.creado}))
+      );
+    }
+    match /tablero/{bloque} {
+      allow read: if true;
+      allow create: if conSesion()
+        && claveDelBloque(bloque)
+        && request.resource.data.n.keys().hasOnly([request.resource.data.k])
+        && coincideConNumero(request.resource.data.k);
+      allow update: if conSesion()
+        && claveDelBloque(bloque)
+        && request.resource.data.n.diff(resource.data.n).affectedKeys().hasOnly([request.resource.data.k])
+        && coincideConNumero(request.resource.data.k);
+      allow delete: if false;
+    }
+
+    // ---------- Inscripciones (datos personales) ----------
     match /inscripciones/{id} {
-      allow create: if request.resource.data.keys().hasAll(['tipo', 'corredores', 'total', 'creado'])
+      allow create: if conSesion()
+        && request.resource.data.keys().hasAll(['tipo', 'corredores', 'total', 'creado'])
         && request.resource.data.tipo in ['Individual', 'Grupo']
         && request.resource.data.corredores is list
         && request.resource.data.corredores.size() >= 1
@@ -48,6 +136,191 @@ service cloud.firestore {
         && request.resource.data.creado == request.time;
 
       allow read, update, delete: if false;
+    }
+
+    // =========================================================================
+    //  2) EXPO EMPRENDEDORES CON CAUSA
+    //   • expo_registros/{id} → solicitud completa (teléfono, correo…). Cualquiera puede CREAR la suya;
+    //                           solo los administradores pueden leerlas, cambiarlas o borrarlas.
+    //   • expo_imagenes/{id}  → logo y fotos que subió el emprendedor (privadas hasta confirmar).
+    //   • expo_mesas/{dia_n}  → 7 mesas por día (ej. "2026-11-06_3"). Sin datos personales.
+    //                           Una solicitud aparta su mesa 4 días; con confirmada: true ya no vence.
+    //   • expo_publico/{id}   → tarjeta pública de los negocios confirmados (la escribe el panel).
+    //   • expo_fotos/{id}     → fotos de productos públicas de los confirmados (las escribe el panel).
+    //  ✏️ Si cambias días, cupo, plazo, precio o la cuenta del panel en expo/config.js, cámbialos aquí también.
+    // =========================================================================
+    // Cuenta del panel (admin.html), con contraseña. Debe coincidir con panel.cuenta en expo/config.js.
+    function CUENTA_PANEL_EXPO() { return 'panel.expo@granitodearena.mx'; }
+    function DIAS_EXPO() { return ['2026-11-06', '2026-11-07', '2026-11-08']; }
+    function MESAS_EXPO() { return 7; }
+    function DIAS_PARA_PAGAR_EXPO() { return 4; }
+    function PRECIO_EXPO() { return 350; }
+
+    // Solo quien entró con la contraseña del panel (la cuenta la crean ustedes en la consola)
+    function esAdminExpo() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && request.auth.token.email == CUENTA_PANEL_EXPO();
+    }
+    function rutaRegistroExpo(id) { return /databases/$(database)/documents/expo_registros/$(id); }
+    function textoExpo(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+
+    function registroExpoValido() {
+      let d = request.resource.data;
+      let campos = ['negocio', 'giro', 'descripcion', 'instagram', 'facebook', 'responsable', 'telefono', 'correo',
+                    'dias', 'mesas', 'total', 'pagarAntesDe', 'aceptaReglas', 'autorizaPublicar', 'tieneImagenes',
+                    'estado', 'uid', 'creado'];
+      return d.keys().hasAll(campos) && d.keys().hasOnly(campos)
+        && textoExpo(d.negocio, 2, 60)
+        && textoExpo(d.giro, 1, 30)
+        && textoExpo(d.descripcion, 10, 255)
+        && textoExpo(d.instagram, 0, 200)
+        && textoExpo(d.facebook, 0, 200)
+        && textoExpo(d.responsable, 5, 80)
+        && d.telefono is string && d.telefono.matches('^[0-9]{10}$')
+        && textoExpo(d.correo, 5, 120)
+        && d.dias is list && d.dias.size() >= 1 && d.dias.size() <= 3
+        && d.dias.hasOnly(DIAS_EXPO()) && d.dias.toSet().size() == d.dias.size()
+        && d.mesas is list && d.mesas.size() == d.dias.size()
+        && d.total == d.dias.size() * PRECIO_EXPO()
+        && textoExpo(d.pagarAntesDe, 0, 80)
+        && d.aceptaReglas == true && d.autorizaPublicar == true
+        && d.tieneImagenes is bool
+        && d.estado == 'pendiente'
+        && d.uid == request.auth.uid
+        && d.creado == request.time;
+    }
+
+    match /expo_registros/{id} {
+      allow create: if esAdminExpo() || (conSesion() && registroExpoValido());
+      allow read, update, delete: if esAdminExpo();
+    }
+
+    match /expo_imagenes/{id} {
+      allow create: if esAdminExpo() || (conSesion()
+        && request.resource.data.keys().hasOnly(['logo', 'fotos'])
+        && request.resource.data.logo is string && request.resource.data.logo.size() < 300000
+        && request.resource.data.fotos is list && request.resource.data.fotos.size() <= 3
+        && getAfter(rutaRegistroExpo(id)).data.uid == request.auth.uid
+        && getAfter(rutaRegistroExpo(id)).data.estado == 'pendiente');
+      allow read, update, delete: if esAdminExpo();
+    }
+
+    // ---------- Mesas (cupo) ----------
+    function mesaExpoValida(mesa) {
+      return mesa.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{1,2}$')
+        && mesa.split('_')[0] in DIAS_EXPO()
+        && int(mesa.split('_')[1]) >= 1
+        && int(mesa.split('_')[1]) <= MESAS_EXPO();
+    }
+    function mesaExpoVencida(m) {
+      return m.get('confirmada', false) != true
+        && m.creado < request.time - duration.value(DIAS_PARA_PAGAR_EXPO(), 'd');
+    }
+    // Apartar la mesa para MI solicitud, que se crea en la misma operación y la incluye
+    function apartadoMesaExpo(mesa) {
+      let d = request.resource.data;
+      let reg = getAfter(rutaRegistroExpo(d.registro)).data;
+      return mesaExpoValida(mesa)
+        && d.keys().hasOnly(['registro', 'uid', 'creado'])
+        && d.registro is string
+        && d.uid == request.auth.uid
+        && d.creado == request.time
+        && reg.uid == request.auth.uid
+        && reg.estado == 'pendiente'
+        && mesa in reg.mesas
+        && mesa.split('_')[0] in reg.dias;
+    }
+    match /expo_mesas/{mesa} {
+      allow read: if true;
+      // Mesa libre: nunca usada, o apartada por alguien que no pagó a tiempo
+      allow create: if esAdminExpo() || (conSesion() && apartadoMesaExpo(mesa));
+      allow update: if esAdminExpo() || (conSesion() && mesaExpoVencida(resource.data) && apartadoMesaExpo(mesa));
+      allow delete: if esAdminExpo();
+    }
+
+    // ---------- Datos públicos (solo los escribe el panel) ----------
+    match /expo_publico/{id} {
+      allow read: if true;
+      allow write: if esAdminExpo();
+    }
+    match /expo_fotos/{id} {
+      allow read: if true;
+      allow write: if esAdminExpo();
+    }
+
+    // =========================================================================
+    //  3) SORTEO DE LA EXPO (etiquetas NFC) — guía en expo/SORTEO.md
+    //   • sorteo_codigos/{codigo}        → una etiqueta: tipo "entrada" o "mesa", negocio, activo, prueba.
+    //                                      Se puede consultar UNA si conoces su código, pero no listarlas.
+    //   • sorteo_participantes/{uid}     → nombre y WhatsApp del visitante (privado).
+    //   • sorteo_telefonos/{telefono}    → evita que un mismo número se registre dos veces.
+    //   • sorteo_participaciones/{id}    → una por etiqueta. El id evita repetir:
+    //                                        entrada: {uid}_{codigo}            (una sola vez)
+    //                                        mesa:    {uid}_{codigo}_{día}      (una por mesa por día)
+    //   • sorteo_ganadores/{id}          → nombre corto del ganador y premio (público).
+    //  ✏️ Fechas en que cuentan las participaciones (también sorteo.inicio / sorteo.fin en expo/config.js).
+    //     Hora del centro de México (UTC−6): 6 nov 00:00 → 9 nov 00:00.
+    // =========================================================================
+    function SORTEO_INICIO() { return timestamp.date(2026, 11, 6) + duration.value(6, 'h'); }
+    function SORTEO_FIN() { return timestamp.date(2026, 11, 9) + duration.value(6, 'h'); }
+    function diaLocalMx() { return (request.time - duration.value(6, 'h')).day(); }
+    function rutaParticipante(uid) { return /databases/$(database)/documents/sorteo_participantes/$(uid); }
+
+    match /sorteo_codigos/{codigo} {
+      allow get: if true;
+      allow list, write: if esAdminExpo();
+    }
+
+    match /sorteo_telefonos/{telefono} {
+      allow create: if conSesion()
+        && telefono.matches('^[0-9]{10}$')
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && existsAfter(rutaParticipante(request.auth.uid));
+      allow read, update, delete: if esAdminExpo();
+    }
+
+    match /sorteo_participantes/{uid} {
+      allow get: if esAdminExpo() || (conSesion() && request.auth.uid == uid);
+      allow list: if esAdminExpo();
+      allow create: if conSesion() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['nombre', 'telefono', 'aceptaBases', 'creado'])
+        && textoExpo(request.resource.data.nombre, 3, 80)
+        && request.resource.data.telefono is string
+        && request.resource.data.telefono.matches('^[0-9]{10}$')
+        && request.resource.data.aceptaBases == true
+        && request.resource.data.creado == request.time
+        && getAfter(/databases/$(database)/documents/sorteo_telefonos/$(request.resource.data.telefono)).data.uid == uid;
+      allow update, delete: if esAdminExpo();
+    }
+
+    function participacionValida(id) {
+      let d = request.resource.data;
+      let cod = get(/databases/$(database)/documents/sorteo_codigos/$(d.codigo)).data;
+      let prueba = cod.get('prueba', false) == true;
+      return d.keys().hasOnly(['uid', 'tipo', 'codigo', 'negocio', 'dia', 'prueba', 'creado'])
+        && d.uid == request.auth.uid
+        && exists(rutaParticipante(request.auth.uid))
+        && d.creado == request.time
+        && cod.activo == true
+        && d.tipo == cod.tipo
+        && d.negocio == cod.negocio
+        && d.prueba == prueba
+        && (prueba || (request.time >= SORTEO_INICIO() && request.time < SORTEO_FIN()))
+        && d.dia == diaLocalMx()
+        && ((d.tipo == 'entrada' && id == d.uid + '_' + d.codigo)
+            || (d.tipo == 'mesa' && id == d.uid + '_' + d.codigo + '_' + string(d.dia)));
+    }
+    match /sorteo_participaciones/{id} {
+      allow read: if esAdminExpo() || (conSesion() && resource.data.uid == request.auth.uid);
+      allow create: if conSesion() && participacionValida(id);
+      allow update, delete: if esAdminExpo();
+    }
+
+    match /sorteo_ganadores/{id} {
+      allow read: if true;
+      allow write: if esAdminExpo();
     }
   }
 }

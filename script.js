@@ -62,6 +62,16 @@
     },
 
     /* --------------------------------------------------------------------
+       ⏱ APARTADO TEMPORAL (como asientos de cine)
+       Al tocar un número queda apartado para esa persona durante "minutos".
+       Si no termina su registro a tiempo, el número se libera para todos.
+       ✏️ Si lo cambias, cámbialo también en firestore.rules (MINUTOS_APARTADO).
+       -------------------------------------------------------------------- */
+    apartado: {
+      minutos: 6
+    },
+
+    /* --------------------------------------------------------------------
        🔌 BASE DE DATOS (Firebase Firestore, no relacional)
        modo:
          'firebase' → guarda las inscripciones en Firestore y garantiza que cada
@@ -290,23 +300,45 @@
     if (fbPromesa) return fbPromesa;
     var base = 'https://www.gstatic.com/firebasejs/' + CONFIG.firebaseVersion + '/';
     fbPromesa = loadScript(base + 'firebase-app-compat.js')
+      .then(function () { return loadScript(base + 'firebase-auth-compat.js'); })
       .then(function () { return loadScript(base + 'firebase-firestore-compat.js'); })
       .then(function () {
         if (!window.firebase.apps.length) window.firebase.initializeApp(CONFIG.firebase);
+        // Identidad anónima (sin correo ni contraseña): sirve para saber de quién es cada apartado
+        return window.firebase.auth().signInAnonymously();
+      })
+      .then(function (cred) {
+        DB.uid = cred.user.uid;
         return window.firebase.firestore();
       });
     return fbPromesa;
   }
 
   /* ========================================================================
-     🔢 NÚMEROS DE CORREDOR
-     - Colección "numeros": un documento por número tomado (id = el número).
-       Es pública para saber qué números están ocupados, sin datos personales.
-     - Colección "inscripciones": datos de cada inscripción. Nadie puede leerla
-       desde la página (solo los organizadores en la consola de Firebase).
+     🔢 NÚMEROS DE CORREDOR — versión optimizada para el plan gratuito
+     - numeros/{n}      → un documento por número: estado "apartado" (6 min) o
+                          "confirmado". Es la fuente de verdad; la página casi no lo lee.
+     - tablero/{bloque} → RESUMEN en 7 documentos (1–100, 101–200…). La página dibuja
+                          el tablero leyendo SOLO estos 7 documentos (en vez de hasta 700).
+     - inscripciones    → datos personales; nadie puede leerlos desde la página.
+     Ahorros:
+       • Apartar y confirmar se hacen con escrituras directas (sin lecturas previas);
+         las reglas de seguridad rechazan lo que no se puede hacer.
+       • La conexión en tiempo real solo está abierta mientras la persona está en el
+         paso 2 con la pestaña visible.
      ======================================================================== */
-  var DB = { db: null, conectando: false, iniciado: false, tomados: new Set() };
+  var DB = {
+    db: null, iniciado: false,
+    uid: 'demo',              // identidad anónima de este visitante
+    tablero: new Map(),       // número → { e: 'a' (apartado) | 'c' (confirmado), ms: hora del apartado }
+    escuchando: null,         // función para cerrar la conexión en tiempo real
+    desfase: 0,               // diferencia aproximada entre el reloj del servidor y el del dispositivo
+    pedidos: {}               // número → hora local en que se pidió el apartado (para calcular el desfase)
+  };
   var DEMO_KEY = 'hr_numeros_tomados_demo';
+  var APARTADO_MS = CONFIG.apartado.minutos * 60000;
+  var MARGEN_MS = 5000;       // margen de seguridad: el temporizador termina 5 s antes que el servidor
+  var RANGO_TXT = 'Números del <strong>' + CONFIG.numeros.minimo + '</strong> al <strong>' + CONFIG.numeros.maximo + '</strong>.';
 
   function setEstadoNumeros(html, tipo) {
     var el = $('#numerosEstado');
@@ -314,45 +346,144 @@
     el.innerHTML = html;
     el.className = 'numeros-estado' + (tipo ? ' numeros-estado--' + tipo : '');
   }
+  function refNumero(n) { return DB.db.collection('numeros').doc(String(n)); }
+  function refBloque(n) { return DB.db.collection('tablero').doc(String(Math.ceil(n / 100))); }
+  // Escribe el valor de UN número en el resumen, reemplazándolo por completo (sin mezclar con
+  // el valor anterior) y creando el documento del bloque si todavía no existe.
+  function datosResumen(n, valor) { var m = {}; m[n] = valor; return [{ n: m, k: String(n) }, { mergeFields: ['n.' + n, 'k'] }]; }
+  function escribirResumen(n, valor, batch) {
+    var d = datosResumen(n, valor);
+    return batch ? batch.set(refBloque(n), d[0], d[1]) : refBloque(n).set(d[0], d[1]);
+  }
+
   // Se llama al llegar al paso 2 (no al abrir la página), para no gastar lecturas
-  // de la base de datos con visitantes que solo están viendo la información.
+  // con visitantes que solo están viendo la información.
   function initNumeros() {
     if (DB.iniciado) return;
     DB.iniciado = true;
-    var rango = 'Números del <strong>' + CONFIG.numeros.minimo + '</strong> al <strong>' + CONFIG.numeros.maximo + '</strong>.';
     if (!firebaseConfigurado()) {
-      // Modo demostración: los números ocupados se guardan solo en este navegador
-      try { (JSON.parse(localStorage.getItem(DEMO_KEY)) || []).forEach(function (n) { DB.tomados.add(n); }); } catch (e) { /* sin almacenamiento */ }
-      setEstadoNumeros('🧪 Modo demostración. ' + rango, 'demo');
+      // Modo demostración: los números confirmados se guardan solo en este navegador
+      try { (JSON.parse(localStorage.getItem(DEMO_KEY)) || []).forEach(function (n) { DB.tablero.set(n, { e: 'c', ms: 0 }); }); } catch (e) { /* sin almacenamiento */ }
+      setEstadoNumeros('🧪 Modo demostración. ' + RANGO_TXT, 'demo');
       return;
     }
-    DB.conectando = true;
     setEstadoNumeros('⏳ Consultando números disponibles…');
     conectarFirebase().then(function (db) {
       DB.db = db;
-      // Escucha en tiempo real los números ocupados
-      db.collection('numeros').onSnapshot(function (snap) {
-        DB.conectando = false;
-        DB.tomados = new Set(snap.docs.map(function (d) { return Number(d.id); }));
-        setEstadoNumeros('🟢 Disponibilidad en tiempo real. ' + rango, 'ok');
-        alCambiarOcupados();
-      }, function (err) {
-        DB.conectando = false;
-        console.error('[numeros]', err);
-        setEstadoNumeros('⚠️ No pudimos consultar los números disponibles. Recarga la página en unos momentos.', 'error');
-      });
+      DB.uid = window.firebase.auth().currentUser.uid;
+      if (W.paso === 2 && !document.hidden) escuchar();
     }).catch(function (err) {
-      DB.conectando = false;
       console.error('[firebase]', err);
-      setEstadoNumeros('⚠️ No pudimos conectar con la base de datos. Revisa tu conexión y recarga la página.', 'error');
+      var falta = err && /operation-not-allowed|admin-restricted|configuration-not-found/.test(err.code || '');
+      setEstadoNumeros(falta
+        ? '⚠️ Falta activar el acceso anónimo en Firebase (Authentication → Método de acceso → Anónimo).'
+        : '⚠️ No pudimos conectar con la base de datos. Revisa tu conexión y recarga la página.', 'error');
     });
   }
 
+  /* ---------- Conexión en tiempo real (solo en el paso 2 y con la pestaña visible) ---------- */
+  function escuchar() {
+    if (!DB.db || DB.escuchando) return;
+    DB.escuchando = DB.db.collection('tablero').onSnapshot(function (snap) {
+      var mapa = new Map();
+      snap.docs.forEach(function (d) {
+        var n = d.data({ serverTimestamps: 'estimate' }).n || {};
+        Object.keys(n).forEach(function (k) {
+          var v = n[k], num = Number(k);
+          var ms = v.t && v.t.toMillis ? v.t.toMillis() : 0;
+          mapa.set(num, { e: v.e, ms: ms });
+          // Con un apartado propio ya confirmado por el servidor se calcula el desfase de relojes
+          if (v.e === 'a' && DB.pedidos[num] && !d.metadata.hasPendingWrites) {
+            DB.desfase = ms - DB.pedidos[num];
+            delete DB.pedidos[num];
+          }
+        });
+      });
+      DB.tablero = mapa;
+      setEstadoNumeros('🟢 Disponibilidad en tiempo real. ' + RANGO_TXT + ' Al tocar un número queda apartado para ti por ' + CONFIG.apartado.minutos + ' minutos.', 'ok');
+      alCambiarOcupados();
+    }, function (err) {
+      console.error('[tablero]', err);
+      DB.escuchando = null;
+      setEstadoNumeros('⚠️ No pudimos consultar los números disponibles. Recarga la página en unos momentos.', 'error');
+    });
+  }
+  function dejarDeEscuchar() {
+    if (DB.escuchando) { DB.escuchando(); DB.escuchando = null; }
+  }
+  // Si la pestaña queda en segundo plano se cierra la conexión (no gasta lecturas); al volver se reabre
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) dejarDeEscuchar();
+    else if (W.paso === 2) escuchar();
+  });
+
   function esReservado(n) { return CONFIG.numeros.reservados.indexOf(n) !== -1; }
   function enRango(n) { return Number.isInteger(n) && n >= CONFIG.numeros.minimo && n <= CONFIG.numeros.maximo; }
+  function ahora() { return Date.now() + DB.desfase; }
+  function vigente(x) { return !!x && x.e === 'a' && x.ms + APARTADO_MS > ahora(); }
+  function esMio(n) { return !!W.mios[n]; }
   // Para fines prácticos, reservado = ocupado
-  function estaOcupado(n) { return esReservado(n) || DB.tomados.has(n); }
-  function estaLibre(n) { return enRango(n) && !estaOcupado(n); }
+  function estaOcupado(n) { var x = DB.tablero.get(n); return esReservado(n) || (!!x && x.e === 'c' && !esMio(n)); }
+  // Apartado por otra persona que todavía está llenando su registro
+  function enProceso(n) { return !esMio(n) && vigente(DB.tablero.get(n)); }
+  function estaLibre(n) { return enRango(n) && !estaOcupado(n) && !enProceso(n); }
+
+  /* ---------- Apartar / soltar un número ---------- */
+  function errorNumero(code) { var e = new Error(code); e.code = code; return e; }
+
+  // Si el resumen quedó desactualizado (por ejemplo, alguien cerró la página a medias),
+  // se corrige leyendo ese único número. Solo ocurre cuando algo falla.
+  function repararResumen(n) {
+    var FV = window.firebase.firestore.FieldValue;
+    return refNumero(n).get().then(function (s) {
+      var x = DB.tablero.get(n), d = s.exists ? s.data() : null, cambio = null;
+      if (!d || (d.estado === 'apartado' && d.creado && d.creado.toMillis() + APARTADO_MS <= ahora())) {
+        if (x) cambio = refBloque(n).update(Object.assign({ k: String(n) }, (function () { var o = {}; o['n.' + n] = FV.delete(); return o; })()));
+      } else if (d.estado === 'confirmado' && (!x || x.e !== 'c')) {
+        cambio = escribirResumen(n, { e: 'c' });
+      } else if (d.estado === 'apartado' && (!x || x.e !== 'a' || x.ms !== d.creado.toMillis())) {
+        cambio = escribirResumen(n, { e: 'a', t: d.creado });
+      }
+      if (cambio) cambio.catch(function (e) { console.warn('[reparar]', e); });
+      return d;
+    });
+  }
+
+  function apartar(n) {
+    if (!DB.db) {
+      // Con Firebase configurado pero sin conexión, NO se aparta (no se finge un apartado)
+      if (firebaseConfigurado()) return Promise.reject(errorNumero('sin-conexion'));
+      DB.tablero.set(n, { e: 'a', ms: Date.now() });             // modo demostración
+      return Promise.resolve();
+    }
+    var FV = window.firebase.firestore.FieldValue, batch = DB.db.batch();
+    // Una sola escritura (sin lecturas): el número y su resumen, con la misma hora del servidor
+    batch.set(refNumero(n), { numero: n, estado: 'apartado', uid: DB.uid, creado: FV.serverTimestamp() });
+    escribirResumen(n, { e: 'a', t: FV.serverTimestamp() }, batch);
+    DB.pedidos[n] = Date.now();
+    return batch.commit().catch(function (e) {
+      delete DB.pedidos[n];
+      if (e && e.code === 'permission-denied') {
+        // Alguien lo tiene: se corrige el resumen por si estaba desactualizado
+        return repararResumen(n).then(function (d) {
+          throw errorNumero(d && d.estado === 'confirmado' ? 'ocupado' : 'en-proceso');
+        }, function () { throw errorNumero('ocupado'); });
+      }
+      throw e;
+    });
+  }
+  function soltar(n) {
+    if (!DB.db) {                                                // modo demostración
+      var x = DB.tablero.get(n);
+      if (x && x.e === 'a') DB.tablero.delete(n);
+      return;
+    }
+    var FV = window.firebase.firestore.FieldValue, batch = DB.db.batch(), quitar = { k: String(n) };
+    quitar['n.' + n] = FV.delete();
+    batch.delete(refNumero(n));
+    batch.update(refBloque(n), quitar);
+    batch.commit().catch(function () { /* ya vencido o ya confirmado */ });
+  }
 
   /* ---------- Validación de campos ---------- */
   var onlyDigits = function (s) { return String(s).replace(/\D/g, ''); };
@@ -439,9 +570,58 @@
      📝 INSCRIPCIÓN EN 4 PASOS
      1. ¿Cuántos corredores?  2. Elegir números  3. Datos  4. Revisar y confirmar
      ======================================================================== */
-  var W = { paso: 1, cantidad: 1, seleccion: [], rango: 'todos', cache: [] };
+  var W = { paso: 1, cantidad: 1, seleccion: [], rango: 'todos', cache: [], mios: {} };
 
   function form() { return $('#formInscripcion'); }
+
+  /* ---------- ⏱ Temporizador del apartado ----------
+     Cuenta desde el primer número apartado. Al llegar a cero se liberan
+     los números y la persona vuelve a elegir (sus datos se conservan). */
+  function limiteApartado() {
+    var limite = null;
+    elegidos().forEach(function (n) {
+      // Hora local en que se pidió el apartado: siempre es igual o anterior a la del servidor,
+      // así que el temporizador nunca se pasa del tiempo real.
+      var inicio = W.mios[n];
+      if (inicio === undefined) return;
+      var fin = inicio + APARTADO_MS - MARGEN_MS;
+      if (limite === null || fin < limite) limite = fin;
+    });
+    return limite;
+  }
+  function actualizarTemporizador() {
+    var box = $('#temporizador');
+    if (!box) return;
+    var limite = limiteApartado();
+    if (limite === null) { box.hidden = true; return; }
+    var resta = limite - Date.now();
+    if (resta <= 0) { expirarApartados(); return; }
+    var s = Math.ceil(resta / 1000);
+    $('#tempRestante').textContent = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+    box.classList.toggle('is-urgente', s <= 60);
+    box.hidden = false;
+  }
+  function expirarApartados() {
+    var mis = elegidos();
+    mis.forEach(function (n) { if (W.mios[n]) soltar(n); });
+    W.seleccion = W.seleccion.map(function () { return null; });
+    W.mios = {};
+    $('#temporizador').hidden = true;
+    if (W.paso > 2) irAPaso(2);
+    pintarTablero(); pintarSeleccion();
+    alerta('alertaNumeros', '⏱ Se acabó el tiempo y ' + (mis.length > 1 ? 'tus números se liberaron' : 'tu número se liberó') +
+      '. Vuelve a elegir; tus datos se conservan.');
+  }
+  function initTemporizador() {
+    var tick = 0;
+    setInterval(function () {
+      actualizarTemporizador();
+      // Cada 3 s se actualiza el tablero, por si venció el apartado de alguien más
+      if (++tick % 3 === 0 && W.paso === 2) pintarTablero();
+    }, 1000);
+    // Si la persona cierra o sale de la página, se intenta liberar sus números
+    window.addEventListener('pagehide', function () { elegidos().forEach(function (n) { if (W.mios[n]) soltar(n); }); });
+  }
   function esGrupo() { return W.cantidad > 1; }
 
   function irAPaso(n, sinScroll) {
@@ -452,7 +632,10 @@
       li.classList.toggle('is-actual', k === n);
       li.classList.toggle('is-hecho', k < n);
     });
-    if (n === 2) { safe(initNumeros, 'numeros'); pintarTablero(); pintarSeleccion(); }
+    // La conexión en tiempo real solo se usa en el paso 2 (ahorra lecturas del plan gratuito).
+    // En los pasos 3 y 4 no hace falta: nadie puede quitarte un número apartado.
+    if (n === 2) { safe(initNumeros, 'numeros'); if (!document.hidden) escuchar(); pintarTablero(); pintarSeleccion(); }
+    else dejarDeEscuchar();
     if (n === 3) construirCorredores();
     if (n === 4) pintarResumen();
     if (!sinScroll) $('#wizardPasos').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -485,8 +668,9 @@
     if (W.paso === 1) return true;
     if (W.paso === 2) {
       alerta('alertaNumeros', '');
-      var perdidos = liberarLugares(estaOcupado);
+      var perdidos = liberarLugares(function (n) { return estaOcupado(n) || enProceso(n); });
       if (perdidos.length) {
+        perdidos.forEach(function (p) { delete W.mios[p.numero]; });
         pintarTablero(); pintarSeleccion();
         alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro.'));
         return false;
@@ -515,7 +699,11 @@
     W.cantidad = n;
     $('#cantidad').value = n;
     // Ajusta los lugares: al reducir se conservan los números ya elegidos primero
-    if (W.seleccion.length > n) W.seleccion = elegidos().concat(W.seleccion.map(function () { return null; })).slice(0, n);
+    if (W.seleccion.length > n) {
+      var antes = elegidos();
+      W.seleccion = antes.concat(W.seleccion.map(function () { return null; })).slice(0, n);
+      antes.forEach(function (x) { if (W.seleccion.indexOf(x) === -1) liberarMio(x); });   // libera los que sobran
+    }
     while (W.seleccion.length < n) W.seleccion.push(null);
     var total = n * (CONFIG.categorias[0] ? CONFIG.categorias[0].precio : 0);
     $('#cantidadNota').innerHTML = n === 1
@@ -572,13 +760,16 @@
       if (!vacios()) { alerta('alertaNumeros', 'Ya elegiste tus ' + W.cantidad + ' número' + (W.cantidad > 1 ? 's' : '') + '. Quita uno si quieres cambiarlo.'); return; }
       var libres = [];
       for (var k = CONFIG.numeros.minimo; k <= CONFIG.numeros.maximo; k++) if (estaLibre(k) && W.seleccion.indexOf(k) === -1) libres.push(k);
-      // Llena solo los lugares vacíos
+      // Llena solo los lugares vacíos y los aparta
+      var nuevos = [];
       W.seleccion = W.seleccion.map(function (n) {
         if (n !== null || !libres.length) return n;
-        return libres.splice(Math.floor(Math.random() * libres.length), 1)[0];
+        var x = libres.splice(Math.floor(Math.random() * libres.length), 1)[0];
+        nuevos.push(x);
+        return x;
       });
       alerta('alertaNumeros', '');
-      pintarTablero(); pintarSeleccion();
+      apartarVarios(nuevos);
     });
 
     var desde = $('#desde');
@@ -588,10 +779,13 @@
       if (isNaN(inicio)) inicio = min;
       var s = bloqueConsecutivo(W.cantidad, inicio);
       if (s === -1) { alerta('alertaNumeros', 'No hay ' + W.cantidad + ' números consecutivos libres. Elígelos uno por uno.'); return; }
+      var anteriores = elegidos(), nuevos = [];
       W.seleccion = [];
       for (var k = 0; k < W.cantidad; k++) W.seleccion.push(s + k);
+      anteriores.forEach(function (x) { if (W.seleccion.indexOf(x) === -1) liberarMio(x); });
+      W.seleccion.forEach(function (x) { if (anteriores.indexOf(x) === -1) nuevos.push(x); });
       alerta('alertaNumeros', s === inicio ? '' : 'Desde el #' + inicio + ' no había ' + W.cantidad + ' números seguidos libres; te asignamos del <strong>#' + s + '</strong> al <strong>#' + (s + W.cantidad - 1) + '</strong>.');
-      pintarTablero(); pintarSeleccion();
+      apartarVarios(nuevos);
     });
   }
   // Primer bloque de "cantidad" números libres y consecutivos a partir de "desde"
@@ -605,14 +799,40 @@
   function alternarNumero(n) {
     var i = W.seleccion.indexOf(n);
     alerta('alertaNumeros', '');
-    if (i !== -1) W.seleccion[i] = null;                // ya era tuyo: se quita (su lugar queda vacío)
-    else {
-      var lugar = W.seleccion.indexOf(null);
-      if (lugar !== -1) W.seleccion[lugar] = n;           // se asigna al primer corredor sin número
-      else if (W.cantidad === 1) W.seleccion = [n];      // individual: cambia directo
-      else { alerta('alertaNumeros', 'Ya elegiste ' + W.cantidad + ' números. Quita uno (toca la ✕) para cambiarlo.'); return; }
+    if (i !== -1) {                                       // ya era tuyo: se quita y se libera para todos
+      W.seleccion[i] = null;
+      liberarMio(n);
+      pintarTablero(); pintarSeleccion();
+      return;
     }
-    pintarTablero(); pintarSeleccion();
+    var lugar = W.seleccion.indexOf(null);
+    if (lugar !== -1) W.seleccion[lugar] = n;             // se asigna al primer corredor sin número
+    else if (W.cantidad === 1) { liberarMio(W.seleccion[0]); W.seleccion = [n]; }   // individual: cambia directo
+    else { alerta('alertaNumeros', 'Ya elegiste ' + W.cantidad + ' números. Quita uno (toca la ✕) para cambiarlo.'); return; }
+    apartarVarios([n]);
+  }
+  // Aparta en la base de datos los números recién elegidos; si alguien ganó alguno, se quita y se avisa
+  // Quita un número de "mis apartados" y lo libera para todos
+  function liberarMio(n) { if (n === null || n === undefined) return; delete W.mios[n]; soltar(n); }
+  function apartarVarios(nums) {
+    nums.forEach(function (n) { W.mios[n] = Date.now(); });
+    pintarTablero(); pintarSeleccion(); actualizarTemporizador();
+    nums.forEach(function (n) {
+      apartar(n).then(function () {
+        // Si la persona lo quitó mientras se estaba apartando, se libera de inmediato
+        if (!W.mios[n]) soltar(n);
+      }).catch(function (e) {
+        var perdidos = liberarLugares(function (x) { return x === n; });
+        delete W.mios[n];
+        if (e && e.code === 'sin-conexion') {
+          alerta('alertaNumeros', '⚠️ No pudimos apartar el #' + n + ' porque no hay conexión con la base de datos. Recarga la página e intenta de nuevo.');
+        } else {
+          if (!(e && (e.code === 'ocupado' || e.code === 'en-proceso' || e.code === 'permission-denied'))) console.error('[apartar]', e);
+          if (perdidos.length) alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro.'));
+        }
+        pintarTablero(); pintarSeleccion(); actualizarTemporizador();
+      });
+    });
   }
   function pintarSeleccion() {
     var faltan = vacios(), listos = W.cantidad - faltan;
@@ -635,19 +855,24 @@
     BOTONES.forEach(function (b) {
       var n = Number(b.getAttribute('data-n'));
       var ocupado = estaOcupado(n), sel = W.seleccion.indexOf(n) !== -1 && !ocupado;
-      if (!ocupado) libres++;
+      var proceso = !ocupado && !sel && enProceso(n);
+      if (!ocupado && !proceso) libres++;
       b.classList.toggle('is-ocupado', ocupado);
+      b.classList.toggle('is-proceso', proceso);
       b.classList.toggle('is-sel', sel);
-      b.disabled = ocupado;
+      b.disabled = ocupado || proceso;
       b.hidden = !!r && (n < r[0] || n > r[1]);
+      b.title = proceso ? 'Alguien lo está apartando. Se libera si no termina su registro en ' + CONFIG.apartado.minutos + ' minutos.' : '';
       b.setAttribute('aria-pressed', sel ? 'true' : 'false');
-      b.setAttribute('aria-label', 'Número ' + n + (ocupado ? ', ocupado' : sel ? ', seleccionado' : ', libre'));
+      b.setAttribute('aria-label', 'Número ' + n + (ocupado ? ', ocupado' : proceso ? ', en proceso' : sel ? ', seleccionado' : ', libre'));
     });
     $('#tableroConteo').innerHTML = '<strong>' + miles(libres) + '</strong> libres de ' + miles(CONFIG.numeros.maximo - CONFIG.numeros.minimo + 1);
   }
   // Cuando cambia la lista de ocupados (tiempo real): quita de tu selección lo que ya no está libre
   function alCambiarOcupados() {
-    var perdidos = liberarLugares(estaOcupado);
+    // Un número tuyo se pierde solo si alguien más lo confirmó (por ejemplo, si tu apartado falló)
+    var perdidos = liberarLugares(function (n) { var x = DB.tablero.get(n); return esReservado(n) || (!!x && x.e === 'c'); });
+    perdidos.forEach(function (p) { delete W.mios[p.numero]; });
     if (perdidos.length) {
       if (W.paso > 2) irAPaso(2);   // regresa a elegir; los datos ya escritos se conservan
       alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro; tus datos se conservan.'));
@@ -743,7 +968,8 @@
 
   function reiniciarWizard() {
     form().reset();
-    W.seleccion = []; W.cache = [];
+    W.seleccion = []; W.cache = []; W.mios = {};
+    $('#temporizador').hidden = true;
     $('#corredores').innerHTML = '';
     ['alertaNumeros', 'alertaDatos', 'alertaEnvio'].forEach(function (id) { alerta(id, ''); });
     setCantidad(1);
@@ -762,6 +988,7 @@
     setCantidad(1);
     initTablero();
     pintarSeleccion();
+    initTemporizador();
 
     // Botones Siguiente / Atrás
     f.addEventListener('click', function (e) {
@@ -837,10 +1064,14 @@
     }).catch(function (err) {
       if (err && err.code === 'numeros-ocupados') {
         // Alguien apartó ese número justo antes: se quita de la selección y se regresa al paso 2
-        err.numeros.forEach(function (n) { DB.tomados.add(n); });
+        // El número ya no está apartado a tu nombre (alguien lo confirmó o venció tu tiempo)
         var perdidos = liberarLugares(function (n) { return err.numeros.indexOf(n) !== -1; });
+        err.numeros.forEach(function (n) { delete W.mios[n]; soltar(n); });
         irAPaso(2);
-        alerta('alertaNumeros', textoPerdidos(perdidos, 'Elige otro; tus datos se conservan.'));
+        alerta('alertaNumeros', '😅 ' + perdidos.map(function (p) {
+          return '#' + p.numero + (W.cantidad > 1 ? ' (Corredor ' + p.corredor + ')' : '');
+        }).join(', ') + ' ya no ' + (perdidos.length > 1 ? 'están apartados' : 'está apartado') +
+          ' a tu nombre (alguien lo tomó o se acabó el tiempo). Elige otro; tus datos se conservan.');
         return;
       }
       console.error(err);
@@ -855,33 +1086,43 @@
     var numeros = data.corredores.map(function (r) { return r.numero; });
 
     if (DB.db) {
-      // Transacción: comprueba que TODOS los números sigan libres y, solo entonces,
-      // guarda la inscripción y aparta los números al mismo tiempo.
-      var db = DB.db, FieldValue = window.firebase.firestore.FieldValue;
-      var refs = numeros.map(function (n) { return db.collection('numeros').doc(String(n)); });
-      var inscRef = db.collection('inscripciones').doc();
-      return db.runTransaction(function (tx) {
-        return Promise.all(refs.map(function (r) { return tx.get(r); })).then(function (snaps) {
-          var ocupados = snaps.filter(function (s) { return s.exists; }).map(function (s) { return Number(s.id); });
-          if (ocupados.length) throw errorOcupados(ocupados);
-          tx.set(inscRef, Object.assign({}, data, { creado: FieldValue.serverTimestamp() }));
-          refs.forEach(function (r, i) {
-            tx.set(r, {
-              numero: numeros[i],
-              categoria: data.corredores[i].categoria,
-              inscripcion: inscRef.id,
-              creado: FieldValue.serverTimestamp()
-            });
-          });
+      // UNA sola escritura en lote, sin lecturas: guarda la inscripción y pasa cada número de
+      // "apartado" a "confirmado". Las reglas solo lo permiten si cada número sigue apartado a
+      // tu nombre y sin vencer; si alguno falla, no se guarda NADA.
+      var FV = window.firebase.firestore.FieldValue, batch = DB.db.batch();
+      var inscRef = DB.db.collection('inscripciones').doc();
+      batch.set(inscRef, Object.assign({}, data, { creado: FV.serverTimestamp() }));
+      numeros.forEach(function (n, i) {
+        batch.update(refNumero(n), { estado: 'confirmado', categoria: data.corredores[i].categoria, inscripcion: inscRef.id });
+      });
+      return batch.commit().then(function () {
+        // Actualiza el resumen del tablero (una escritura pequeña por número; si alguna fallara,
+        // la siguiente persona que lo note lo corrige sola)
+        numeros.forEach(function (n) {
+          escribirResumen(n, { e: 'c' }).catch(function (e) { console.warn('[resumen]', e); });
         });
-      }).then(function () { return { id: inscRef.id }; });
+        return { id: inscRef.id };
+      }, function (e) {
+        if (!e || (e.code !== 'permission-denied' && e.code !== 'not-found')) throw e;
+        // Solo cuando algo falla se leen los números, para saber cuál se perdió
+        return Promise.all(numeros.map(function (n) { return refNumero(n).get(); })).then(function (snaps) {
+          var perdidos = numeros.filter(function (n, i) {
+            var d = snaps[i].exists ? snaps[i].data() : null;
+            return !d || d.estado !== 'apartado' || d.uid !== DB.uid || !d.creado || d.creado.toMillis() + APARTADO_MS <= ahora();
+          });
+          perdidos.forEach(function (n) { repararResumen(n).catch(function () {}); });
+          throw errorOcupados(perdidos.length ? perdidos : numeros);
+        });
+      });
     }
 
     // Modo demostración: solo revisa y guarda en este navegador
     var ocupados = numeros.filter(estaOcupado);
     if (ocupados.length) return Promise.reject(errorOcupados(ocupados));
-    numeros.forEach(function (n) { DB.tomados.add(n); });
-    try { localStorage.setItem(DEMO_KEY, JSON.stringify(Array.from(DB.tomados))); } catch (e) { /* sin almacenamiento */ }
+    numeros.forEach(function (n) { DB.tablero.set(n, { e: 'c', ms: 0 }); });
+    var confirmados = [];
+    DB.tablero.forEach(function (x, n) { if (x.e === 'c') confirmados.push(n); });
+    try { localStorage.setItem(DEMO_KEY, JSON.stringify(confirmados)); } catch (e) { /* sin almacenamiento */ }
     return Promise.resolve({ offline: true });
   }
 
