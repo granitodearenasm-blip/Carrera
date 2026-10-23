@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/* HANGUK RUN: papel hanji, tinta, rojo y azul del taegeuk y amarillo del obangsaek.
+   Archivo (variable de ancho) para todo; Black Han Sans solo para el hangul. */
+@theme {
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-ko: 'Black Han Sans', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+
+  --color-paper: #f3eee4;
+  --color-paper-2: #e8e0cf;
+  --color-card: #fffdf8;
+  --color-ink: #16150f;
+  --color-ink-2: #23211b;
+  --color-muted: #6c665a;
+  --color-line: #d6ccb8;
+
+  --color-hong: #c8102e;
+  --color-hong-700: #a00d25;
+  --color-cheong: #0b3d91;
+  --color-hwang: #e8a90c;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  @apply bg-paper font-sans text-ink antialiased;
+  font-stretch: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-cheong);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-hong);
+  color: #fff;
+}
+
+/* Titulares: Archivo condensado y pesado, como la rotulación de un cartel de carrera. */
+@utility display {
+  font-weight: 800;
+  font-stretch: 68%;
+  line-height: 0.88;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+@utility condensed {
+  font-stretch: 78%;
+}
+
+/* Franja "saekdong": las rayas de colores de las mangas del hanbok. */
+@utility saekdong {
+  height: 8px;
+  background: linear-gradient(
+    90deg,
+    #c8102e 0 16%,
+    #e8a90c 16% 32%,
+    #2f7a4f 32% 48%,
+    #0b3d91 48% 64%,
+    #d9688f 64% 80%,
+    #fffdf8 80% 88%,
+    #5b3a8c 88% 100%
+  );
+}
+
+/* Número "en proceso" (otra persona lo está apartando). */
+@utility rayado {
+  background-image: repeating-linear-gradient(135deg, rgb(232 169 12 / 0.28) 0 5px, transparent 5px 10px);
+}
+
+/* Perforación del dorsal (la parte que se desprende). */
+@utility perforado {
+  background-image: radial-gradient(circle, var(--color-line) 1.5px, transparent 1.6px);
+  background-size: 9px 4px;
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+/* Ventanas (reglamento / confirmación) con <dialog> nativo. */
+dialog.modal {
+  max-height: min(90dvh, 52rem);
+  width: min(100% - 2rem, 40rem);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+dialog.modal::backdrop {
+  background: rgb(22 21 15 / 0.62);
+  backdrop-filter: blur(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
