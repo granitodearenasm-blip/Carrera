@@ -1,8 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
+import { ArrowUpRight, Baby, BookOpen, ChevronLeft, ChevronRight, HandHeart, Mail, Recycle } from 'lucide-react';
 import { CONFIG, EMAIL, FACEBOOK_URL, INSTAGRAM_URL } from '../config';
 import { img } from '../lib/format';
-import { btn, Km, Pendiente, Wrap } from '../components/ui';
+import { btn, Km, Wrap } from '../components/ui';
+
+// ✏️ CAMBIAR: proyectos destacados de Granito de Arena
+const PROYECTOS = [
+  { Icono: HandHeart, titulo: 'Servicios profesionales gratuitos', texto: 'Una línea de atención que acerca asesoría profesional sin costo a quien la necesita.' },
+  { Icono: Baby, titulo: 'Espacios dignos de lactancia', texto: 'Lugares cómodos y seguros para que las mamás amamanten con tranquilidad.' },
+  { Icono: Recycle, titulo: 'Talleres ambientales', texto: 'Con material reciclado: jabón hecho con aceite usado y masa moldeable con sobras de café.' },
+  { Icono: BookOpen, titulo: 'Ruta de la Lectura', texto: 'Impulsa a las cafeterías locales y forma grupos de lectura para jóvenes.' },
+];
 
 export function Organizador() {
   return (
@@ -42,9 +50,7 @@ export function Organizador() {
               </div>
               <div className="grid gap-1 py-4 sm:grid-cols-[9rem_1fr]">
                 <dt className="text-[12px] font-semibold tracking-[0.14em] text-muted uppercase">Trayectoria</dt>
-                <dd>
-                  <Pendiente>año de inicio, principales proyectos y comunidades con las que han trabajado</Pendiente>
-                </dd>
+                <dd>Desde 2021 impulsamos proyectos que responden a necesidades concretas de San Martín Texmelucan: salud, medio ambiente, cultura y acceso a servicios.</dd>
               </div>
             </dl>
             {/* ✏️ CAMBIAR: datos de contacto y redes */}
@@ -60,6 +66,20 @@ export function Organizador() {
               </a>
             </div>
           </div>
+        </div>
+        <div className="mt-20">
+          <h3 className="text-[12px] font-semibold tracking-[0.14em] text-muted uppercase">Proyectos que ya están en marcha</h3>
+          <ul className="mt-5 grid gap-px overflow-hidden rounded-[4px] bg-ink/12 sm:grid-cols-2 lg:grid-cols-4">
+            {PROYECTOS.map(({ Icono, titulo, texto }) => (
+              <li key={titulo} className="bg-card p-6">
+                <span className="flex size-11 items-center justify-center rounded-full bg-sol">
+                  <Icono size={22} strokeWidth={1.8} />
+                </span>
+                <h4 className="mt-4 text-lg leading-tight font-bold">{titulo}</h4>
+                <p className="mt-1.5 text-[15px] text-ink/75">{texto}</p>
+              </li>
+            ))}
+          </ul>
         </div>
         <Instagram />
       </Wrap>
