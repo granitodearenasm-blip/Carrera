@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { CONFIG } from '../config';
-import { img } from '../lib/format';
+import { img, pesos } from '../lib/format';
 import { Countdown } from '../components/Countdown';
 import { Dorsal } from '../components/Dorsal';
 import { btn, Saekdong, Wrap } from '../components/ui';
@@ -62,7 +62,7 @@ export function Hero() {
 
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#inscripcion" className={`${btn.base} ${btn.primario} ${btn.lg}`}>
-              Inscríbete · $400 <ArrowRight size={18} />
+              Inscríbete · {pesos(CONFIG.categorias[0].precio)} <ArrowRight size={18} />
             </a>
             <a href="#por-que" className={`${btn.base} ${btn.borde} ${btn.lg}`}>
               ¿Por qué corremos?

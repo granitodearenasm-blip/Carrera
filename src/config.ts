@@ -15,9 +15,9 @@ export const CONFIG = {
 
   // Categorías / distancias y su precio por corredor (MXN)
   categorias: [
-    { id: '3K', nombre: '3K · Ruta Jeju', precio: 400 },
-    { id: '5K', nombre: '5K · Ruta Seúl', precio: 400 },
-    { id: '10K', nombre: '10K · Ruta Busan', precio: 400 },
+    { id: '3K', nombre: '3K · Ruta Jeju', precio: 350 },
+    { id: '5K', nombre: '5K · Ruta Seúl', precio: 350 },
+    { id: '10K', nombre: '10K · Ruta Busan', precio: 350 },
   ],
 
   // Tallas de playera (unisex)
