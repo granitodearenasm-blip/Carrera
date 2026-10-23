@@ -39,12 +39,12 @@ export function Agenda() {
         <ol className="relative mt-14 grid gap-0 lg:grid-cols-5">
           <span aria-hidden className="absolute top-2 bottom-2 left-[7px] w-0.5 bg-ink/25 lg:top-[7px] lg:right-0 lg:bottom-auto lg:left-0 lg:h-0.5 lg:w-auto" />
           {HITOS.map((h) => {
-            const color = h.tono === 'salida' ? 'bg-coral' : h.tono === 'corea' ? 'bg-jardin' : 'bg-ink';
+            const color = h.tono === 'salida' ? 'bg-rojo' : h.tono === 'corea' ? 'bg-azul' : 'bg-ink';
             return (
               <li key={h.titulo} className="relative pb-10 pl-10 lg:pr-6 lg:pb-0 lg:pl-0">
                 <span aria-hidden className={`absolute top-0 left-0 size-4 rounded-full ring-4 ring-paper-2 ${color} ${h.tono ? 'scale-125' : ''}`} />
                 <div className="lg:pt-9">
-                  <p className={`display text-[2.6rem] ${h.tono === 'salida' ? 'text-coral' : h.tono === 'corea' ? 'text-jardin' : ''}`}>{h.fecha}</p>
+                  <p className={`display text-[2.6rem] ${h.tono === 'salida' ? 'text-rojo' : h.tono === 'corea' ? 'text-azul' : ''}`}>{h.fecha}</p>
                   <h3 className="mt-2 text-lg font-bold">
                     {h.titulo}{' '}
                     {h.ko && (

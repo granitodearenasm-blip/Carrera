@@ -1,26 +1,28 @@
 @import 'tailwindcss';
 
-/* HANGUK RUN con la marca de Granito de Arena: crema, café, amarillo y coral, más el verde de los
-   jardines de la hacienda. Archivo (variable de ancho) para todo; Black Han Sans solo para el hangul. */
+/* HANGUK RUN: papel hanji y tinta cálida, con el amarillo de Granito de Arena como color principal
+   y el rojo y azul del taegeuk como acentos coreanos.
+   Archivo (variable de ancho) para todo; Black Han Sans solo para el hangul. */
 @theme {
   --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
   --font-ko: 'Black Han Sans', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
 
-  /* Fondos crema y textos café, los del logo de Granito de Arena */
-  --color-paper: #fdf6e6;
-  --color-paper-2: #f5e8c8;
-  --color-card: #fffcf4;
-  --color-ink: #3d2600;
-  --color-ink-2: #533500;
-  --color-muted: #7d6a4c;
-  --color-line: #e5d4ad;
+  /* Papel claro y tinta negra con un toque del café de Granito */
+  --color-paper: #f7f2e8;
+  --color-paper-2: #eee4cf;
+  --color-card: #fffdf8;
+  --color-ink: #1c140a;
+  --color-ink-2: #2b2014;
+  --color-muted: #6b604f;
+  --color-line: #ddd1bb;
 
-  /* Acentos: amarillo Granito (botones), coral (detalles) y verde jardín (la hacienda) */
+  /* Amarillo Granito (botones y marca), rojo y azul coreanos (acentos), verde jardín (avisos de "listo") */
   --color-sol: #ffc800;
   --color-sol-600: #f0b400;
-  --color-coral: #e4573d;
-  --color-coral-700: #b8401f;
-  --color-jardin: #4e6b3a;
+  --color-rojo: #c8102e;
+  --color-rojo-700: #a00d25;
+  --color-azul: #0b3d91;
+  --color-jardin: #3f7a4a;
 }
 
 html {
@@ -34,7 +36,7 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-jardin);
+  outline: 3px solid var(--color-azul);
   outline-offset: 2px;
 }
 
@@ -56,16 +58,18 @@ body {
   font-stretch: 78%;
 }
 
-/* Franja "saekdong" (las rayas de las mangas del hanbok) con los colores de Granito de Arena. */
+/* Franja "saekdong": las rayas de colores de las mangas del hanbok, con el amarillo de Granito al frente. */
 @utility saekdong {
   height: 8px;
   background: linear-gradient(
     90deg,
-    var(--color-sol) 0 28%,
-    var(--color-coral) 28% 46%,
-    var(--color-ink) 46% 62%,
-    var(--color-jardin) 62% 80%,
-    #fbe07c 80% 100%
+    var(--color-sol) 0 22%,
+    var(--color-rojo) 22% 38%,
+    var(--color-jardin) 38% 52%,
+    var(--color-azul) 52% 68%,
+    #e0789b 68% 82%,
+    var(--color-card) 82% 90%,
+    #5b3a8c 90% 100%
   );
 }
 
@@ -94,7 +98,7 @@ dialog.modal {
 }
 
 dialog.modal::backdrop {
-  background: rgb(61 38 0 / 0.6);
+  background: rgb(28 20 10 / 0.62);
   backdrop-filter: blur(3px);
 }
 

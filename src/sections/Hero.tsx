@@ -28,7 +28,7 @@ export function Hero() {
             Hanguk
             <br />
             Run{' '}
-            <span lang="ko" className="relative -top-[0.08em] ml-1 inline-block -rotate-3 rounded-[0.06em] bg-coral px-[0.14em] py-[0.08em] align-middle font-ko text-[0.36em] leading-none font-normal text-white">
+            <span lang="ko" className="relative -top-[0.08em] ml-1 inline-block -rotate-3 rounded-[0.06em] bg-rojo px-[0.14em] py-[0.08em] align-middle font-ko text-[0.36em] leading-none font-normal text-white">
               한국
             </span>
           </h1>
@@ -53,7 +53,7 @@ export function Hero() {
             <div className="col-span-2 border-t border-ink/20 py-3.5 sm:col-span-1 sm:border-t-0 sm:border-l sm:pl-5">
               <dt className="text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">Sede · San Martín Texmelucan</dt>
               <dd className="mt-0.5 font-bold">
-                <a href="#sede" className="underline decoration-coral decoration-2 underline-offset-4 hover:text-coral">
+                <a href="#sede" className="underline decoration-rojo decoration-2 underline-offset-4 hover:text-rojo">
                   {CONFIG.sede.nombre}
                 </a>
               </dd>
@@ -78,7 +78,7 @@ export function Hero() {
               alt="Fachada del Museo Hacienda San Cristóbal Polaxtla, con su galería de vidrio y jardines"
               width={636}
               height={384}
-              className="aspect-[16/10] w-full -rotate-2 rounded-[3px] object-cover shadow-[0_24px_50px_-24px_rgb(61_38_0/0.55)] ring-[10px] ring-card"
+              className="aspect-[16/10] w-full -rotate-2 rounded-[3px] object-cover shadow-[0_24px_50px_-24px_rgb(28_20_10/0.55)] ring-[10px] ring-card"
             />
             <figcaption className="absolute top-4 left-3 -rotate-2 rounded-[3px] bg-ink px-2 py-1 text-[11px] font-semibold tracking-[0.12em] text-paper uppercase">
               La sede · Polaxtla

@@ -11,8 +11,17 @@ export function Organizador() {
         <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
           <div className="lg:col-span-5">
             {/* ✏️ LOGO/FOTO DEL ORGANIZADOR */}
-            <div className="relative aspect-square max-w-md overflow-hidden rounded-[6px] bg-card ring-1 ring-ink/10">
-              <img src={img('logo-granito-de-arena.png')} alt="Logo de Granito de Arena" width={600} height={600} loading="lazy" className="size-full object-contain p-10" />
+            {/* El logo suelto, como un sello, con un aro punteado desfasado detrás */}
+            <div className="relative mx-auto aspect-square w-full max-w-sm lg:mx-0">
+              <span aria-hidden className="absolute inset-0 translate-x-4 translate-y-4 rounded-full border-2 border-dashed border-rojo/45" />
+              <img
+                src={img('logo-granito-de-arena.png')}
+                alt="Logo de Granito de Arena"
+                width={600}
+                height={600}
+                loading="lazy"
+                className="relative size-full -rotate-6 object-contain drop-shadow-[0_18px_28px_rgb(28_20_10/0.2)]"
+              />
             </div>
           </div>
           <div className="lg:col-span-7">
@@ -107,7 +116,7 @@ function Instagram() {
       <div className="flex items-end justify-between gap-4">
         <h3 className="text-2xl font-bold condensed">
           Lo último de{' '}
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="text-coral hover:underline">
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="text-rojo hover:underline">
             @granitodearena.sm
           </a>
         </h3>
@@ -140,7 +149,7 @@ function Instagram() {
               <strong className="block">Síguenos en Instagram</strong>
               <span className="text-ink/70">Novedades de HANGUK RUN y del trabajo de la delegación.</span>
             </span>
-            <ArrowUpRight className="shrink-0 text-coral" />
+            <ArrowUpRight className="shrink-0 text-rojo" />
           </a>
         )}
       </div>

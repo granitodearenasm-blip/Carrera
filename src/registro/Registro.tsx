@@ -138,13 +138,13 @@ export function Registro() {
       </label>
       {control}
       {errores[id] && (
-        <p id={`${id}-error`} className="mt-1 text-[13px] font-medium text-coral-700">
+        <p id={`${id}-error`} className="mt-1 text-[13px] font-medium text-rojo-700">
           {errores[id]}
         </p>
       )}
     </div>
   );
-  const borde = (id: string) => (errores[id] ? 'border-coral' : 'border-ink/25');
+  const borde = (id: string) => (errores[id] ? 'border-rojo' : 'border-ink/25');
   const aria = (id: string) => ({ 'aria-invalid': !!errores[id], 'aria-describedby': errores[id] ? `${id}-error` : undefined });
 
   const resumen = s.paso === 4 ? armarInscripcion(s.seleccion, corredores, contacto) : null;
@@ -180,7 +180,7 @@ export function Registro() {
                     aria-current={actual ? 'step' : undefined}
                     className="group w-full text-left disabled:cursor-default"
                   >
-                    <span className={`block h-1.5 rounded-full ${actual ? 'bg-coral' : hecho ? 'bg-ink group-hover:bg-coral' : 'bg-ink/15'}`} />
+                    <span className={`block h-1.5 rounded-full ${actual ? 'bg-rojo' : hecho ? 'bg-ink group-hover:bg-rojo' : 'bg-ink/15'}`} />
                     <span className={`mt-2 flex items-center gap-1.5 text-[13px] font-semibold ${actual || hecho ? 'text-ink' : 'text-muted'}`}>
                       <span className="tabular-nums">{hecho ? <Check size={14} /> : `0${n}`}</span>
                       <span className="hidden sm:inline">{texto}</span>
@@ -191,11 +191,11 @@ export function Registro() {
             })}
           </ol>
 
-          <form onSubmit={onSubmit} noValidate className="mt-6 rounded-[6px] bg-card p-5 shadow-[0_30px_60px_-40px_rgb(61_38_0/0.5)] ring-1 ring-ink/10 sm:p-8">
+          <form onSubmit={onSubmit} noValidate className="mt-6 rounded-[6px] bg-card p-5 shadow-[0_30px_60px_-40px_rgb(28_20_10/0.5)] ring-1 ring-ink/10 sm:p-8">
             {s.restante !== null && (
               <div
                 role="timer"
-                className={`sticky top-[4.5rem] z-20 -mx-1 mb-6 flex items-center gap-3 rounded-[4px] px-4 py-3 text-[14px] ${s.restante <= 60 ? 'bg-coral-700 text-white' : 'bg-sol/20 text-ink'}`}
+                className={`sticky top-[4.5rem] z-20 -mx-1 mb-6 flex items-center gap-3 rounded-[4px] px-4 py-3 text-[14px] ${s.restante <= 60 ? 'bg-rojo-700 text-white' : 'bg-sol/20 text-ink'}`}
               >
                 <Timer size={18} className="shrink-0" />
                 <span>
@@ -340,7 +340,7 @@ export function Registro() {
                       <div key={i} className="rounded-[4px] border border-ink/15 p-4 sm:p-5">
                         <div className="mb-4 flex items-center justify-between">
                           <h4 className="text-lg font-bold">{grupo ? `Corredor ${i + 1}` : 'Tus datos'}</h4>
-                          <span className="rounded-[3px] border-t-4 border-coral bg-paper px-2.5 py-1 font-bold tabular-nums">#{numero}</span>
+                          <span className="rounded-[3px] border-t-4 border-rojo bg-paper px-2.5 py-1 font-bold tabular-nums">#{numero}</span>
                         </div>
                         <div className="grid gap-4 sm:grid-cols-2">
                           {texto('nombre', 'Nombre completo *', grupo ? { type: 'text' } : { type: 'text', autoComplete: 'name' }, 'sm:col-span-2')}
@@ -417,23 +417,23 @@ export function Registro() {
                     ],
                   ].map(([titulo, texto], i) => (
                     <li key={i} className="border-t-2 border-ink pt-3 text-[14px] text-ink/75">
-                      <span className="display text-2xl text-coral">0{i + 1}</span>
+                      <span className="display text-2xl text-rojo">0{i + 1}</span>
                       <strong className="mt-1 block text-[15px] text-ink">{titulo}</strong>
                       {texto}
                     </li>
                   ))}
                 </ol>
 
-                <label className={`mt-7 flex items-start gap-3 rounded-[4px] p-3 text-[15px] ${errores.acepta && !acepta ? 'bg-coral/10 ring-1 ring-coral' : 'bg-paper'}`}>
+                <label className={`mt-7 flex items-start gap-3 rounded-[4px] p-3 text-[15px] ${errores.acepta && !acepta ? 'bg-rojo/10 ring-1 ring-rojo' : 'bg-paper'}`}>
                   <input
                     type="checkbox"
                     checked={acepta}
                     onChange={(e) => setAcepta(e.target.checked)}
-                    className="mt-0.5 size-5 shrink-0 accent-coral"
+                    className="mt-0.5 size-5 shrink-0 accent-rojo"
                   />
                   <span>
                     {grupo ? 'Como responsable, confirmo que todos los integrantes leyeron y aceptan el ' : 'He leído y acepto el '}
-                    <button type="button" onClick={abrirReglamento} className="font-semibold underline decoration-coral decoration-2 underline-offset-2">
+                    <button type="button" onClick={abrirReglamento} className="font-semibold underline decoration-rojo decoration-2 underline-offset-2">
                       reglamento y carta responsiva
                     </button>
                     . *
@@ -470,7 +470,7 @@ export function Registro() {
 function Alerta({ texto }: { texto: string }) {
   if (!texto) return null;
   return (
-    <p role="alert" className="mt-5 flex gap-2.5 rounded-[4px] bg-coral/10 px-4 py-3 text-[15px] text-coral-700">
+    <p role="alert" className="mt-5 flex gap-2.5 rounded-[4px] bg-rojo/10 px-4 py-3 text-[15px] text-rojo-700">
       <TriangleAlert size={18} className="mt-0.5 shrink-0" />
       {texto}
     </p>

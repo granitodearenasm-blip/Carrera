@@ -67,7 +67,7 @@ export function Premios() {
               </p>
               <h3 className="mt-2 text-2xl font-bold condensed">Mejor outfit K-culture</h3>
               <p className="mt-1 text-paper/70">Cualquier distancia. Hanbok, K-pop, K-drama… sorpréndenos.</p>
-              <a href={`mailto:${EMAIL}?subject=Patrocinio%20HANGUK%20RUN`} className="mt-4 inline-flex items-center gap-1 font-semibold text-paper underline decoration-coral decoration-2 underline-offset-4">
+              <a href={`mailto:${EMAIL}?subject=Patrocinio%20HANGUK%20RUN`} className="mt-4 inline-flex items-center gap-1 font-semibold text-paper underline decoration-rojo decoration-2 underline-offset-4">
                 ¿Tu marca quiere patrocinar este premio? <ArrowUpRight size={16} />
               </a>
             </div>

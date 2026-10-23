@@ -32,7 +32,7 @@ export function Causa() {
 
         <div className="mt-14 grid gap-12 border-t-2 border-ink pt-10 lg:grid-cols-12">
           <aside className="lg:col-span-4" aria-label="La delegación">
-            <p className="display text-[9rem] text-coral">10</p>
+            <p className="display text-[9rem] text-rojo">10</p>
             <p className="-mt-1 text-lg font-bold">jóvenes voluntarios</p>
             <ul className="mt-6 space-y-3 text-[15px]">
               <li className="flex gap-3">
@@ -74,7 +74,7 @@ export function Causa() {
           </div>
         </div>
 
-        <blockquote className="mt-20 max-w-4xl border-l-4 border-coral pl-6 text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.1] font-bold condensed">
+        <blockquote className="mt-20 max-w-4xl border-l-4 border-rojo pl-6 text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.1] font-bold condensed">
           “Cada paso puede ayudar a que una idea nacida en nuestra comunidad llegue más lejos.”
         </blockquote>
       </Wrap>

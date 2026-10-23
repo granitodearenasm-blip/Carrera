@@ -8,7 +8,7 @@ export function Footer() {
   return (
     <footer className="bg-ink text-paper">
       <Saekdong />
-      <Wrap className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
+      <Wrap className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.7fr_1.3fr_0.9fr_1fr]">
         <div>
           <p className="display text-[2.6rem]">
             Hanguk <span className="text-sol">Run</span>{' '}
@@ -24,7 +24,7 @@ export function Footer() {
         {/* ✏️ CAMBIAR: contacto del pie */}
         <div>
           <h4 className="text-[12px] font-semibold tracking-[0.14em] text-paper/50 uppercase">Contacto</h4>
-          <a href={`mailto:${EMAIL}`} className="mt-3 block break-all hover:text-sol">
+          <a href={`mailto:${EMAIL}`} className="mt-3 block [overflow-wrap:anywhere] hover:text-sol">
             {EMAIL}
           </a>
         </div>
@@ -57,7 +57,7 @@ function Reglamento() {
   return (
     <Dialog open={open} onClose={() => setOpen(false)} titulo="Reglamento y carta responsiva">
       {/* ✏️ CAMBIAR: texto del reglamento */}
-      <ol className="list-decimal space-y-2.5 pl-5 text-[15px] leading-relaxed text-ink/85 marker:font-bold marker:text-coral">
+      <ol className="list-decimal space-y-2.5 pl-5 text-[15px] leading-relaxed text-ink/85 marker:font-bold marker:text-rojo">
         <li>La edad mínima para participar es de 12 años. Menores de 18 requieren autorización de padre o tutor.</li>
         <li>
           Cada participante elige su número de corredor al inscribirse; los números se apartan en el orden en que se completan las inscripciones. Una vez apartado, tienes{' '}

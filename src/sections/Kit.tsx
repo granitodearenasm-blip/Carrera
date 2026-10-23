@@ -22,7 +22,7 @@ export function Kit() {
         <div className="mt-12 grid gap-4 lg:grid-cols-12">
           <article className="flex flex-col justify-between gap-8 rounded-[4px] bg-ink p-6 text-paper sm:flex-row sm:items-center lg:col-span-6">
             <div className="max-w-xs">
-              <p className="display text-[2.4rem] text-coral">01</p>
+              <p className="display text-[2.4rem] text-rojo">01</p>
               <h3 className="mt-2 text-xl font-bold">Número de corredor</h3>
               <p className="mt-1 text-paper/70">El número que tú elijas, con tu nombre en español y en hangul.</p>
             </div>
@@ -32,7 +32,7 @@ export function Kit() {
             {KIT.map(({ Icono, titulo, texto }, i) => (
               <article key={titulo} className="flex gap-5 rounded-[4px] bg-card p-5 ring-1 ring-ink/10 sm:flex-col lg:flex-row lg:items-center">
                 <span className="display w-10 shrink-0 text-[2rem] text-ink/30">{String(i + 2).padStart(2, '0')}</span>
-                <Icono size={30} strokeWidth={1.6} className="shrink-0 text-coral" />
+                <Icono size={30} strokeWidth={1.6} className="shrink-0 text-rojo" />
                 <div>
                   <h3 className="text-lg font-bold">{titulo}</h3>
                   <p className="text-ink/70">{texto}</p>
