@@ -58,7 +58,7 @@ export function Patrocinadores() {
                   <a
                     key={k}
                     href={asunto}
-                    className={`flex items-center justify-center rounded-[4px] border-2 border-dashed border-ink/20 text-sm font-semibold text-ink/40 transition-colors hover:border-hong hover:text-hong ${ALTURA[i]}`}
+                    className={`flex items-center justify-center rounded-[4px] border-2 border-dashed border-ink/20 text-sm font-semibold text-ink/40 transition-colors hover:border-coral hover:text-coral ${ALTURA[i]}`}
                   >
                     Lugar disponible
                   </a>

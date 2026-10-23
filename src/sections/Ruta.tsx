@@ -32,7 +32,7 @@ export function Ruta() {
               <div className="flex items-baseline gap-3 sm:block">
                 <p className="display text-[3.4rem] leading-none">
                   {r.km}
-                  <span className="text-hong">K</span>
+                  <span className="text-coral">K</span>
                 </p>
                 <p className="text-[14px] font-semibold text-muted sm:mt-1">
                   {r.nombre} · salida {r.salida}
@@ -46,11 +46,11 @@ export function Ruta() {
                     ))}
                     {r.km === 10 &&
                       HIDRATACION.map((k) => (
-                        <span key={k} className="absolute -top-7 -translate-x-1/2 text-cheong" style={{ left: `${(k / r.km) * 100}%` }} title={`Hidratación km ${k}`}>
+                        <span key={k} className="absolute -top-7 -translate-x-1/2 text-jardin" style={{ left: `${(k / r.km) * 100}%` }} title={`Hidratación km ${k}`}>
                           <Droplet size={16} fill="currentColor" />
                         </span>
                       ))}
-                    <span className="absolute top-1/2 -right-1 -translate-y-1/2 translate-x-full pl-2 text-hong">
+                    <span className="absolute top-1/2 -right-1 -translate-y-1/2 translate-x-full pl-2 text-coral">
                       <Flag size={20} />
                     </span>
                   </div>

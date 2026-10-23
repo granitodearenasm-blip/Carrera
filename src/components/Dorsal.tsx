@@ -1,14 +1,14 @@
-/** El número de corredor impreso: banda roja, cuatro orificios para los seguros y talón desprendible. */
+/** El número de corredor impreso: banda amarilla, cuatro orificios para los seguros y talón desprendible. */
 export function Dorsal({ numero, nombre, pie, className = '' }: { numero: string | number; nombre?: string; pie?: string; className?: string }) {
   const hoyos = ['top-2.5 left-2.5', 'top-2.5 right-2.5', 'bottom-2.5 left-2.5', 'bottom-2.5 right-2.5'];
   return (
-    <div className={`relative overflow-hidden rounded-[6px] bg-card text-ink shadow-[0_1px_0_rgb(22_21_15/0.08),0_24px_50px_-24px_rgb(22_21_15/0.45)] ring-1 ring-ink/10 ${className}`}>
+    <div className={`relative overflow-hidden rounded-[6px] bg-card text-ink shadow-[0_1px_0_rgb(61_38_0/0.08),0_24px_50px_-24px_rgb(61_38_0/0.45)] ring-1 ring-ink/10 ${className}`}>
       {hoyos.map((p) => (
-        <span key={p} aria-hidden className={`absolute z-10 size-3 rounded-full bg-paper shadow-[inset_0_1px_2px_rgb(22_21_15/0.35)] ${p}`} />
+        <span key={p} aria-hidden className={`absolute z-10 size-3 rounded-full bg-paper shadow-[inset_0_1px_2px_rgb(61_38_0/0.35)] ${p}`} />
       ))}
-      <div className="flex items-center justify-between bg-hong px-8 py-2.5 text-white">
+      <div className="flex items-center justify-between bg-sol px-8 py-2.5 text-ink">
         <span className="display text-[1.35em] leading-none">Hanguk Run</span>
-        <span lang="ko" className="font-ko text-[1.1em] leading-none">
+        <span lang="ko" className="font-ko text-[1.1em] leading-none text-coral-700">
           한국
         </span>
       </div>

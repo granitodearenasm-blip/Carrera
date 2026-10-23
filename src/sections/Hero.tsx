@@ -28,7 +28,7 @@ export function Hero() {
             Hanguk
             <br />
             Run{' '}
-            <span lang="ko" className="relative -top-[0.08em] ml-1 inline-block -rotate-3 rounded-[0.06em] bg-hong px-[0.14em] py-[0.08em] align-middle font-ko text-[0.36em] leading-none font-normal text-white">
+            <span lang="ko" className="relative -top-[0.08em] ml-1 inline-block -rotate-3 rounded-[0.06em] bg-coral px-[0.14em] py-[0.08em] align-middle font-ko text-[0.36em] leading-none font-normal text-white">
               한국
             </span>
           </h1>
@@ -53,7 +53,7 @@ export function Hero() {
             <div className="col-span-2 border-t border-ink/20 py-3.5 sm:col-span-1 sm:border-t-0 sm:border-l sm:pl-5">
               <dt className="text-[11px] font-semibold tracking-[0.14em] text-muted uppercase">Sede · San Martín Texmelucan</dt>
               <dd className="mt-0.5 font-bold">
-                <a href="#sede" className="underline decoration-hong decoration-2 underline-offset-4 hover:text-hong">
+                <a href="#sede" className="underline decoration-coral decoration-2 underline-offset-4 hover:text-coral">
                   {CONFIG.sede.nombre}
                 </a>
               </dd>
@@ -61,7 +61,7 @@ export function Hero() {
           </dl>
 
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#inscripcion" className={`${btn.base} ${btn.rojo} ${btn.lg}`}>
+            <a href="#inscripcion" className={`${btn.base} ${btn.primario} ${btn.lg}`}>
               Inscríbete · $400 <ArrowRight size={18} />
             </a>
             <a href="#por-que" className={`${btn.base} ${btn.borde} ${btn.lg}`}>
@@ -70,8 +70,23 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[25rem] lg:mx-0 lg:justify-self-end">
-          <Dorsal numero={numero} className="rotate-[2.5deg] text-[15px] sm:text-[17px]" />
+        <div className="mx-auto w-full max-w-[30rem] lg:mx-0 lg:justify-self-end">
+          {/* La sede como postal, con el dorsal prendido encima */}
+          <figure className="relative pr-3 pb-16">
+            <img
+              src={img('polaxtla-fachada.jpg')}
+              alt="Fachada del Museo Hacienda San Cristóbal Polaxtla, con su galería de vidrio y jardines"
+              width={636}
+              height={384}
+              className="aspect-[16/10] w-full -rotate-2 rounded-[3px] object-cover shadow-[0_24px_50px_-24px_rgb(61_38_0/0.55)] ring-[10px] ring-card"
+            />
+            <figcaption className="absolute top-4 left-3 -rotate-2 rounded-[3px] bg-ink px-2 py-1 text-[11px] font-semibold tracking-[0.12em] text-paper uppercase">
+              La sede · Polaxtla
+            </figcaption>
+            <div className="absolute right-0 bottom-0 w-[62%] rotate-[4deg]">
+              <Dorsal numero={numero} className="text-[10px] sm:text-[11px]" />
+            </div>
+          </figure>
           <p className="mt-5 text-center text-sm text-muted">
             Tú eliges tu número: del {CONFIG.numeros.minimo} al {CONFIG.numeros.maximo}.
           </p>

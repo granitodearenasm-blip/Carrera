@@ -44,7 +44,7 @@ export function Nav() {
       <Wrap className="flex h-16 items-center gap-6">
         <a href="#inicio" className="flex items-baseline gap-2 whitespace-nowrap" aria-label="HANGUK RUN, ir al inicio">
           <span className="display text-[1.65rem]">
-            Hanguk <span className="text-hong">Run</span>
+            Hanguk <span className="text-coral">Run</span>
           </span>
           <span lang="ko" className="hidden font-ko text-[1.05rem] text-muted sm:inline">
             한국
@@ -56,13 +56,13 @@ export function Nav() {
             <a
               key={id}
               href={`#${id}`}
-              className={`text-[14px] font-semibold transition-colors ${activa === id ? 'text-hong' : 'text-ink/70 hover:text-ink'}`}
+              className={`text-[14px] font-semibold transition-colors ${activa === id ? 'text-coral-700' : 'text-ink/70 hover:text-ink'}`}
             >
               {texto}
             </a>
           ))}
         </nav>
-        <a href="#inscripcion" className={`${btn.base} ${btn.rojo} ${btn.sm} ml-auto xl:ml-0`}>
+        <a href="#inscripcion" className={`${btn.base} ${btn.primario} ${btn.sm} ml-auto xl:ml-0`}>
           Inscríbete <ArrowRight size={15} />
         </a>
         <button
@@ -90,7 +90,7 @@ export function Nav() {
                 </li>
               ))}
               <li>
-                <a href="#inscripcion" onClick={() => setAbierto(false)} className="flex items-baseline gap-4 py-3.5 text-hong">
+                <a href="#inscripcion" onClick={() => setAbierto(false)} className="flex items-baseline gap-4 py-3.5 text-coral">
                   <span className="w-14 text-[12px] font-bold tracking-[0.1em] tabular-nums">KM 10</span>
                   <span className="display text-[2rem]">Meta: inscríbete</span>
                 </a>

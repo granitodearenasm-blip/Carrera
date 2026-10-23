@@ -22,7 +22,7 @@ export function Premios() {
           <div className="lg:col-span-5">
             <h2 className="display text-[clamp(2.8rem,7vw,5rem)]">Premios</h2>
             <p className="mt-8 text-[12px] font-semibold tracking-[0.14em] text-paper/60 uppercase">Bolsa total en efectivo</p>
-            <p className="display mt-2 text-[clamp(4.5rem,12vw,8rem)] text-hwang tabular-nums">{pesos(BOLSA)}</p>
+            <p className="display mt-2 text-[clamp(4.5rem,12vw,8rem)] text-sol tabular-nums">{pesos(BOLSA)}</p>
             <p className="mt-4 max-w-sm text-paper/70">Para los tres primeros lugares de cada distancia, en rama varonil y femenil.</p>
           </div>
 
@@ -50,7 +50,7 @@ export function Premios() {
                       <span className="text-sm text-paper/60">{p.ruta}</span>
                     </th>
                     {p.lugares.map((m, i) => (
-                      <td key={i} className={`py-5 text-right text-xl font-bold condensed sm:text-2xl ${i === 0 ? 'text-hwang' : ''}`}>
+                      <td key={i} className={`py-5 text-right text-xl font-bold condensed sm:text-2xl ${i === 0 ? 'text-sol' : ''}`}>
                         {pesos(m)}
                       </td>
                     ))}
@@ -62,12 +62,12 @@ export function Premios() {
 
             {/* ✏️ Premio especial: cuando haya patrocinador, cambia el texto por los premios */}
             <div className="mt-10 rounded-[4px] border border-dashed border-paper/35 p-6">
-              <p className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.14em] text-hwang uppercase">
+              <p className="flex items-center gap-2 text-[12px] font-semibold tracking-[0.14em] text-sol uppercase">
                 <Sparkles size={15} /> Premio especial · premios por anunciar
               </p>
               <h3 className="mt-2 text-2xl font-bold condensed">Mejor outfit K-culture</h3>
               <p className="mt-1 text-paper/70">Cualquier distancia. Hanbok, K-pop, K-drama… sorpréndenos.</p>
-              <a href={`mailto:${EMAIL}?subject=Patrocinio%20HANGUK%20RUN`} className="mt-4 inline-flex items-center gap-1 font-semibold text-paper underline decoration-hong decoration-2 underline-offset-4">
+              <a href={`mailto:${EMAIL}?subject=Patrocinio%20HANGUK%20RUN`} className="mt-4 inline-flex items-center gap-1 font-semibold text-paper underline decoration-coral decoration-2 underline-offset-4">
                 ¿Tu marca quiere patrocinar este premio? <ArrowUpRight size={16} />
               </a>
             </div>

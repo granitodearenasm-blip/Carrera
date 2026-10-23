@@ -78,13 +78,17 @@ export const CONFIG = {
   /* 🏛 SEDE
      ✏️ autorizada: ponlo en true cuando el museo confirme el uso del espacio (quita el aviso "sujeta a autorización").
      ✏️ fotos: copia las imágenes a public/img/ y agrégalas aquí. Mientras la lista esté vacía, la galería no aparece.
-        Ejemplo: { src: 'polaxtla-casco.webp', alt: 'Casco de la hacienda visto desde el jardín', pie: 'El casco' } */
+        La primera foto se muestra en grande. */
   sede: {
     nombre: 'Museo Hacienda San Cristóbal Polaxtla',
     autorizada: false,
     lat: 19.272663,
     lng: -98.437736,
-    fotos: [] as { src: string; alt: string; pie?: string }[],
+    fotos: [
+      { src: 'polaxtla-fachada.jpg', alt: 'Fachada de la hacienda con su galería de vidrio, palmeras y jardín', pie: 'La fachada y el jardín' },
+      { src: 'polaxtla-patio.jpg', alt: 'Patio empedrado con corredores de columnas y un árbol grande', pie: 'El patio y sus corredores' },
+      { src: 'polaxtla-escultura.jpg', alt: 'Escultura clásica de mármol frente a las columnas de la entrada', pie: 'Esculturas en la entrada' },
+    ] as { src: string; alt: string; pie?: string }[],
   },
 };
 /* ======================== FIN DE CONFIGURACIÓN ======================== */

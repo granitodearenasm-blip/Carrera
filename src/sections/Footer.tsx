@@ -11,7 +11,7 @@ export function Footer() {
       <Wrap className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
         <div>
           <p className="display text-[2.6rem]">
-            Hanguk <span className="text-hong">Run</span>{' '}
+            Hanguk <span className="text-sol">Run</span>{' '}
             <span lang="ko" className="font-ko text-[0.7em] font-normal text-paper/60">
               한국
             </span>
@@ -24,22 +24,22 @@ export function Footer() {
         {/* ✏️ CAMBIAR: contacto del pie */}
         <div>
           <h4 className="text-[12px] font-semibold tracking-[0.14em] text-paper/50 uppercase">Contacto</h4>
-          <a href={`mailto:${EMAIL}`} className="mt-3 block break-all hover:text-hong">
+          <a href={`mailto:${EMAIL}`} className="mt-3 block break-all hover:text-sol">
             {EMAIL}
           </a>
         </div>
         <div>
           <h4 className="text-[12px] font-semibold tracking-[0.14em] text-paper/50 uppercase">Síguenos</h4>
-          <a href={FACEBOOK_URL} target="_blank" rel="noopener" className="mt-3 block hover:text-hong">
+          <a href={FACEBOOK_URL} target="_blank" rel="noopener" className="mt-3 block hover:text-sol">
             Facebook
           </a>
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="mt-1 block hover:text-hong">
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="mt-1 block hover:text-sol">
             Instagram
           </a>
         </div>
         <div>
           <h4 className="text-[12px] font-semibold tracking-[0.14em] text-paper/50 uppercase">Documentos</h4>
-          <button type="button" onClick={abrirReglamento} className="mt-3 block text-left hover:text-hong">
+          <button type="button" onClick={abrirReglamento} className="mt-3 block text-left hover:text-sol">
             Reglamento y responsiva
           </button>
         </div>
@@ -57,7 +57,7 @@ function Reglamento() {
   return (
     <Dialog open={open} onClose={() => setOpen(false)} titulo="Reglamento y carta responsiva">
       {/* ✏️ CAMBIAR: texto del reglamento */}
-      <ol className="list-decimal space-y-2.5 pl-5 text-[15px] leading-relaxed text-ink/85 marker:font-bold marker:text-hong">
+      <ol className="list-decimal space-y-2.5 pl-5 text-[15px] leading-relaxed text-ink/85 marker:font-bold marker:text-coral">
         <li>La edad mínima para participar es de 12 años. Menores de 18 requieren autorización de padre o tutor.</li>
         <li>
           Cada participante elige su número de corredor al inscribirse; los números se apartan en el orden en que se completan las inscripciones. Una vez apartado, tienes{' '}
@@ -79,7 +79,7 @@ function Reglamento() {
         al comité organizador, patrocinadores y autoridades de cualquier responsabilidad por lesiones o daños que pudiera sufrir antes, durante o después del evento.
         Autorizo el uso de mi imagen en fotografías y videos del evento.
       </p>
-      <button type="button" onClick={() => setOpen(false)} className={`${btn.base} ${btn.rojo} ${btn.md} mt-7 w-full`}>
+      <button type="button" onClick={() => setOpen(false)} className={`${btn.base} ${btn.primario} ${btn.md} mt-7 w-full`}>
         Entendido
       </button>
     </Dialog>

@@ -24,19 +24,33 @@ export function Sede() {
           <Km n="05" ko="장소" tono="oscuro">
             La sede
           </Km>
-          {!sede.autorizada && <span className="rounded-[3px] border border-hwang px-2 py-0.5 text-[12px] font-semibold tracking-[0.1em] text-hwang uppercase">Sujeta a autorización</span>}
+          {!sede.autorizada && <span className="rounded-[3px] border border-sol px-2 py-0.5 text-[12px] font-semibold tracking-[0.1em] text-sol uppercase">Sujeta a autorización</span>}
         </div>
 
         <h2 className="display mt-6 max-w-5xl text-[clamp(2.9rem,8vw,6.5rem)]">
           Museo Hacienda
           <br />
-          <span className="text-hong">San Cristóbal Polaxtla</span>
+          <span className="text-sol">San Cristóbal Polaxtla</span>
         </h2>
         {/* ✏️ CAMBIAR: descripción de la sede */}
         <p className="mt-6 max-w-3xl text-xl leading-snug text-paper/80">
           Esta vez corremos en casa: una hacienda novohispana dentro de San Martín Texmelucan, rodeada de un bosque de fresnos y jardines. Hoy es una casa museo de la
           Fundación Cultural Antonio Haghenbeck y de la Lama, con pintura novohispana, tapicería europea y una colección de relojes.
         </p>
+
+        {/* Galería: se llena desde CONFIG.sede.fotos en src/config.ts (la primera va en grande) */}
+        {sede.fotos.length > 0 && (
+          <div className="mt-12 grid gap-3 sm:auto-rows-[16.5rem] sm:grid-cols-3">
+            {sede.fotos.map((f, i) => (
+              <figure key={f.src} className={`relative overflow-hidden rounded-[4px] ${i === 0 ? 'sm:col-span-2 sm:row-span-2' : ''}`}>
+                <img src={img(f.src)} alt={f.alt} loading="lazy" className="aspect-[4/3] size-full object-cover sm:aspect-auto" />
+                {f.pie && (
+                  <figcaption className="absolute bottom-2 left-2 rounded-[3px] bg-ink/80 px-2 py-1 text-[12px] font-semibold text-paper backdrop-blur-sm">{f.pie}</figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        )}
 
         <dl className="mt-14 grid gap-px overflow-hidden rounded-[4px] bg-paper/15 sm:grid-cols-3">
           {CIFRAS.map((c) => (
@@ -60,28 +74,28 @@ export function Sede() {
           <div className="lg:col-span-5">
             <ul className="divide-y divide-paper/15 border-y border-paper/15">
               <li className="flex gap-4 py-4">
-                <MapPin size={20} className="mt-0.5 shrink-0 text-hong" />
+                <MapPin size={20} className="mt-0.5 shrink-0 text-sol" />
                 <div>
                   <strong className="block">San Martín Texmelucan, Puebla</strong>
                   <span className="text-paper/70">Prol. Ignacio Zaragoza s/n, a unos minutos del centro.</span>
                 </div>
               </li>
               <li className="flex gap-4 py-4">
-                <Landmark size={20} className="mt-0.5 shrink-0 text-hong" />
+                <Landmark size={20} className="mt-0.5 shrink-0 text-sol" />
                 <div>
                   <strong className="block">Una hacienda con historia</strong>
                   <span className="text-paper/70">Productora de trigo y cebada en el Virreinato; restaurada desde 1963.</span>
                 </div>
               </li>
               <li className="flex gap-4 py-4">
-                <Trees size={20} className="mt-0.5 shrink-0 text-hong" />
+                <Trees size={20} className="mt-0.5 shrink-0 text-sol" />
                 <div>
                   <strong className="block">Naturaleza</strong>
                   <span className="text-paper/70">Bosque de fresnos, jardines y áreas verdes para correr y convivir en familia.</span>
                 </div>
               </li>
               <li className="flex gap-4 py-4">
-                <BadgeCheck size={20} className="mt-0.5 shrink-0 text-hong" />
+                <BadgeCheck size={20} className="mt-0.5 shrink-0 text-sol" />
                 <div>
                   <strong className="block">Servicios</strong>
                   <span className="text-paper/70">
@@ -91,7 +105,7 @@ export function Sede() {
               </li>
             </ul>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a className={`${btn.base} ${btn.rojo} ${btn.md}`} href={MAPS} target="_blank" rel="noopener">
+              <a className={`${btn.base} ${btn.primario} ${btn.md}`} href={MAPS} target="_blank" rel="noopener">
                 <Navigation size={17} /> Google Maps
               </a>
               <a className={`${btn.base} ${btn.bordeClaro} ${btn.md}`} href={WAZE} target="_blank" rel="noopener">
@@ -108,17 +122,6 @@ export function Sede() {
           </div>
         </div>
 
-        {/* Galería: se llena desde CONFIG.sede.fotos en src/config.ts */}
-        {sede.fotos.length > 0 && (
-          <div className="mt-14 grid gap-3 sm:grid-cols-3">
-            {sede.fotos.map((f) => (
-              <figure key={f.src} className="overflow-hidden rounded-[4px]">
-                <img src={img(f.src)} alt={f.alt} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-                {f.pie && <figcaption className="pt-2 text-sm text-paper/60">{f.pie}</figcaption>}
-              </figure>
-            ))}
-          </div>
-        )}
       </Wrap>
     </section>
   );

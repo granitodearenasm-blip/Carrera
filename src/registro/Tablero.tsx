@@ -9,7 +9,7 @@ const { minimo: MIN, maximo: MAX } = CONFIG.numeros;
 const RANGOS: [number, number][] = [];
 for (let s = MIN; s <= MAX; s += 100) RANGOS.push([s, Math.min(s + 99, MAX)]);
 
-const PUNTO = { cargando: 'bg-hwang', demo: 'bg-cheong', ok: 'bg-[#2f7a4f]', error: 'bg-hong' };
+const PUNTO = { cargando: 'bg-sol', demo: 'bg-jardin', ok: 'bg-jardin', error: 'bg-coral' };
 
 /** Paso 2: tablero de números con disponibilidad en tiempo real. */
 export function Tablero() {
@@ -43,9 +43,9 @@ export function Tablero() {
     <div>
       <p className="flex items-start gap-2.5 text-[14px] text-ink/75" aria-live="polite">
         {s.conexion.tipo === 'cargando' ? (
-          <LoaderCircle size={16} className="mt-0.5 shrink-0 animate-spin text-hwang" />
+          <LoaderCircle size={16} className="mt-0.5 shrink-0 animate-spin text-sol" />
         ) : s.conexion.tipo === 'error' ? (
-          <TriangleAlert size={16} className="mt-0.5 shrink-0 text-hong" />
+          <TriangleAlert size={16} className="mt-0.5 shrink-0 text-coral" />
         ) : (
           <span className={`mt-1.5 size-2.5 shrink-0 rounded-full ${PUNTO[s.conexion.tipo]}`} />
         )}
@@ -54,7 +54,7 @@ export function Tablero() {
 
       {/* Números elegidos: un dorsal por corredor, en su lugar */}
       <div className="mt-5 rounded-[4px] bg-paper p-4">
-        <p className={`text-[15px] ${faltan ? '' : 'font-semibold text-[#2f7a4f]'}`} aria-live="polite">
+        <p className={`text-[15px] ${faltan ? '' : 'font-semibold text-jardin'}`} aria-live="polite">
           {faltan > 0 ? (
             <>
               Elegidos <strong>{listos}</strong> de {s.cantidad} · {listos ? `te falta${faltan > 1 ? 'n' : ''} ${faltan}` : 'toca un número libre en el tablero'}
@@ -67,11 +67,11 @@ export function Tablero() {
           {s.seleccion.map((n, i) => (
             <span
               key={i}
-              className={`inline-flex h-10 items-center gap-1.5 rounded-[3px] border-t-4 pr-1 pl-2.5 text-[15px] font-bold tabular-nums ${n === null ? 'border-ink/20 bg-card/60 text-ink/35' : 'border-hong bg-card shadow-sm'}`}
+              className={`inline-flex h-10 items-center gap-1.5 rounded-[3px] border-t-4 pr-1 pl-2.5 text-[15px] font-bold tabular-nums ${n === null ? 'border-ink/20 bg-card/60 text-ink/35' : 'border-coral bg-card shadow-sm'}`}
             >
               {grupo && <small className="text-[11px] font-semibold text-muted">C{i + 1}</small>}#{n ?? '—'}
               {n !== null ? (
-                <button type="button" onClick={() => alternarNumero(n)} aria-label={`Quitar el número ${n}`} className="rounded p-1 text-muted hover:bg-paper hover:text-hong">
+                <button type="button" onClick={() => alternarNumero(n)} aria-label={`Quitar el número ${n}`} className="rounded p-1 text-muted hover:bg-paper hover:text-coral">
                   <X size={14} />
                 </button>
               ) : (
@@ -130,7 +130,7 @@ export function Tablero() {
           })}
         </div>
         <label className="ml-auto flex items-center gap-2 text-[14px] font-medium">
-          <input type="checkbox" checked={soloLibres} onChange={(e) => setSoloLibres(e.target.checked)} className="size-4 accent-hong" /> Solo libres
+          <input type="checkbox" checked={soloLibres} onChange={(e) => setSoloLibres(e.target.checked)} className="size-4 accent-coral" /> Solo libres
         </label>
       </div>
 
@@ -144,11 +144,11 @@ export function Tablero() {
           Ocupado
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="rayado size-3 rounded-[2px] ring-1 ring-hwang/60" />
+          <i className="rayado size-3 rounded-[2px] ring-1 ring-sol/60" />
           En proceso
         </span>
         <span className="flex items-center gap-1.5">
-          <i className="size-3 rounded-[2px] bg-hong" />
+          <i className="size-3 rounded-[2px] bg-coral-700" />
           Tu selección
         </span>
       </div>
@@ -164,9 +164,9 @@ export function Tablero() {
           const clase = ocupado
             ? 'bg-paper-2 text-ink/25 line-through'
             : proceso
-              ? 'rayado bg-card text-ink/40 ring-1 ring-hwang/60'
+              ? 'rayado bg-card text-ink/40 ring-1 ring-sol/60'
               : sel
-                ? 'bg-hong text-white'
+                ? 'bg-coral-700 text-white'
                 : 'bg-card ring-1 ring-ink/12 hover:ring-2 hover:ring-ink';
           return (
             <button

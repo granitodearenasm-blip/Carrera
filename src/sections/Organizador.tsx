@@ -107,7 +107,7 @@ function Instagram() {
       <div className="flex items-end justify-between gap-4">
         <h3 className="text-2xl font-bold condensed">
           Lo último de{' '}
-          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="text-hong hover:underline">
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener" className="text-coral hover:underline">
             @granitodearena.sm
           </a>
         </h3>
@@ -140,7 +140,7 @@ function Instagram() {
               <strong className="block">Síguenos en Instagram</strong>
               <span className="text-ink/70">Novedades de HANGUK RUN y del trabajo de la delegación.</span>
             </span>
-            <ArrowUpRight className="shrink-0 text-hong" />
+            <ArrowUpRight className="shrink-0 text-coral" />
           </a>
         )}
       </div>

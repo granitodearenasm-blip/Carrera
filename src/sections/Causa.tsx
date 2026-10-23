@@ -32,7 +32,7 @@ export function Causa() {
 
         <div className="mt-14 grid gap-12 border-t-2 border-ink pt-10 lg:grid-cols-12">
           <aside className="lg:col-span-4" aria-label="La delegación">
-            <p className="display text-[9rem] text-hong">10</p>
+            <p className="display text-[9rem] text-coral">10</p>
             <p className="-mt-1 text-lg font-bold">jóvenes voluntarios</p>
             <ul className="mt-6 space-y-3 text-[15px]">
               <li className="flex gap-3">
@@ -74,7 +74,7 @@ export function Causa() {
           </div>
         </div>
 
-        <blockquote className="mt-20 max-w-4xl border-l-4 border-hong pl-6 text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.1] font-bold condensed">
+        <blockquote className="mt-20 max-w-4xl border-l-4 border-coral pl-6 text-[clamp(1.6rem,3.6vw,2.6rem)] leading-[1.1] font-bold condensed">
           “Cada paso puede ayudar a que una idea nacida en nuestra comunidad llegue más lejos.”
         </blockquote>
       </Wrap>
@@ -91,7 +91,6 @@ const COMPROMISOS = [
   { titulo: 'Talleres abiertos', texto: 'Talleres gratuitos para jóvenes de la región sobre liderazgo y proyectos comunitarios.', pendiente: 'número de talleres, fechas y sede', confirmado: false },
   { titulo: 'Presentación pública', texto: 'Una presentación abierta a la comunidad para compartir la experiencia y los aprendizajes del encuentro.', pendiente: 'fecha y lugar', confirmado: false },
   { titulo: 'Red con otros jóvenes', texto: 'Compartir metodologías y contactos con otros colectivos y escuelas de la región.', pendiente: '', confirmado: false },
-  { titulo: 'Informe de transparencia', texto: 'Un informe público sobre cómo se utilizaron los recursos recaudados.', pendiente: '', confirmado: false },
 ];
 
 export function Compromisos() {
