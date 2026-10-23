@@ -57,3 +57,9 @@ src/
     datos.ts           validación, armado de la inscripción y texto para copiar
 _anterior/             versión anterior en HTML/CSS/JS (con las fotos de Chautla), solo como respaldo
 ```
+
+## Publicación automática (Wasmer)
+
+Cada push a `main` ejecuta la GitHub Action `.github/workflows/sitio.yml`: compila la página y deja el
+resultado en la rama **`sitio`**, que es la que despliega Wasmer. Si un despliegue no se actualiza, revisa
+la pestaña **Actions** del repositorio en GitHub.
