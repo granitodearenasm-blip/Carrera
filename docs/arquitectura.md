@@ -30,7 +30,7 @@ Sin variables de Supabase todo funciona en **modo demostración**: los números 
 
 ## Cloudflare Pages
 
-- `wrangler.toml`: proyecto y carpeta de salida.
+- Sin `wrangler.toml` a propósito: si existe, Cloudflare Pages ignora las variables del panel al compilar. El proyecto y la carpeta van en `scripts/deploy.mjs` y en el panel.
 - `public/_redirects`: `/panel` sirve `index.html` (lo resuelve React Router).
 - `public/_headers`: seguridad (CSP con Supabase, Turnstile, Google Fonts y Google Maps) y caché.
 - `functions/`: vacío; listo para Pages Functions si algún día hacen falta.

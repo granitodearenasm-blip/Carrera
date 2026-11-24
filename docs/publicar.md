@@ -48,7 +48,7 @@ Hay dos formas. Elige una.
    - Build command: `npm run build`
    - Build output directory: `dist`
    - Variables (pestaña **Variables and Secrets**, entorno de compilación): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y, si hiciste el paso 2, `VITE_TURNSTILE_SITE_KEY`. Agrega también `NODE_VERSION` = `24`.
-3. Guarda y despliega. El nombre del proyecto debe ser `hanguk-run` (o cambia `name` en `wrangler.toml` y `PROYECTO` en `scripts/deploy.mjs`).
+3. Guarda y despliega. El nombre del proyecto debe ser `hanguk-run` (o cambia `PROYECTO` en `scripts/deploy.mjs`). No agregues un `wrangler.toml`: con él, Pages ignora las variables del panel.
 
 ### Opción B: desplegar desde esta computadora con `npm run deploy`
 

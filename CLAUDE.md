@@ -5,7 +5,7 @@ Sitio de la carrera con causa de Granito de Arena (3K, 5K y 10K, 7 feb 2027): po
 ## Stack
 - TypeScript 7, React 19, Vite 8, Tailwind 4, React Router 7.
 - Datos: Supabase (Postgres, Realtime, auth anónima + correo para el panel). Captcha: Cloudflare Turnstile.
-- Hosting: Cloudflare Pages (`wrangler.toml`, `public/_redirects`, `public/_headers`; `functions/` listo para Pages Functions).
+- Hosting: Cloudflare Pages (`public/_redirects`, `public/_headers`; `functions/` listo para Pages Functions).
 - Íconos: lucide-react. Calidad: Vitest, oxlint, Prettier. Gestor de paquetes: npm.
 
 ## Comandos
