@@ -1,10 +1,10 @@
-import { Copy, MessageCircle } from 'lucide-react';
+import { Copy, MessageCircle, ReceiptText } from 'lucide-react';
 import { CONFIG } from '../../config';
 import { pesos } from '../../shared/format';
 import { Button } from '../../shared/ui/Button';
 import { Dialog } from '../../shared/ui/Dialog';
-import { useToast } from '../../shared/ui/Toast';
-import { Pendiente } from '../layout/Seccion';
+import { useCopiar } from '../../shared/ui/useCopiar';
+import { DatosCuenta } from '../pago/DatosCuenta';
 import { TiraPatrocinadores } from '../portada/TiraPatrocinadores';
 import { comoTexto, enlaceWhatsApp } from './datos';
 import { Dorsal } from './Dorsal';
@@ -14,7 +14,7 @@ type Final = Extract<ResultadoEnvio, { data: unknown }>;
 
 /** Ventana final: el dorsal "se pega" y vienen las instrucciones de pago. Si falló, los datos para copiarlos. */
 export function Confirmado({ resultado: r, open, onClose }: { resultado: Final | null; open: boolean; onClose: () => void }) {
-  const toast = useToast();
+  const copiar = useCopiar();
   if (!r) return null;
 
   const { data } = r;
@@ -22,15 +22,6 @@ export function Confirmado({ resultado: r, open, onClose }: { resultado: Final |
   const nums = data.corredores.map((c) => c.numero);
   const wa = enlaceWhatsApp(data);
   const texto = comoTexto(data);
-
-  const copiar = async () => {
-    try {
-      await navigator.clipboard.writeText(texto);
-      toast.show({ message: 'Datos copiados', tone: 'success' });
-    } catch {
-      toast.show({ message: 'No se pudieron copiar. Selecciona el texto y cópialo a mano.', tone: 'danger' });
-    }
-  };
 
   return (
     <Dialog open={open} onClose={onClose} title={fallo ? 'No se envió tu inscripción' : '¡Ya estás en la carrera!'} width="36rem">
@@ -73,16 +64,18 @@ export function Confirmado({ resultado: r, open, onClose }: { resultado: Final |
           <div className="rounded-lg bg-accent p-5 text-on-accent estampa-sm">
             <p className="subtitulo">Ahora, tu pago</p>
             <p className="mt-1">
-              Paga a más tardar el <strong>{data.pagarAntesDe}</strong> ({CONFIG.pago.diasParaPagar} días). Pide el número de cuenta por WhatsApp o paga en los locales que nos
-              apoyan.
+              Paga a más tardar el <strong>{data.pagarAntesDe}</strong> ({CONFIG.pago.diasParaPagar} días). Al pagar, avísanos en «Mi inscripción» para revisarlo pronto.
             </p>
-            {wa ? (
-              <Button label="Pedir número de cuenta" icon={MessageCircle} variant="ink" href={wa} fullWidth className="mt-4" />
-            ) : (
-              <p className="mt-3">
-                <Pendiente>WhatsApp para pagos</Pendiente>
-              </p>
-            )}
+            <DatosCuenta folio={data.folio} className="mt-4" />
+            <Button
+              label="Ya pagué: avisar"
+              icon={ReceiptText}
+              variant="ink"
+              to={data.folio ? `/mi-inscripcion?folio=${data.folio}` : '/mi-inscripcion'}
+              fullWidth
+              className="mt-4"
+            />
+            {wa ? <Button label="¿Dudas? Escríbenos por WhatsApp" icon={MessageCircle} variant="link" href={wa} className="mt-2 text-on-accent" /> : null}
           </div>
           <p className="text-small text-fg-muted">Tu inscripción apoya a los 10 jóvenes voluntarios de Granito de Arena que representarán a su comunidad en Corea del Sur.</p>
           <TiraPatrocinadores className="border-t-[1.5px] border-line pt-4" />
@@ -95,7 +88,7 @@ export function Confirmado({ resultado: r, open, onClose }: { resultado: Final |
             {fallo ? 'Tus datos' : 'Modo demostración: nada se envió. Así quedarían tus datos:'}
           </label>
           <textarea id="datos-inscripcion" readOnly rows={7} value={texto} className="mt-2 w-full rounded-md border-[2px] border-line-strong bg-surface p-3 font-sans text-small" />
-          <Button label="Copiar datos" icon={Copy} variant="secondary" fullWidth className="mt-2" onPress={copiar} />
+          <Button label="Copiar datos" icon={Copy} variant="secondary" fullWidth className="mt-2" onPress={() => void copiar(texto, 'Datos copiados')} />
         </div>
       ) : null}
       <Button label="Listo" variant="quiet" fullWidth className="mt-6" onPress={onClose} />

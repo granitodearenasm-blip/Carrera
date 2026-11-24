@@ -128,5 +128,45 @@ await espera('…el 20 vuelve a estar libre en el tablero', null, 'select count(
 await espera('…y Beto lo puede apartar', BETO, 'select public.apartar_numero(20)', true);
 await espera('una cancelada no se reactiva', ORG, `select public.cambiar_estado_pago((select id from public.inscripciones limit 1), 'pagado')`, false);
 
+console.log('— Mi inscripción: consultar y reportar el pago (0002)');
+await espera('Ana aparta el 30', ANA, 'select public.apartar_numero(30)', true);
+await espera('Ana se inscribe sola con el 30', ANA, inscripcion([corredor(30)]), true);
+const folio = (await como(ORG, 'select folio from public.inscripciones where estado_pago = $$pendiente$$')).rows[0].folio;
+const consulta = (correo) => `select * from public.consultar_inscripcion(${folio}, '${correo}')`;
+const reporte = (metodo, ref, f = folio) => `select public.reportar_pago(${f}, 'ana@example.com', '${metodo}', ${ref === null ? 'null' : `'${ref}'`})`;
+await espera('sin sesión no se consulta', null, consulta('ana@example.com'), false);
+await espera(
+  'con folio y correo (sin importar mayúsculas) ve su estado y sus números, sin datos personales',
+  BETO,
+  consulta('  ANA@example.com '),
+  true,
+  (r) => r.rows[0].estado_pago === 'pendiente' && r.rows[0].numeros.join() === '30' && r.rows[0].total === 350 && !('correo' in r.rows[0]) && !('telefono' in r.rows[0]),
+);
+await espera('con otro correo no encuentra nada', BETO, consulta('beto@example.com'), false, (r) => r.error.includes('no-encontrada'));
+await espera('la búsqueda interna no se llama directo', BETO, `select public.inscripcion_por_folio(${folio}, 'ana@example.com')`, false);
+await espera('transferencia sin referencia no se guarda', ANA, reporte('transferencia', null), false, (r) => r.detail === 'referencia');
+await espera('un método inventado no se guarda', ANA, reporte('cripto', 'abc123'), false, (r) => r.detail === 'metodo');
+await espera('folio que no existe', ANA, reporte('efectivo', null, 999999), false, (r) => r.error.includes('no-encontrada'));
+await espera('Ana reporta su transferencia', ANA, reporte('transferencia', 'BBVA 0123456789'), true);
+await espera(
+  '…la consulta ya muestra el reporte, y sigue pendiente',
+  ANA,
+  consulta('ana@example.com'),
+  true,
+  (r) => r.rows[0].pago_metodo === 'transferencia' && r.rows[0].pago_referencia === 'BBVA 0123456789' && r.rows[0].pago_reportado && r.rows[0].estado_pago === 'pendiente',
+);
+await espera('efectivo sin referencia sí se guarda (corrige el reporte)', ANA, reporte('efectivo', null), true);
+await espera(
+  'la organizadora ve el reporte en el panel',
+  ORG,
+  'select pago_metodo from public.inscripciones where estado_pago = $$pendiente$$',
+  true,
+  (r) => r.rows[0].pago_metodo === 'efectivo',
+);
+await espera('un visitante no escribe el reporte directo', ANA, `update public.inscripciones set pago_metodo = 'efectivo'`, false);
+await espera('la organizadora confirma el pago', ORG, `select public.cambiar_estado_pago((select id from public.inscripciones where folio = ${folio}), 'pagado')`, true);
+await espera('una pagada ya no acepta reportes', ANA, reporte('transferencia', 'otra-ref'), false, (r) => r.error.includes('ya-pagada'));
+await espera('…y la consulta dice pagado', BETO, consulta('ana@example.com'), true, (r) => r.rows[0].estado_pago === 'pagado');
+
 console.log(fallas ? `\n${fallas} prueba(s) de base de datos fallaron` : '\nBase de datos: todo bien');
 process.exit(fallas ? 1 : 0);

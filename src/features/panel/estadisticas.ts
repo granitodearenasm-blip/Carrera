@@ -8,6 +8,7 @@ export type Resumen = {
   recaudado: number;
   pendiente: number;
   vencidas: number;
+  porRevisar: number;
   porDistancia: Record<string, number>;
   porSexo: Record<string, number>;
   porTalla: Record<string, number>;
@@ -27,24 +28,36 @@ export function resumir(lista: InscripcionPanel[], hoy = new Date()): Resumen {
     recaudado: vivas.filter((i) => i.estadoPago === 'pagado').reduce((s, i) => s + i.total, 0),
     pendiente: vivas.filter((i) => i.estadoPago === 'pendiente').reduce((s, i) => s + i.total, 0),
     vencidas: vivas.filter((i) => i.estadoPago === 'pendiente' && i.pagarAntesDe < finDeHoy).length,
+    porRevisar: vivas.filter(porRevisar).length,
     porDistancia: contar(corredores.map((c) => c.categoria)),
     porSexo: contar(corredores.map((c) => c.sexo)),
     porTalla: contar(corredores.map((c) => c.talla)),
   };
 }
 
-export type Filtros = { texto: string; estado: EstadoPago | 'todas'; distancia: string };
+/** 'revisar': pendientes cuyo corredor ya avisó que pagó (hay que buscar el pago en el banco o la caja). */
+export type Filtros = { texto: string; estado: EstadoPago | 'revisar' | 'todas'; distancia: string };
+
+export const porRevisar = (i: InscripcionPanel) => i.estadoPago === 'pendiente' && i.reporte !== null;
 
 const normalizar = (s: string) => s.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
 
-/** Busca por folio, número, nombre, grupo, correo o teléfono; sin importar acentos ni mayúsculas. */
+/** Busca por folio, número, nombre, grupo, correo, teléfono o referencia de pago; sin importar acentos ni mayúsculas. */
 export function filtrar(lista: InscripcionPanel[], f: Filtros): InscripcionPanel[] {
   const q = normalizar(f.texto.trim());
   return lista.filter((i) => {
-    if (f.estado !== 'todas' && i.estadoPago !== f.estado) return false;
+    if (f.estado === 'revisar' ? !porRevisar(i) : f.estado !== 'todas' && i.estadoPago !== f.estado) return false;
     if (f.distancia && !i.corredores.some((c) => c.categoria === f.distancia)) return false;
     if (!q) return true;
-    const campos = [String(i.folio), i.grupo ?? '', i.responsable ?? '', i.correo, i.telefono, ...i.corredores.flatMap((c) => [String(c.numero), c.nombre])];
+    const campos = [
+      String(i.folio),
+      i.reporte?.referencia ?? '',
+      i.grupo ?? '',
+      i.responsable ?? '',
+      i.correo,
+      i.telefono,
+      ...i.corredores.flatMap((c) => [String(c.numero), c.nombre]),
+    ];
     return campos.some((c) => normalizar(c).includes(q));
   });
 }
@@ -70,6 +83,9 @@ export function comoCsv(lista: InscripcionPanel[]): string {
     'Emergencia',
     'Tel. emergencia',
     'Total inscripción',
+    'Pago avisado',
+    'Método avisado',
+    'Referencia avisada',
     'Notas',
   ];
   const celda = (v: string | number) => {
@@ -97,6 +113,9 @@ export function comoCsv(lista: InscripcionPanel[]): string {
         c.emergenciaNombre,
         c.emergenciaTelefono,
         i.total,
+        i.reporte ? i.reporte.cuando.toISOString().slice(0, 16).replace('T', ' ') : '',
+        i.reporte?.metodo ?? '',
+        i.reporte?.referencia ?? '',
         i.notas,
       ]
         .map(celda)

@@ -70,6 +70,18 @@ export function Detalle({ ins, onClose, alCambiar }: { ins: InscripcionPanel | n
           Inscrita el {fechaHora(ins.creado)}. Pagar a más tardar el {fechaLarga(ins.pagarAntesDe)}.
         </span>
       </div>
+      {ins.reporte ? (
+        <Alerta tone={ins.estadoPago === 'pendiente' ? 'info' : 'success'} className="mt-4">
+          {ins.estadoPago === 'pendiente' ? 'Avisó que ya pagó' : 'Había avisado su pago'} el {fechaHora(ins.reporte.cuando)}:{' '}
+          {ins.reporte.metodo === 'transferencia' ? 'transferencia' : 'efectivo'}
+          {ins.reporte.referencia ? (
+            <>
+              , referencia <strong className="[overflow-wrap:anywhere]">{ins.reporte.referencia}</strong>
+            </>
+          ) : null}
+          .{ins.estadoPago === 'pendiente' ? ' Búscalo en el banco o la caja y, si llegó, márcalo como pagado.' : ''}
+        </Alerta>
+      ) : null}
 
       <dl className="mt-5 grid gap-3 rounded-md bg-sunken p-4 sm:grid-cols-2">
         {ins.tipo === 'Grupo' ? (

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Cloud, ShieldX } from 'lucide-react';
+import { Cloud, ShieldX } from 'lucide-react';
 import { Button } from '../shared/ui/Button';
-import { Contenedor, Saekdong } from '../shared/ui/decoracion';
+import { Contenedor } from '../shared/ui/decoracion';
 import { EmptyState } from '../shared/ui/EmptyState';
 import { Spinner } from '../shared/ui/Spinner';
-import { ThemeSwitch } from '../shared/ui/ThemeSwitch';
 import { hayNube } from '../services/supabase/client';
 import { salir, soyOrganizador, useSesion } from '../services/supabase/auth';
+import { EncabezadoSimple } from '../features/layout/EncabezadoSimple';
 import { Login } from '../features/panel/Login';
 import { PanelInscripciones } from '../features/panel/PanelInscripciones';
 
@@ -52,14 +52,7 @@ export default function Panel() {
 
   return (
     <div className="min-h-dvh bg-page">
-      <header className="border-b-[2.5px] border-outline bg-accent text-on-accent">
-        <Contenedor className="flex h-16 items-center justify-between gap-3">
-          <Button label="Volver al sitio" icon={ArrowLeft} variant="link" to="/" className="text-on-accent" />
-          <span className="font-display text-[1.3rem] font-bold">Hanguk Run, panel</span>
-          <ThemeSwitch />
-        </Contenedor>
-        <Saekdong className="h-1.5" />
-      </header>
+      <EncabezadoSimple titulo="Hanguk Run, panel" />
       <main id="contenido" className="py-10">
         <h1 className="sr-only">Panel de organizadores de HANGUK RUN</h1>
         <Contenedor>{contenido}</Contenedor>

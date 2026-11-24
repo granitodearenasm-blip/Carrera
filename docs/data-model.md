@@ -9,7 +9,7 @@ Esquema completo: [`supabase/migrations/`](../supabase/migrations/). Pruebas de 
 | `ajustes` | Una fila: precio, rango de números, reservados, minutos de apartado, días para pagar, edades, categorías, tallas, si las inscripciones están abiertas | Todos | Solo desde el SQL Editor |
 | `tablero` | Espejo público de los números: `numero`, `estado` (`apartado`/`confirmado`), `creado`. Sin datos de nadie. En Realtime | Todos | Solo las funciones |
 | `numeros` | La fuente de verdad privada: además, `uid` (sesión que lo apartó) e `inscripcion_id` | Nadie desde la página | Solo las funciones |
-| `inscripciones` | Folio, tipo, grupo, responsable, correo, teléfono, total, estado de pago, fecha límite, notas | Organizadores | Funciones; los organizadores editan solo `notas` |
+| `inscripciones` | Folio, tipo, grupo, responsable, correo, teléfono, total, estado de pago, fecha límite, notas y el pago que reportó el corredor (`pago_metodo`, `pago_referencia`, `pago_reportado`, desde 0002) | Organizadores | Funciones; los organizadores editan solo `notas` |
 | `corredores` | Un registro por corredor: número, nombre, edad, rama, distancia, talla, contacto de emergencia | Organizadores | Solo las funciones |
 | `organizadores` | Cuentas que pueden entrar al panel | Cada organizador ve su fila | Solo desde el SQL Editor |
 
@@ -25,6 +25,8 @@ Todas son `security definer` con `search_path = ''`, y solo las ejecuta quien ti
 | `soltar_numero(n)` | Suelta un apartado propio o vencido. Los confirmados no se tocan | `sin-sesion` |
 | `confirmar_inscripcion(datos)` | En una transacción: valida contacto y corredores, comprueba que cada número siga apartado a tu nombre, **calcula el total** (`precio × corredores`), crea inscripción y corredores y confirma los números | `datos-invalidos` (detalle: campo), `numeros-ocupados` (detalle: lista), `cerrado`, `sin-sesion` |
 | `cambiar_estado_pago(id, estado)` | Organizadores: `pendiente`/`pagado`/`cancelado`. Cancelar libera los números; una cancelada no se reactiva | `sin-permiso`, `ya-cancelada`, `no-existe` |
+| `consultar_inscripcion(folio, correo)` | Página "Mi inscripción" (0002): con folio y correo devuelve folio, total, estado de pago, fecha límite, números y el pago reportado. Sin nombres ni teléfonos | `sin-sesion`, `no-encontrada` |
+| `reportar_pago(folio, correo, metodo, referencia)` | El corredor avisa que pagó (0002): `transferencia` (referencia obligatoria, 4 a 80 caracteres) o `efectivo` (referencia opcional). Se puede corregir mientras siga pendiente. **No** marca pagado: eso lo hace un organizador | `sin-sesion`, `no-encontrada`, `ya-pagada`, `ya-cancelada`, `datos-invalidos` (detalle: `metodo` o `referencia`) |
 | `es_organizador()` | ¿La sesión está en `organizadores`? | — |
 
 `services/supabase/` traduce estos códigos a textos para la persona.
@@ -44,6 +46,13 @@ Todas son `security definer` con `search_path = ''`, y solo las ejecuta quien ti
 ```
 
 `grupo` y `responsable` solo cuentan con 2 corredores o más. Cualquier `total` que mande la página se ignora.
+
+## Migraciones aplicadas
+
+| Archivo | Qué hace |
+|---|---|
+| `0001_inicial.sql` | Esquema inicial: tablas, permisos y funciones de apartar, confirmar y panel |
+| `0002_reporte_pago.sql` | Columnas del pago reportado en `inscripciones`; funciones `consultar_inscripcion` y `reportar_pago` |
 
 ## Migraciones nuevas
 

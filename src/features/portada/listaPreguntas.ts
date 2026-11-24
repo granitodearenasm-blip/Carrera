@@ -16,8 +16,13 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     pregunta: '¿Cómo y cuándo pago?',
-    respuesta: `Primero te inscribes y apartas tu número; no pagas nada en la página. Después tienes ${dias} días para pagar por transferencia o en los locales que nos apoyan. Al terminar tu inscripción verás un botón para pedir el número de cuenta por WhatsApp.`,
-    pendiente: CONFIG.pago.whatsapp ? undefined : 'WhatsApp para pagos y lista de locales',
+    respuesta: `Primero te inscribes y apartas tu número; no pagas nada en la página. Después tienes ${dias} días para pagar por transferencia a ${CONFIG.pago.banco}, CLABE ${CONFIG.pago.clabe} a nombre de ${CONFIG.pago.titular}, con tu folio como concepto, o en efectivo ${CONFIG.pago.efectivo}. No aceptamos tarjeta.`,
+    pendiente: 'lista de locales para pagar en efectivo',
+  },
+  {
+    pregunta: '¿Cómo sé que recibieron mi pago?',
+    respuesta:
+      'En «Mi inscripción» (al pie de la página) escribes tu folio y tu correo, nos dejas la referencia de tu transferencia o nos avisas que pagaste en efectivo, y ahí mismo ves cuando lo confirmamos.',
   },
   {
     pregunta: '¿Mi número de verdad queda apartado?',

@@ -96,6 +96,6 @@ export function enlaceWhatsApp(d: Inscripcion) {
   const nums = d.corredores.map((r) => `#${r.numero}`).join(', ');
   const quien = d.tipo === 'Grupo' ? `el grupo "${d.grupo}" (responsable: ${d.responsable})` : d.corredores[0].nombre;
   const folio = d.folio ? ` Folio ${d.folio}.` : '';
-  const msg = `Hola, me inscribí a ${CONFIG.nombreCarrera}.${folio} Inscripción de ${quien}, número(s) ${nums}, total ${pesos(d.total)}. ¿Me comparten el número de cuenta para pagar?`;
+  const msg = `Hola, me inscribí a ${CONFIG.nombreCarrera}.${folio} Inscripción de ${quien}, número(s) ${nums}, total ${pesos(d.total)}. Tengo una duda sobre mi pago:`;
   return `https://wa.me/${CONFIG.pago.whatsapp}?text=${encodeURIComponent(msg)}`;
 }

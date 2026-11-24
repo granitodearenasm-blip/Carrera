@@ -39,11 +39,16 @@ export const CONFIG = {
   // Para activarlo, por ejemplo: [{ desde: 5, porcentaje: 10 }, { desde: 10, porcentaje: 15 }]
   descuentosGrupo: [] as { desde: number; porcentaje: number }[],
 
-  /* 💳 PAGO
-     Después de inscribirse, la persona envía un WhatsApp para pedir el número de cuenta.
-     👉 WhatsApp: 52 + 10 dígitos, sin espacios ni "+". Mientras esté vacío se muestra "por confirmar". */
+  /* 💳 PAGO: por transferencia o en efectivo (sin tarjeta)
+     Al inscribirse, la persona ve esta cuenta con su folio como concepto. Después reporta su pago en
+     /mi-inscripcion y un organizador lo marca como pagado en el panel al revisarlo.
+     👉 WhatsApp (opcional, para dudas): 52 + 10 dígitos, sin espacios ni "+". Vacío = no se muestra. */
   pago: {
-    whatsapp: '', // [POR CONFIRMAR] ej. '5212223334444'
+    banco: 'BBVA',
+    clabe: '012650015441587670',
+    titular: 'Angélica García Morales',
+    efectivo: 'en los locales que nos apoyan',
+    whatsapp: '',
     diasParaPagar: 4,
   },
 

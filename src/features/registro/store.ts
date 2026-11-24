@@ -10,6 +10,7 @@ import { useSyncExternalStore } from 'react';
 import { CONFIG } from '../../config';
 import { fechaLarga } from '../../shared/format';
 import { guardar as guardarLocal, leer } from '../../shared/storage';
+import { recordar } from '../pago/recordar';
 import { hayNube, type ErrorBase } from '../../services/supabase/client';
 import { asegurarSesionAnonima } from '../../services/supabase/auth';
 import { apartarNumero, cargarTablero, escucharTablero, soltarAlSalir, soltarNumero, type Celda } from '../../services/supabase/numeros';
@@ -581,6 +582,7 @@ export async function enviar(data: Inscripcion): Promise<ResultadoEnvio> {
     });
     numeros.forEach((n) => DB.tablero.set(n, { estado: 'confirmado', ms: 0 }));
     reiniciar();
+    recordar({ folio: recibo.folio, correo: data.correo });
     return { tipo: 'ok', data: { ...data, folio: recibo.folio, total: recibo.total, pagarAntesDe: fechaLarga(recibo.pagarAntesDe) } };
   } catch (err) {
     const e = err as ErrorBase;

@@ -17,11 +17,11 @@ Sitio de la carrera con causa de Granito de Arena (3K, 5K y 10K, 7 feb 2027): po
 - `npm run deploy`: compila lo ya commiteado, despliega en Cloudflare y lo comprueba (ver [publicar](docs/publicar.md))
 
 ## Mapa de arquitectura
-- `src/app/` rutas (`/` y `/panel`) · `src/pages/` una página delgada por ruta
-- `src/features/` interfaz por área: `portada` (hero, confianza, causa, sede, carrera, patrocinadores, organizador, preguntas), `registro` (asistente, tablero de números, estado), `panel` (organizadores), `layout` (Nav, Footer, reglamento)
+- `src/app/` rutas (`/`, `/panel` y `/mi-inscripcion`) · `src/pages/` una página delgada por ruta
+- `src/features/` interfaz por área: `portada` (hero, confianza, causa, sede, carrera, patrocinadores, organizador, preguntas), `registro` (asistente, tablero de números, estado), `pago` (cuenta para transferir, «Mi inscripción»: consulta y aviso de pago), `panel` (organizadores), `layout` (Nav, Footer, reglamento)
 - `src/services/supabase/` cliente, auth, números, inscripciones y panel
 - `src/shared/` sin conocimiento de la carrera: `design/` (tokens), `ui/` (componentes base), `format.ts`, `storage.ts`
-- `src/config.ts` lo editan los organizadores: precios, categorías, tallas, números, sede, fotos, pago
+- `src/config.ts` lo editan los organizadores: precios, categorías, tallas, números, sede, fotos, pago (banco, CLABE, titular)
 - `supabase/` migraciones · `scripts/` tokens, deploy y pruebas de BD · `docs/` · `public/` (imágenes, `_redirects`, `_headers`)
 - `_anterior/` versión vieja en HTML: solo respaldo, no tocar
 - Ignorar siempre: `node_modules/`, `dist/`, `.wrangler/`
@@ -45,7 +45,7 @@ Sitio de la carrera con causa de Granito de Arena (3K, 5K y 10K, 7 feb 2027): po
 - Componentes de menos de ~250 líneas; si crecen, separar en archivos hermanos.
 - Nada de utilidades duplicadas: buscar primero en `src/shared/`.
 - Colores solo con clases semánticas de tokens (`bg-surface`, `text-fg`, `bg-accent`…); un solo botón principal por pantalla; el modo oscuro lo resuelven los tokens.
-- Toda escritura pública pasa por funciones RPC de Supabase (`apartar_numero`, `soltar_numero`, `confirmar_inscripcion`); el total lo calcula la base de datos, nunca se confía en el precio que manda la página.
+- Toda escritura pública pasa por funciones RPC de Supabase (`apartar_numero`, `soltar_numero`, `confirmar_inscripcion`, `reportar_pago`); el total lo calcula la base de datos, nunca se confía en el precio que manda la página.
 - Si cambia precio, rango de números, reservados o minutos de apartado en `config.ts`, cambiar también la tabla `ajustes` (nueva migración).
 - Migraciones de `supabase/migrations/`: las ejecuta el dueño a mano, en orden. Cada una nueva va también en `docs/data-model.md` y se comprueba con `npm run check:db`.
 - Datos personales (inscripciones, corredores) solo los leen los organizadores (`es_organizador()`); nunca exponerlos en tablas o vistas públicas.

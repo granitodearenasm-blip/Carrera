@@ -6,7 +6,6 @@ import { Alerta } from '../../shared/ui/Alerta';
 import { Button } from '../../shared/ui/Button';
 import { Checkbox } from '../../shared/ui/fields';
 import { abrirReglamento } from '../layout/eventos';
-import { Pendiente } from '../layout/Seccion';
 import { armarInscripcion } from './datos';
 import { enviar, intentarIr, useRegistro, type ResultadoEnvio } from './store';
 import type { Formulario } from './useFormulario';
@@ -79,13 +78,13 @@ export function PasoConfirmar({ f, alTerminar }: { f: Formulario; alTerminar: (r
         </li>
         <li className="rounded-md bg-surface p-4 contorno-fino">
           <span className="cifra text-[1.6rem] text-danger">2</span>
-          <strong className="mt-1 block">Pides el número de cuenta</strong>
-          <span className="text-small text-fg-muted">Con un botón de WhatsApp. {!CONFIG.pago.whatsapp ? <Pendiente>WhatsApp</Pendiente> : null}</span>
+          <strong className="mt-1 block">Pagas en {CONFIG.pago.diasParaPagar} días</strong>
+          <span className="text-small text-fg-muted">Por transferencia, con tu folio como concepto, o en efectivo {CONFIG.pago.efectivo}. Si no, el número puede liberarse.</span>
         </li>
         <li className="rounded-md bg-surface p-4 contorno-fino">
           <span className="cifra text-[1.6rem] text-danger">3</span>
-          <strong className="mt-1 block">Pagas en {CONFIG.pago.diasParaPagar} días</strong>
-          <span className="text-small text-fg-muted">Por transferencia o en los locales que nos apoyan. Si no, el número puede liberarse.</span>
+          <strong className="mt-1 block">Nos avisas que pagaste</strong>
+          <span className="text-small text-fg-muted">En «Mi inscripción» dejas tu referencia y ves cuándo queda confirmado.</span>
         </li>
       </ol>
 

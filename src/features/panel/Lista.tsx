@@ -8,6 +8,7 @@ import type { Filtros } from './estadisticas';
 
 const ESTADOS: [Filtros['estado'], string][] = [
   ['todas', 'Todas'],
+  ['revisar', 'Por revisar'],
   ['pendiente', 'Pendientes'],
   ['pagado', 'Pagadas'],
   ['cancelado', 'Canceladas'],

@@ -45,11 +45,12 @@ function Barras({ titulo, orden, conteo }: { titulo: string; orden: readonly str
 export function Resumen({ r }: { r: Datos }) {
   return (
     <section aria-label="Resumen">
-      <dl className="grid grid-cols-2 gap-3 md:grid-cols-5">
+      <dl className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         <Cifra valor={miles(r.inscripciones)} etiqueta="Inscripciones" />
         <Cifra valor={miles(r.corredores)} etiqueta={`Corredores de ${miles(CONFIG.numeros.maximo)}`} />
         <Cifra valor={pesos(r.recaudado)} etiqueta="Pagado" />
         <Cifra valor={pesos(r.pendiente)} etiqueta="Por cobrar" />
+        <Cifra valor={miles(r.porRevisar)} etiqueta="Pagos por revisar" />
         <Cifra valor={miles(r.vencidas)} etiqueta="Pagos vencidos" tono={r.vencidas ? 'danger' : undefined} />
       </dl>
       <div className="mt-3 grid gap-3 md:grid-cols-3">

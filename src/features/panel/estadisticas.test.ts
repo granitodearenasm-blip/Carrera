@@ -26,6 +26,7 @@ const ins = (folio: number, extra: Partial<InscripcionPanel> = {}): InscripcionP
   pagarAntesDe: new Date('2026-11-27T12:00:00'),
   notas: '',
   creado: new Date('2026-11-23T10:00:00Z'),
+  reporte: null,
   corredores: [corredor(folio)],
   ...extra,
 });
@@ -62,6 +63,15 @@ describe('filtros', () => {
   it('busca por número', () => expect(filtrar(lista, { ...base, texto: '128' }).map((i) => i.folio)).toEqual([1]));
   it('filtra por estado', () => expect(filtrar(lista, { ...base, estado: 'pagado' }).map((i) => i.folio)).toEqual([2]));
   it('filtra por distancia', () => expect(filtrar(lista, { ...base, distancia: '3K' }).map((i) => i.folio)).toEqual([2]));
+
+  const avisos = [
+    ins(5, { reporte: { metodo: 'transferencia', referencia: 'BBVA 98765', cuando: new Date('2026-11-24T10:00:00Z') } }),
+    ins(6, { estadoPago: 'pagado', reporte: { metodo: 'efectivo', referencia: null, cuando: new Date('2026-11-24T10:00:00Z') } }),
+    ins(7),
+  ];
+  it('"por revisar" son las pendientes con aviso de pago, no las ya pagadas', () => expect(filtrar(avisos, { ...base, estado: 'revisar' }).map((i) => i.folio)).toEqual([5]));
+  it('busca por la referencia que avisó el corredor', () => expect(filtrar(avisos, { ...base, texto: '98765' }).map((i) => i.folio)).toEqual([5]));
+  it('el resumen cuenta los pagos por revisar', () => expect(resumir(avisos).porRevisar).toBe(1));
 });
 
 describe('CSV', () => {
@@ -70,5 +80,9 @@ describe('CSV', () => {
     const filas = csv.replace('﻿', '').split('\r\n');
     expect(filas).toHaveLength(2);
     expect(filas[1]).toContain('"Pagó ""en efectivo"", ok"');
+  });
+  it('incluye el pago que avisó el corredor', () => {
+    const csv = comoCsv([ins(1, { reporte: { metodo: 'transferencia', referencia: 'REF-1234', cuando: new Date('2026-11-24T10:30:00Z') } })]);
+    expect(csv).toContain('2026-11-24 10:30,transferencia,REF-1234');
   });
 });

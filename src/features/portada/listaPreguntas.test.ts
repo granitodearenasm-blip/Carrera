@@ -13,9 +13,9 @@ describe('preguntas frecuentes', () => {
     expect(texto).toContain(`${CONFIG.edadMinima} años`);
     expect(texto).toContain(`hasta ${CONFIG.corredoresMaximo} personas`);
   });
-  it('sin WhatsApp configurado, el pago queda marcado como pendiente', () => {
-    const pago = PREGUNTAS.find((p) => p.pregunta.includes('pago'));
-    expect(Boolean(pago?.pendiente)).toBe(!CONFIG.pago.whatsapp);
+  it('la cuenta para pagar sale de la configuración', () => {
+    expect(texto).toContain(CONFIG.pago.clabe);
+    expect(texto).toContain(CONFIG.pago.titular);
   });
   it('no hay preguntas repetidas', () => {
     expect(new Set(PREGUNTAS.map((p) => p.pregunta)).size).toBe(PREGUNTAS.length);

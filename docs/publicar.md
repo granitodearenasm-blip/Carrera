@@ -9,7 +9,7 @@ Las secciones 1 a 3 se hacen **una sola vez**. Después, publicar es solo la sec
 ## 1. Crear la base de datos en Supabase
 
 1. Entra a [supabase.com](https://supabase.com) y crea un proyecto (plan gratuito). Región sugerida: la más cercana a México, por ejemplo `East US (North Virginia)`. Guarda la contraseña de la base de datos en un lugar seguro.
-2. Abre **SQL Editor → New query**, pega todo el contenido de [`supabase/migrations/0001_inicial.sql`](../supabase/migrations/0001_inicial.sql) y pulsa **Run**. Debe terminar sin errores.
+2. Abre **SQL Editor → New query**, pega todo el contenido de [`supabase/migrations/0001_inicial.sql`](../supabase/migrations/0001_inicial.sql) y pulsa **Run**. Debe terminar sin errores. Repite, en orden, con cada migración siguiente (`0002_reporte_pago.sql`, …): cada una se ejecuta una sola vez.
 3. **Authentication → Sign In / Providers**:
    - Activa **Allow anonymous sign-ins**. Los visitantes reciben una sesión anónima para apartar números; sin esto, el tablero muestra un aviso.
    - Deja activado **Email** para las cuentas del panel.
@@ -79,6 +79,15 @@ Antes de publicar, corre `npm run check`.
 - **Firebase ya no se usa en este sitio.** El archivo `firestore.rules` salió de este repositorio; la página de la **Expo Emprendedores con Causa** sigue usando Firebase con su propia copia idéntica de las reglas, así que no se ve afectada. No publiques en Firebase unas reglas sin la parte de la Expo.
 - **Wasmer y la rama `sitio` ya no se usan.** El flujo de GitHub Actions que la generaba se eliminó. La rama `sitio` puede borrarse en GitHub cuando Cloudflare ya esté publicando.
 - **Hostinger:** el `.htaccess` se sustituyó por `public/_headers` y `public/_redirects` (formato de Cloudflare Pages).
+
+## Pagos (transferencia y efectivo)
+
+1. Al inscribirse, la persona ve la cuenta de `CONFIG.pago` (banco, CLABE, titular) con su **folio como concepto**.
+2. Cuando paga, entra a **Mi inscripción** (`/mi-inscripcion`, enlazada al pie de la página) con su folio y correo y deja la referencia de la transferencia, o avisa que pagó en efectivo.
+3. En el panel, el filtro **Por revisar** muestra esos avisos con la referencia. Busquen el pago en el banco o la caja y, si llegó, **Marcar como pagado**.
+4. La persona ve en **Mi inscripción** que su pago quedó confirmado.
+
+Requiere la migración `0002_reporte_pago.sql`.
 
 ## Si cambias precio, números o tiempos
 

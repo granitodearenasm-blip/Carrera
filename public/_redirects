@@ -2,3 +2,4 @@
 # (Se reescribe a "/" y no a "/index.html": Pages convierte /index.html en / con una redirección.)
 /panel   /   200
 /panel/* /   200
+/mi-inscripcion   /   200

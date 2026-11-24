@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CONFIG, EMAIL, FACEBOOK_URL, INSTAGRAM_URL } from '../../config';
 import { fechaConDia, img } from '../../shared/format';
 import { Button } from '../../shared/ui/Button';
@@ -65,6 +66,11 @@ export function Footer() {
           <div>
             <h2 className="font-display text-[1.1rem] font-semibold text-accent">Documentos</h2>
             <ul>
+              <li>
+                <Link to="/mi-inscripcion" className={ENLACE}>
+                  Mi inscripción y pago
+                </Link>
+              </li>
               <li>
                 <button type="button" onClick={abrirReglamento} className={`${ENLACE} cursor-pointer text-left`}>
                   Reglamento y carta responsiva
