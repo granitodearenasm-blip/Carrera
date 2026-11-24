@@ -11,9 +11,10 @@ type Post = {
   mediaType?: string;
   caption?: string;
   prunedCaption?: string;
-  sizes?: { medium?: { mediaUrl?: string } };
+  sizes?: { medium?: { mediaUrl?: string }; large?: { mediaUrl?: string } };
 };
-const imagenDe = (p: Post) => p.sizes?.medium?.mediaUrl ?? (p.mediaType === 'VIDEO' ? (p.thumbnailUrl ?? p.mediaUrl) : p.mediaUrl);
+// large para que se vea nítido en el cuadro más grande
+const imagenDe = (p: Post) => p.sizes?.large?.mediaUrl ?? p.sizes?.medium?.mediaUrl ?? (p.mediaType === 'VIDEO' ? (p.thumbnailUrl ?? p.mediaUrl) : p.mediaUrl);
 
 /** Carrusel de Instagram vía Behold (CONFIG.instagram). Sin feed, invita a seguir la cuenta. */
 export function Instagram() {
@@ -76,13 +77,14 @@ export function Instagram() {
                 href={p.permalink}
                 target="_blank"
                 rel="noopener"
-                className="group relative aspect-square w-60 shrink-0 snap-start overflow-hidden rounded-lg bg-sunken estampa-sm"
+                className="group relative aspect-[4/5] w-72 shrink-0 snap-start overflow-hidden rounded-lg bg-sunken estampa-sm sm:w-80"
               >
+                {/* 4:5 es el formato vertical de Instagram; contain para que ningún post se corte */}
                 <img
                   src={imagenDe(p)}
                   alt={texto.slice(0, 120) || 'Publicación de Instagram'}
                   loading="lazy"
-                  className="size-full object-cover transition-transform duration-(--duration-slow) group-hover:scale-105"
+                  className="size-full object-contain transition-transform duration-(--duration-slow) group-hover:scale-105"
                 />
               </a>
             );
