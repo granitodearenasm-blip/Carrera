@@ -13,7 +13,7 @@ Las secciones 1 a 3 se hacen **una sola vez**. Después, publicar es solo la sec
 3. **Authentication → Sign In / Providers**:
    - Activa **Allow anonymous sign-ins**. Los visitantes reciben una sesión anónima para apartar números; sin esto, el tablero muestra un aviso.
    - Deja activado **Email** para las cuentas del panel.
-   - Desactiva **Allow new users to sign up** si aparece en Email, para que nadie cree cuentas con contraseña por su cuenta. Las cuentas anónimas siguen funcionando.
+   - Deja **activado** **Allow new users to sign up**: si se apaga, Supabase también bloquea las sesiones anónimas (`signup_disabled`) y nadie puede apartar números. Una cuenta con correo creada por alguien de fuera no ve nada: el panel solo abre para quien está en la tabla `organizadores`. Deja **Confirm email** activado en el proveedor Email.
 4. **Project Settings → API Keys**: copia la **Project URL** y la clave **publishable** (empieza con `sb_publishable_`). La clave **secret** no se usa en este sitio: no la copies a ningún archivo.
 
 ### Crear una cuenta de organizador
