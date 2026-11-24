@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // Lint: `npm run lint` (parte de `npm run check`). Los errores detienen el check; los warnings se muestran.
+  "plugins": ["typescript", "react", "unicorn", "oxc"],
+  "categories": { "correctness": "error", "suspicious": "off", "perf": "off", "style": "off", "pedantic": "off" },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    // Las dependencias omitidas a propósito llevan su comentario en cada efecto.
+    "react-hooks/exhaustive-deps": "warn",
+    // Reglas del React Compiler: avisos, para revisarlos uno por uno (igual que en Trellum)
+    "react/set-state-in-effect": "warn",
+    "react/refs": "warn",
+    "react/purity": "warn",
+    "react/static-components": "warn"
+  },
+  "ignorePatterns": ["dist", "node_modules", "functions", "scripts", "_anterior"]
+}

@@ -7,21 +7,40 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" vite.config.ts",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"scripts/**/*.mjs\" vite.config.ts",
+    "lint": "oxlint -c .oxlintrc.json src",
+    "test": "node scripts/test.mjs",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "tokens": "node scripts/design-tokens.mjs",
+    "check:tokens": "node scripts/design-tokens.mjs --check",
+    "check:db": "node scripts/db/behaviour.mjs",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run check:architecture && npm run check:tokens && npm run check:db && npm run format:check",
+    "pages:dev": "wrangler pages dev dist",
+    "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
-    "firebase": "^13.1.0",
+    "@supabase/supabase-js": "^2.119.2",
     "lucide-react": "^1.60.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.6"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.2.17",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "oxlint": "^1.95.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "^4.1.12",
+    "wrangler": "^4.167.0"
   }
 }

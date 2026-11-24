@@ -1,12 +1,18 @@
 /* ==========================================================================
    ✏️ CONFIGURACIÓN — CAMBIA AQUÍ PRECIOS, CATEGORÍAS, TALLAS, NÚMEROS, SEDE Y CONEXIÓN
    Después de cambiar algo, vuelve a generar el sitio con `npm run build`.
+   ⚠️ Precio, rango de números, reservados y minutos de apartado también viven en la base de datos
+   (tabla `ajustes` de Supabase): si los cambias aquí, cámbialos allá (ver docs/data-model.md).
+   La conexión a Supabase NO va aquí: va en las variables VITE_SUPABASE_* (ver .env.example).
    ========================================================================== */
 export const CONFIG = {
-  nombreCarrera: 'HANGUK RUN 한국 2026',
+  nombreCarrera: 'HANGUK RUN 한국 2027',
 
-  // ✏️ Fecha y hora EXACTA de la salida (cuenta regresiva). -06:00 = hora del centro de México.
-  salida: '2026-12-06T07:00:00-06:00',
+  // ✏️ Fecha y hora EXACTA de la salida (cuenta regresiva y fechas de la página). -06:00 = hora del centro de México.
+  salida: '2027-02-07T07:00:00-06:00',
+  // ✏️ Fecha de cierre de inscripciones, como se muestra en la página ("31 de enero").
+  //    Vacío = todavía por confirmar (la página lo muestra como pendiente).
+  cierreInscripciones: '',
 
   /* Sección "Lo que regresa a la comunidad":
      true  → muestra también los compromisos marcados "por confirmar" (para revisarlos).
@@ -42,7 +48,7 @@ export const CONFIG = {
   },
 
   /* 🔢 NÚMEROS DE CORREDOR (cada participante elige el suyo)
-     Si cambias el rango o los reservados, cámbialos también en firestore.rules. */
+     Si cambias el rango o los reservados, cámbialos también en la tabla `ajustes` de Supabase. */
   numeros: {
     minimo: 1,
     maximo: 700,
@@ -50,21 +56,9 @@ export const CONFIG = {
   },
 
   /* ⏱ APARTADO TEMPORAL (como asientos de cine)
-     Si lo cambias, cámbialo también en firestore.rules (MINUTOS_APARTADO). */
+     Si lo cambias, cámbialo también en la tabla `ajustes` de Supabase. */
   apartado: {
     minutos: 6,
-  },
-
-  /* 🔌 BASE DE DATOS (Firebase Firestore) — instrucciones en FIREBASE.md
-       'firebase' → guarda las inscripciones en Firestore y garantiza que cada número sea único.
-       'pantalla' → modo demostración: no guarda nada en internet.
-     Estos datos son públicos por diseño; la seguridad la dan las reglas de firestore.rules. */
-  modo: 'firebase' as 'firebase' | 'pantalla',
-  firebase: {
-    apiKey: 'AIzaSyCENeangPCyAKQX9ylKP1cLCO-pfg1hAWI',
-    authDomain: 'hanguk-run.firebaseapp.com',
-    projectId: 'hanguk-run',
-    appId: '1:336183514717:web:ec68ceb51e93ae74121fb4',
   },
 
   /* 📸 CARRUSEL DE INSTAGRAM (vía Behold, https://behold.so, plan gratuito)
@@ -76,12 +70,13 @@ export const CONFIG = {
   },
 
   /* 🏛 SEDE
-     ✏️ autorizada: ponlo en true cuando el museo confirme el uso del espacio (quita el aviso "sujeta a autorización").
+     autorizada: true → la sección agradece al museo; false → muestra el aviso "sujeta a autorización".
      ✏️ fotos: copia las imágenes a public/img/ y agrégalas aquí. Mientras la lista esté vacía, la galería no aparece.
         La primera foto se muestra en grande. */
   sede: {
     nombre: 'Museo Hacienda San Cristóbal Polaxtla',
-    autorizada: false,
+    fundacion: 'Fundación Cultural Antonio Haghenbeck y de la Lama',
+    autorizada: true,
     lat: 19.272663,
     lng: -98.437736,
     fotos: [
@@ -90,8 +85,33 @@ export const CONFIG = {
       { src: 'polaxtla-escultura.jpg', alt: 'Escultura clásica de mármol frente a las columnas de la entrada', pie: 'Esculturas en la entrada' },
     ] as { src: string; alt: string; pie?: string }[],
   },
+
+  /* 🤝 PATROCINADORES
+     nivel: 'principal' (tarjeta grande), 'oro', 'plata' o 'bronce'.
+     logo: archivo en public/img/patrocinadores/ para fondo claro; logoOscuro (opcional) para el tema oscuro.
+     Los lugares libres de cada nivel se muestran como "Tu marca aquí". */
+  patrocinadores: [
+    {
+      nombre: 'Trellum',
+      nivel: 'principal',
+      logo: 'trellum.svg',
+      logoOscuro: 'trellum-blanco.svg',
+      url: 'https://trellum.io',
+      descripcion: 'Planea tu viaje día a día con tu gente: rutas en el mapa, horarios y presupuesto.',
+    },
+  ] as Patrocinador[],
+
+  patrocinio: {
+    // ✏️ Cuántos lugares hay en cada nivel (los ocupados se restan solos)
+    lugares: { principal: 2, oro: 3, plata: 4, bronce: 6 } as Record<NivelPatrocinio, number>,
+    // ✏️ Lo que recibe cada patrocinador. Mientras esté vacío se muestra "Por confirmar": no prometas nada que no exista.
+    beneficios: [] as string[],
+  },
 };
 /* ======================== FIN DE CONFIGURACIÓN ======================== */
+
+export type NivelPatrocinio = 'principal' | 'oro' | 'plata' | 'bronce';
+export type Patrocinador = { nombre: string; nivel: NivelPatrocinio; logo: string; logoOscuro?: string; url?: string; descripcion?: string };
 
 export const EMAIL = 'granitodearena.sm@gmail.com';
 export const INSTAGRAM_URL = 'https://www.instagram.com/granitodearena.sm/';

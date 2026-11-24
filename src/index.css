@@ -1,105 +1,172 @@
 @import 'tailwindcss';
+@import './shared/design/tokens.css';
 
-/* HANGUK RUN: papel hanji y tinta cálida, con el amarillo de Granito de Arena como color principal
-   y el rojo y azul del taegeuk como acentos coreanos.
-   Archivo (variable de ancho) para todo; Black Han Sans solo para el hangul. */
-@theme {
-  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-  --font-ko: 'Black Han Sans', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+/* Los colores, tipos, radios y sombras vienen de tokens.css (generado desde tokens.ts).
+   Aquí solo van la base y las utilidades del lenguaje "estampa" del logo de Granito. */
 
-  /* Papel claro y tinta negra con un toque del café de Granito */
-  --color-paper: #f7f2e8;
-  --color-paper-2: #eee4cf;
-  --color-card: #fffdf8;
-  --color-ink: #1c140a;
-  --color-ink-2: #2b2014;
-  --color-muted: #6b604f;
-  --color-line: #ddd1bb;
-
-  /* Amarillo Granito (botones y marca), rojo y azul coreanos (acentos), verde jardín (avisos de "listo") */
-  --color-sol: #ffc800;
-  --color-sol-600: #f0b400;
-  --color-rojo: #c8102e;
-  --color-rojo-700: #a00d25;
-  --color-azul: #0b3d91;
-  --color-jardin: #3f7a4a;
-}
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 html {
+  color-scheme: light;
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 4.4rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  @apply bg-paper font-sans text-ink antialiased;
-  font-stretch: 100%;
+  @apply bg-page font-sans text-body text-fg antialiased;
+  font-optical-sizing: auto;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+/* Sin la espera del doble toque en celulares */
+a,
+button,
+input,
+select,
+label {
+  touch-action: manipulation;
 }
 
 :focus-visible {
-  outline: 3px solid var(--color-azul);
-  outline-offset: 2px;
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 ::selection {
-  background: var(--color-sol);
-  color: var(--color-ink);
+  background: var(--color-sand);
+  color: var(--color-fg);
 }
 
-/* Titulares: Archivo condensado y pesado, como la rotulación de un cartel de carrera. */
-@utility display {
-  font-weight: 800;
-  font-stretch: 68%;
-  line-height: 0.88;
-  letter-spacing: -0.005em;
-  text-transform: uppercase;
+[lang='ko'] {
+  font-family: var(--font-ko);
+  font-weight: 400;
 }
 
-@utility condensed {
+/* ---------- Tipografía (Fredoka, redondeada como las letras del logo) ---------- */
+@utility titulo-hero {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  line-height: var(--text-hero--line-height);
+  letter-spacing: var(--text-hero--letter-spacing);
+  font-weight: var(--text-hero--font-weight);
+  font-stretch: calc(var(--wdth-hero) * 1%);
+  text-wrap: balance;
+}
+@utility titulo-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  line-height: var(--text-display--line-height);
+  letter-spacing: var(--text-display--letter-spacing);
+  font-weight: var(--text-display--font-weight);
+  font-stretch: calc(var(--wdth-display) * 1%);
+  text-wrap: balance;
+}
+@utility titulo {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  line-height: var(--text-title--line-height);
+  font-weight: var(--text-title--font-weight);
+  font-stretch: calc(var(--wdth-title) * 1%);
+  text-wrap: balance;
+}
+@utility subtitulo {
+  font-family: var(--font-display);
+  font-size: var(--text-subtitle);
+  line-height: var(--text-subtitle--line-height);
+  font-weight: var(--text-subtitle--font-weight);
+  text-wrap: balance;
+}
+/* Números de dorsal y marcadores: Fredoka estrecha, cifras tabulares */
+@utility cifra {
+  font-family: var(--font-display);
+  font-weight: 700;
   font-stretch: 78%;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.9;
 }
 
-/* Franja "saekdong": las rayas de colores de las mangas del hanbok, con el amarillo de Granito al frente. */
+/* ---------- Estampa: contorno café grueso + sombra plana desplazada, como sticker ---------- */
+@utility estampa {
+  border: var(--stroke-base) solid var(--color-outline);
+  box-shadow: var(--shadow-md);
+}
+@utility estampa-sm {
+  border: var(--stroke-base) solid var(--color-outline);
+  box-shadow: var(--shadow-sm);
+}
+@utility estampa-lg {
+  border: var(--stroke-bold) solid var(--color-outline);
+  box-shadow: var(--shadow-lg);
+}
+@utility contorno {
+  border: var(--stroke-base) solid var(--color-outline);
+}
+@utility contorno-fino {
+  border: var(--stroke-thin) solid var(--color-line);
+}
+
+/* ---------- Saekdong: franjas de las mangas del hanbok (divisor, cinta de meta, progreso) ---------- */
 @utility saekdong {
-  height: 8px;
   background: linear-gradient(
     90deg,
-    var(--color-sol) 0 22%,
-    var(--color-rojo) 22% 38%,
-    var(--color-jardin) 38% 52%,
-    var(--color-azul) 52% 68%,
-    #e0789b 68% 82%,
-    var(--color-card) 82% 90%,
-    #5b3a8c 90% 100%
+    var(--color-saek-1) 0 20%,
+    var(--color-saek-2) 20% 34%,
+    var(--color-saek-3) 34% 48%,
+    var(--color-saek-4) 48% 64%,
+    var(--color-saek-5) 64% 78%,
+    var(--color-saek-6) 78% 88%,
+    var(--color-saek-7) 88% 100%
   );
 }
 
-/* Número "en proceso" (otra persona lo está apartando). */
+/* Número que otra persona está apartando: rayado, para no depender solo del color */
 @utility rayado {
-  background-image: repeating-linear-gradient(135deg, rgb(255 200 0 / 0.4) 0 5px, transparent 5px 10px);
+  background-image: repeating-linear-gradient(135deg, var(--color-sand) 0 5px, transparent 5px 10px);
 }
 
-/* Perforación del dorsal (la parte que se desprende). */
+/* Perforación del dorsal (el talón que se desprende) */
 @utility perforado {
-  background-image: radial-gradient(circle, var(--color-line) 1.5px, transparent 1.6px);
-  background-size: 9px 4px;
+  background-image: radial-gradient(circle, var(--color-outline) 1.6px, transparent 1.8px);
+  background-size: 10px 4px;
   background-repeat: repeat-x;
   background-position: center;
 }
 
-/* Ventanas (reglamento / confirmación) con <dialog> nativo. */
-dialog.modal {
-  max-height: min(90dvh, 52rem);
-  width: min(100% - 2rem, 40rem);
+/* ---------- Ventanas con <dialog> nativo ---------- */
+dialog.ventana {
+  max-height: min(92dvh, 54rem);
+  width: min(100% - 1.5rem, var(--ancho, 40rem));
   margin: auto;
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
+  overflow: visible;
+}
+dialog.ventana::backdrop {
+  background: var(--color-scrim);
+}
+dialog.ventana[open] {
+  animation: estampar var(--duration-slow) var(--ease-stamp);
 }
 
-dialog.modal::backdrop {
-  background: rgb(28 20 10 / 0.62);
-  backdrop-filter: blur(3px);
+@keyframes estampar {
+  from {
+    opacity: 0;
+    transform: scale(0.94) rotate(-1.5deg);
+  }
+}
+
+/* Rueda de dígitos del dorsal (el único momento orquestado) */
+@keyframes rodar {
+  from {
+    transform: translateY(var(--desde, -100%));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -110,6 +177,7 @@ dialog.modal::backdrop {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

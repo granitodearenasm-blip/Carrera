@@ -1,0 +1,69 @@
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Cloud, ShieldX } from 'lucide-react';
+import { Button } from '../shared/ui/Button';
+import { Contenedor, Saekdong } from '../shared/ui/decoracion';
+import { EmptyState } from '../shared/ui/EmptyState';
+import { Spinner } from '../shared/ui/Spinner';
+import { ThemeSwitch } from '../shared/ui/ThemeSwitch';
+import { hayNube } from '../services/supabase/client';
+import { salir, soyOrganizador, useSesion } from '../services/supabase/auth';
+import { Login } from '../features/panel/Login';
+import { PanelInscripciones } from '../features/panel/PanelInscripciones';
+
+/** /panel: entrada, comprobación de organizador y el panel. */
+export default function Panel() {
+  const sesion = useSesion();
+  // Las sesiones anónimas (visitantes que se inscribieron) no cuentan como cuenta del panel
+  const cuenta = sesion && !sesion.user.is_anonymous ? sesion : null;
+  const id = cuenta?.user.id;
+  // Respuesta de "¿es organizador?" para cada cuenta; mientras no llega la de la cuenta actual, es null
+  const [revisado, setRevisado] = useState<{ id: string; ok: boolean } | null>(null);
+  const permiso = id && revisado?.id === id ? revisado.ok : null;
+
+  useEffect(() => {
+    document.title = 'Panel de organizadores, HANGUK RUN';
+  }, []);
+  useEffect(() => {
+    if (!id) return;
+    void soyOrganizador().then((ok) => setRevisado({ id, ok }));
+  }, [id]);
+
+  let contenido;
+  if (!hayNube)
+    contenido = (
+      <EmptyState icon={Cloud} title="Falta conectar Supabase">
+        Agrega VITE_SUPABASE_URL y VITE_SUPABASE_PUBLISHABLE_KEY (ver docs/publicar.md) y vuelve a publicar el sitio.
+      </EmptyState>
+    );
+  else if (sesion === undefined || (cuenta && permiso === null))
+    contenido = (
+      <p className="flex items-center justify-center gap-2 py-20 text-fg-muted">
+        <Spinner /> Revisando tu sesión…
+      </p>
+    );
+  else if (!cuenta) contenido = <Login />;
+  else if (!permiso)
+    contenido = (
+      <EmptyState icon={ShieldX} title="Esta cuenta no es de organizador" action={<Button label="Salir" variant="secondary" onPress={() => void salir()} />}>
+        Pide a Granito de Arena que agregue tu cuenta ({cuenta.user.email}) a la tabla de organizadores.
+      </EmptyState>
+    );
+  else contenido = <PanelInscripciones correo={cuenta.user.email ?? ''} />;
+
+  return (
+    <div className="min-h-dvh bg-page">
+      <header className="border-b-[2.5px] border-outline bg-accent text-on-accent">
+        <Contenedor className="flex h-16 items-center justify-between gap-3">
+          <Button label="Volver al sitio" icon={ArrowLeft} variant="link" to="/" className="text-on-accent" />
+          <span className="font-display text-[1.3rem] font-bold">Hanguk Run, panel</span>
+          <ThemeSwitch />
+        </Contenedor>
+        <Saekdong className="h-1.5" />
+      </header>
+      <main id="contenido" className="py-10">
+        <h1 className="sr-only">Panel de organizadores de HANGUK RUN</h1>
+        <Contenedor>{contenido}</Contenedor>
+      </main>
+    </div>
+  );
+}

@@ -1,0 +1,6 @@
+# Cloudflare Pages: el sitio compilado (dist) y, si algún día hacen falta, funciones del servidor en functions/.
+# Las variables VITE_* se usan al COMPILAR: en Cloudflare van en Pages → Settings → Variables and Secrets
+# (entorno de compilación); en local, en .env.local (ver .env.example). Guía completa: docs/publicar.md.
+name = "hanguk-run"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"

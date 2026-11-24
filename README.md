@@ -1,65 +1,48 @@
 # HANGUK RUN 한국
 
-Página de la carrera con causa de Granito de Arena: 3K, 5K y 10K el domingo 6 de diciembre de 2026
-en el Museo Hacienda San Cristóbal Polaxtla, San Martín Texmelucan.
+Sitio de la carrera con causa de Granito de Arena: 3K, 5K y 10K el domingo 6 de diciembre de 2026 por las calles de San Martín Texmelucan, con salida y meta en el Museo Hacienda San Cristóbal Polaxtla. Cada inscripción apoya a 10 jóvenes voluntarios que representarán a su comunidad en Corea del Sur.
 
-Hecha con **Vite + React + TypeScript + Tailwind CSS**. Las inscripciones se guardan en Firebase Firestore
-(guía en [FIREBASE.md](FIREBASE.md)).
+- **Portada:** pensada para inscribirse con confianza: la causa, la sede (salida y meta), la carrera con su ruta, los patrocinadores, quién organiza y preguntas frecuentes.
+- **Inscripción:** en 4 pasos; cada corredor elige su número en un tablero en tiempo real.
+- **Panel de organizadores** en `/panel`: inscripciones, pagos y exportación a CSV.
 
-## Trabajar en la página
+Hecho con Vite, React, TypeScript y Tailwind. Datos en **Supabase** y publicación en **Cloudflare Pages**.
 
-Requiere [Node.js](https://nodejs.org) 20 o más reciente.
+## Trabajar en el sitio
+
+Requiere [Node.js](https://nodejs.org) 24.
 
 ```bash
-npm install      # una sola vez
-npm run dev      # vista local con recarga automática: http://localhost:5173
-npm run build    # genera el sitio listo para subir en dist/
+npm install      # una vez
+npm run dev      # http://localhost:5173 (sin .env.local funciona en modo demostración)
+npm run check    # tipos, lint, pruebas, arquitectura, tokens, base de datos y formato
+npm run build    # sitio listo en dist/
 ```
 
-## Publicar en Hostinger (o cualquier hosting estático)
+Para conectarlo a Supabase, copia `.env.example` como `.env.local` y llénalo.
 
-1. `npm run build`
-2. Sube **el contenido** de la carpeta `dist/` (no la carpeta) a `public_html/` con el Administrador de archivos o por FTP.
-   Incluye el `.htaccess`, que configura la caché y la compresión.
+## Documentación
 
-Ya no hace falta cambiar el `?v=` en los enlaces: cada build genera nombres de archivo nuevos.
+- [Publicar](docs/publicar.md): crear Supabase, Cloudflare Pages y Turnstile paso a paso, y publicar.
+- [Modelo de datos](docs/data-model.md): tablas, funciones y reglas de seguridad.
+- [Arquitectura](docs/arquitectura.md): capas y flujo de una inscripción.
+- [Sistema de diseño](docs/design-system.md): la identidad de Granito aplicada a la carrera.
+- [CLAUDE.md](CLAUDE.md): convenciones para trabajar con Claude Code (igual que en Trellum).
 
 ## Dónde cambiar cada cosa
 
-Todo lo editable está marcado con `✏️` en el código.
+Lo editable está marcado con `✏️` en el código.
 
-| Quiero cambiar… | Archivo |
+| Qué | Dónde |
 |---|---|
-| Precios, distancias, tallas, números, pago, WhatsApp, Firebase, Instagram | `src/config.ts` |
-| Datos de la sede, aviso "sujeta a autorización", fotos de la sede | `src/config.ts` → `CONFIG.sede` y `src/sections/Sede.tsx` |
-| Texto de la causa y compromisos | `src/sections/Causa.tsx` |
-| Organizador, contacto y redes | `src/sections/Organizador.tsx` y `src/config.ts` |
-| Fechas importantes | `src/sections/Agenda.tsx` |
-| Rutas, horarios de salida e hidratación | `src/sections/Ruta.tsx` |
-| Kit, premios y patrocinadores | `src/sections/Kit.tsx`, `Premios.tsx`, `Patrocinadores.tsx` |
-| Reglamento y carta responsiva | `src/sections/Footer.tsx` |
-| Título y descripción para Google y WhatsApp | `index.html` |
-| Colores y tipografía | `src/index.css` |
+| Precio, categorías, tallas, números, fecha, sede, fotos, WhatsApp de pagos | `src/config.ts` (y la tabla `ajustes` de Supabase si es precio, números o tiempos) |
+| Textos de cada sección | `src/features/portada/` |
+| Patrocinadores (logo, nivel, enlace, descripción) y lugares por nivel | `CONFIG.patrocinadores` y `CONFIG.patrocinio` en `src/config.ts`; logos en `public/img/patrocinadores/` |
+| Preguntas frecuentes | `src/features/portada/listaPreguntas.ts` |
+| Trazo de la ruta de 10 km | `src/features/portada/MapaRuta.tsx` |
+| Aviso de privacidad | `src/features/layout/Privacidad.tsx` (revisarlo antes de publicar) |
+| Reglamento | `src/features/layout/Footer.tsx` |
+| Colores y tipografía | `src/shared/design/tokens.ts` y luego `npm run tokens` |
+| Fotos | `public/img/` |
 
-Las imágenes van en `public/img/` y se usan con `img('archivo.png')`.
-
-## Estructura
-
-```
-src/
-  config.ts            configuración editable
-  sections/            una sección de la página por archivo (cada una es un "kilómetro")
-  components/          piezas compartidas: menú, dorsal, cuenta regresiva, ventanas
-  registro/
-    store.ts           tablero de números y conexión con Firestore (mismo modelo que firestore.rules)
-    Tablero.tsx        paso 2: elegir números
-    Registro.tsx       asistente de inscripción en 4 pasos y confirmación
-    datos.ts           validación, armado de la inscripción y texto para copiar
-_anterior/             versión anterior en HTML/CSS/JS (con las fotos de Chautla), solo como respaldo
-```
-
-## Publicación automática (Wasmer)
-
-Cada push a `main` ejecuta la GitHub Action `.github/workflows/sitio.yml`: compila la página y deja el
-resultado en la rama **`sitio`**, que es la que despliega Wasmer. Si un despliegue no se actualiza, revisa
-la pestaña **Actions** del repositorio en GitHub.
+La versión anterior en HTML puro se conserva en `_anterior/` solo como respaldo.

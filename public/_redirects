@@ -1,0 +1,4 @@
+# Cloudflare Pages: las rutas de la app las resuelve React Router desde la portada.
+# (Se reescribe a "/" y no a "/index.html": Pages convierte /index.html en / con una redirección.)
+/panel   /   200
+/panel/* /   200

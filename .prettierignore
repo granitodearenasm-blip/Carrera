@@ -1,0 +1,8 @@
+dist
+node_modules
+.wrangler
+package-lock.json
+supabase
+_anterior
+.claude
+src/shared/design/tokens.css
