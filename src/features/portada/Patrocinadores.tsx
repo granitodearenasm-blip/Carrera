@@ -4,7 +4,7 @@ import { fechaConDia } from '../../shared/format';
 import { Button } from '../../shared/ui/Button';
 import { Card } from '../../shared/ui/Card';
 import { Manchas } from '../../shared/ui/decoracion';
-import { Pendiente, Seccion } from '../layout/Seccion';
+import { Seccion } from '../layout/Seccion';
 import { LogoPatrocinador } from './LogoPatrocinador';
 import { agruparPatrocinadores } from './nivelesPatrocinio';
 
@@ -34,7 +34,8 @@ export function Patrocinadores() {
             </Card>
           </li>
         ))}
-        {Array.from({ length: principal.libres }, (_, k) => (
+        {/* Un solo recuadro libre, sin decir cuántos lugares quedan */}
+        {Array.from({ length: Math.min(1, principal.libres) }, (_, k) => (
           <li key={`libre-${k}`}>
             <a
               href={CORREO}
@@ -100,27 +101,6 @@ export function Patrocinadores() {
               <li>Una causa juvenil de San Martín Texmelucan con alcance internacional.</li>
               <li>Tu marca en esta página, que acompaña cada inscripción, y en cada confirmación que reciben los corredores.</li>
             </ul>
-            <p className="mt-4 font-semibold">
-              Lugares disponibles:{' '}
-              {[principal, ...niveles]
-                .filter((n) => n.libres > 0)
-                .map((n) => {
-                  const corto = n.nombre.replace('Patrocinio ', '');
-                  return `${corto.charAt(0).toUpperCase()}${corto.slice(1)} (${n.libres})`;
-                })
-                .join(', ')}
-            </p>
-            <div className="mt-3">
-              {CONFIG.patrocinio.beneficios.length ? (
-                <ul className="list-disc space-y-1 pl-5">
-                  {CONFIG.patrocinio.beneficios.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              ) : (
-                <Pendiente>beneficios por nivel</Pendiente>
-              )}
-            </div>
           </div>
           <div className="lg:col-span-5 lg:justify-self-end">
             <Button label="Quiero patrocinar" icon={Mail} variant="ink" size="lg" href={CORREO} />

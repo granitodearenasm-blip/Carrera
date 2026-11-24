@@ -12,13 +12,13 @@ const ODS = [
   { n: 11, texto: 'Ciudades sostenibles', color: '#A8640F' },
 ];
 
-/* ✏️ Lo que regresa a la comunidad. Todos son EJEMPLOS con confirmado: false.
-   Cuando Granito de Arena confirme uno, ponle confirmado: true. Con CONFIG.mostrarPorConfirmar = false
-   solo se ven los confirmados. */
+/* ✏️ Lo que regresa a la comunidad. Sin fechas: se organizan después del viaje.
+   Uno nuevo sin confirmar va con confirmado: false (se marca "por confirmar"); con
+   CONFIG.mostrarPorConfirmar = false solo se ven los confirmados. */
 const COMPROMISOS = [
-  { titulo: 'Talleres abiertos', texto: 'Para jóvenes de la región, sobre liderazgo y proyectos comunitarios.', pendiente: 'fechas y sede', confirmado: false },
-  { titulo: 'Presentación pública', texto: 'Para contar lo que vivieron y lo que traen de vuelta.', pendiente: 'fecha y lugar', confirmado: false },
-  { titulo: 'Red con otros colectivos', texto: 'Metodologías y contactos compartidos con escuelas y grupos de la región.', pendiente: '', confirmado: false },
+  { titulo: 'Talleres abiertos', texto: 'Para jóvenes de la región, sobre liderazgo y proyectos comunitarios.', confirmado: true },
+  { titulo: 'Presentación pública', texto: 'Para contar lo que vivieron y lo que traen de vuelta.', confirmado: true },
+  { titulo: 'Red con otros colectivos', texto: 'Metodologías y contactos compartidos con escuelas y grupos de la región.', confirmado: true },
 ];
 
 /** El corazón del logo, una vez por cada joven de la delegación. */
@@ -84,7 +84,7 @@ export function Causa() {
                 <span className="text-small text-fg-muted">{c.texto}</span>
                 {!c.confirmado ? (
                   <span className="mt-1 block text-small">
-                    <Pendiente>{c.pendiente || undefined}</Pendiente>
+                    <Pendiente />
                   </span>
                 ) : null}
               </li>

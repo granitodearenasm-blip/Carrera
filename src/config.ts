@@ -10,9 +10,9 @@ export const CONFIG = {
 
   // ✏️ Fecha y hora EXACTA de la salida (cuenta regresiva y fechas de la página). -06:00 = hora del centro de México.
   salida: '2027-02-07T07:00:00-06:00',
-  // ✏️ Fecha de cierre de inscripciones, como se muestra en la página ("31 de enero").
+  // ✏️ Fecha de cierre de inscripciones (una semana antes de la carrera), como se muestra en la página.
   //    Vacío = todavía por confirmar (la página lo muestra como pendiente).
-  cierreInscripciones: '',
+  cierreInscripciones: '31 de enero',
 
   /* Sección "Lo que regresa a la comunidad":
      true  → muestra también los compromisos marcados "por confirmar" (para revisarlos).
@@ -70,7 +70,7 @@ export const CONFIG = {
      1. Conecta @granitodearena.sm en behold.so  2. Crea un feed JSON  3. Pega su URL en feedUrl.
      Mientras esté vacío se muestra una tarjeta "Síguenos en Instagram". */
   instagram: {
-    feedUrl: '',
+    feedUrl: 'https://feeds.behold.so/b8POB13VZpGfvPa3Akil',
     maxPublicaciones: 8,
   },
 
@@ -94,7 +94,7 @@ export const CONFIG = {
   /* 🤝 PATROCINADORES
      nivel: 'principal' (tarjeta grande), 'oro', 'plata' o 'bronce'.
      logo: archivo en public/img/patrocinadores/ para fondo claro; logoOscuro (opcional) para el tema oscuro.
-     Los lugares libres de cada nivel se muestran como "Tu marca aquí". */
+     Si un nivel tiene lugar libre se muestra UN recuadro "Tu marca aquí" (nunca cuántos quedan). */
   patrocinadores: [
     {
       nombre: 'Trellum',
@@ -107,10 +107,8 @@ export const CONFIG = {
   ] as Patrocinador[],
 
   patrocinio: {
-    // ✏️ Cuántos lugares hay en cada nivel (los ocupados se restan solos)
+    // ✏️ Cuántos lugares hay en cada nivel (los ocupados se restan solos). No se publica: solo decide si aparece "Tu marca aquí".
     lugares: { principal: 2, oro: 3, plata: 4, bronce: 6 } as Record<NivelPatrocinio, number>,
-    // ✏️ Lo que recibe cada patrocinador. Mientras esté vacío se muestra "Por confirmar": no prometas nada que no exista.
-    beneficios: [] as string[],
   },
 };
 /* ======================== FIN DE CONFIGURACIÓN ======================== */
