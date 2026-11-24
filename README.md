@@ -1,6 +1,6 @@
 # HANGUK RUN 한국
 
-Sitio de la carrera con causa de Granito de Arena: 3K, 5K y 10K el domingo 6 de diciembre de 2026 por las calles de San Martín Texmelucan, con salida y meta en el Museo Hacienda San Cristóbal Polaxtla. Cada inscripción apoya a 10 jóvenes voluntarios que representarán a su comunidad en Corea del Sur.
+Sitio de la carrera con causa de Granito de Arena: 3K, 5K y 10K el domingo 6 de diciembre de 2026 por las calles de San Martín Texmelucan, con salida y meta en el Museo Hacienda San Cristóbal Polaxtla. Cada inscripción apoya a jóvenes voluntarios de Granito de Arena que representarán a su comunidad en Corea del Sur.
 
 - **Portada:** pensada para inscribirse con confianza: la causa, la sede (salida y meta), la carrera con su ruta, los patrocinadores, quién organiza y preguntas frecuentes.
 - **Inscripción:** en 4 pasos; cada corredor elige su número en un tablero en tiempo real.

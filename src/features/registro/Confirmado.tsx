@@ -77,7 +77,7 @@ export function Confirmado({ resultado: r, open, onClose }: { resultado: Final |
             />
             {wa ? <Button label="¿Dudas? Escríbenos por WhatsApp" icon={MessageCircle} variant="link" href={wa} className="mt-2 text-on-accent" /> : null}
           </div>
-          <p className="text-small text-fg-muted">Tu inscripción apoya a los 10 jóvenes voluntarios de Granito de Arena que representarán a su comunidad en Corea del Sur.</p>
+          <p className="text-small text-fg-muted">Tu inscripción apoya a los jóvenes voluntarios de Granito de Arena que representarán a su comunidad en Corea del Sur.</p>
           <TiraPatrocinadores className="border-t-[1.5px] border-line pt-4" />
         </div>
       )}

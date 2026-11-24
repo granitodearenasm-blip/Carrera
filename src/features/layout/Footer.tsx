@@ -111,7 +111,8 @@ function Reglamento() {
         <li>Es obligatorio seguir la ruta marcada y las indicaciones de jueces y personal de apoyo.</li>
         <li>Se permite correr con vestuario temático, siempre que no ponga en riesgo tu seguridad ni la de otras personas.</li>
         <li>
-          No hay reembolsos: tu inscripción es un donativo para la representación de los 10 jóvenes voluntarios. Los cambios de distancia o talla dependen de la disponibilidad.
+          No hay reembolsos: tu inscripción es un donativo para la representación de los jóvenes voluntarios de Granito de Arena. Los cambios de distancia o talla dependen de la
+          disponibilidad.
         </li>
         <li>Los premios son solo en efectivo (bolsa total de $20,000) y se entregan con identificación oficial.</li>
       </ol>

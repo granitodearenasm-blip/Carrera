@@ -50,7 +50,8 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-[34rem] text-[clamp(1.2rem,1rem+0.8vw,1.5rem)] leading-snug font-semibold">
-            Corre 3, 5 o 10 km por las calles de San Martín Texmelucan, con salida y meta en una hacienda de cuatro siglos, y ayuda a que 10 jóvenes lleguen a Corea del Sur.
+            Corre 3, 5 o 10 km por las calles de San Martín Texmelucan, con salida y meta en una hacienda de cuatro siglos, y ayuda a que jóvenes de Granito de Arena lleguen a
+            Corea del Sur.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">

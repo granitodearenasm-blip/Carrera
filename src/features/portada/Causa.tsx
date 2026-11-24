@@ -21,7 +21,7 @@ const COMPROMISOS = [
   { titulo: 'Red con otros colectivos', texto: 'Metodologías y contactos compartidos con escuelas y grupos de la región.', confirmado: true },
 ];
 
-/** El corazón del logo, una vez por cada joven de la delegación. */
+/** El corazón del logo de Granito de Arena. */
 function Corazon() {
   return (
     <svg viewBox="0 0 40 36" aria-hidden="true" className="w-full">
@@ -44,19 +44,17 @@ export function Causa() {
       id="por-que"
       ko="왜 달리나요?"
       titulo="Por qué corremos"
-      entrada="Para que 10 jóvenes voluntarios de Granito de Arena lleven a Texmelucan a un encuentro internacional en Corea del Sur. Cada inscripción ayuda a cubrir su viaje."
+      entrada="Para que jóvenes voluntarios de Granito de Arena lleven a Texmelucan a un encuentro internacional en Corea del Sur. Cada inscripción ayuda a cubrir su viaje."
     >
       <div className="mt-14 grid gap-6 lg:grid-cols-3">
         <Card tone="accent" className="relative overflow-hidden p-6">
           <Manchas className="text-accent-soft" manchas={[{ x: 92, y: 10, size: 45, forma: 2 }]} />
           <div className="relative">
             <h3 className="titulo">Quiénes</h3>
-            <div className="mt-5 grid grid-cols-5 gap-2" role="img" aria-label="10 jóvenes voluntarios">
-              {Array.from({ length: 10 }, (_, i) => (
-                <Corazon key={i} />
-              ))}
+            <div className="mt-5 w-16">
+              <Corazon />
             </div>
-            <p className="mt-5">Diez jóvenes voluntarios que ya dedican su tiempo a proyectos de educación, salud y medio ambiente en San Martín Texmelucan.</p>
+            <p className="mt-5">Jóvenes voluntarios de Granito de Arena que ya dedican su tiempo a proyectos de educación, salud y medio ambiente en San Martín Texmelucan.</p>
           </div>
         </Card>
 

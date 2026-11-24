@@ -17,7 +17,6 @@ const PROYECTOS = [
 const DATOS = [
   { valor: '2021', texto: 'el año en que empezamos, sin fines de lucro' },
   { valor: '4', texto: 'proyectos que sostenemos todo el año' },
-  { valor: '10', texto: 'jóvenes voluntarios en la delegación' },
 ];
 
 /** Quién está detrás: un colectivo con trayectoria, proyectos reales y contacto directo. */
@@ -47,7 +46,7 @@ export function Organizador() {
             Somos un colectivo ciudadano de San Martín Texmelucan que defiende y difunde los derechos humanos y apoya buenas causas. HANGUK RUN lo organizamos con voluntarios,
             aliados y mucho cariño por nuestra ciudad.
           </p>
-          <dl className="mt-7 grid max-w-2xl grid-cols-3 gap-4">
+          <dl className="mt-7 grid max-w-md grid-cols-2 gap-4">
             {DATOS.map((d) => (
               <div key={d.texto} className="border-t-[2.5px] border-outline pt-3">
                 <dt className="cifra text-[2.2rem]">{d.valor}</dt>
