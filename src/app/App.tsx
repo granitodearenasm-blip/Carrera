@@ -13,7 +13,7 @@ export default function App() {
   return (
     <ToastProvider>
       <ErrorBoundary>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
           <Suspense
             fallback={
               <main className="flex min-h-dvh items-center justify-center gap-2 text-fg-muted">

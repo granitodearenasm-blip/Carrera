@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  // Rutas absolutas: Cloudflare Pages sirve el sitio en la raíz y /panel necesita encontrar sus archivos.
-  base: '/',
+  // Rutas absolutas bajo /eventos/hanguk-run/: el sitio también se muestra en trellum.io/eventos/hanguk-run
+  // (Trellum lo reenvía a este proyecto de Pages), y /panel necesita encontrar sus archivos en ambos.
+  base: '/eventos/hanguk-run/',
   plugins: [react(), tailwindcss()],
 });

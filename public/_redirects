@@ -1,5 +1,13 @@
 # Cloudflare Pages: las rutas de la app las resuelve React Router desde la portada.
 # (Se reescribe a "/" y no a "/index.html": Pages convierte /index.html en / con una redirección.)
-/panel   /   200
-/panel/* /   200
-/mi-inscripcion   /   200
+# El sitio vive bajo /eventos/hanguk-run/ (base de Vite) para mostrarse también en trellum.io.
+# Aquí los archivos siguen en la raíz de dist/, así que esas rutas se reescriben a la raíz.
+/eventos/hanguk-run   /eventos/hanguk-run/   301
+/eventos/hanguk-run/panel   /   200
+/eventos/hanguk-run/panel/* /   200
+/eventos/hanguk-run/mi-inscripcion   /   200
+/eventos/hanguk-run/*   /:splat   200
+# Direcciones anteriores, sin el prefijo
+/panel   /eventos/hanguk-run/panel   301
+/mi-inscripcion   /eventos/hanguk-run/mi-inscripcion   301
+/   /eventos/hanguk-run/   302
