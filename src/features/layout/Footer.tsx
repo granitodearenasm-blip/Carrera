@@ -5,7 +5,7 @@ import { fechaConDia, img } from '../../shared/format';
 import { Button } from '../../shared/ui/Button';
 import { Contenedor, Saekdong } from '../../shared/ui/decoracion';
 import { Dialog } from '../../shared/ui/Dialog';
-import { PaisajeSeul } from '../portada/corea';
+import { Skyline } from './Logotipo';
 import { TiraPatrocinadores } from '../portada/TiraPatrocinadores';
 import { abrirPrivacidad, abrirReglamento, alAbrirReglamento } from './eventos';
 import { Privacidad } from './Privacidad';
@@ -16,13 +16,11 @@ const ENLACE = 'inline-flex min-h-11 items-center underline-offset-4 hover:text-
 export function Footer() {
   return (
     <footer className="text-on-ink">
-      {/* Seúl en silueta: el pabellón, la Torre Namsan y los cerezos se funden con el pie */}
-      <div className="relative bg-page">
-        {/* el suelo continúa a todo el ancho de la pantalla */}
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[12%] bg-ink" />
-        <PaisajeSeul silueta className="relative mx-auto block h-44 w-auto max-w-full sm:h-56 lg:h-64" />
+      {/* Skyline de Seúl a línea con el sol rojo, apoyado sobre el pie marino */}
+      <div className="pt-16">
+        <Skyline className="mx-auto block w-full max-w-5xl px-4" />
       </div>
-      <div className="bg-ink">
+      <div className="border-t-[3px] border-outline bg-ink">
         <Contenedor className="grid gap-8 border-b-[1.5px] border-on-ink/15 py-10 lg:grid-cols-2 lg:items-end">
           <TiraPatrocinadores fondo="oscuro" />
           <p className="text-on-ink-muted lg:text-right">
@@ -33,7 +31,7 @@ export function Footer() {
           <div className="flex gap-4">
             <img src={img('logo-granito-de-arena.png')} alt="" width={64} height={64} loading="lazy" className="size-16 shrink-0" />
             <div>
-              <p className="font-display text-[1.8rem] leading-none font-bold" translate="no">
+              <p className="font-logo text-[2.2rem] leading-none" translate="no">
                 Hanguk Run{' '}
                 <span lang="ko" className="text-[0.75em] text-accent">
                   한국

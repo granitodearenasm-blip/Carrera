@@ -24,6 +24,7 @@ const fluid = (min, max) => {
 const theme = [
   `--font-sans: ${family(font.ui)};`,
   `--font-display: ${family(font.display)};`,
+  `--font-logo: ${family(font.logo)};`,
   `--font-ko: ${family(font.ko)};`,
   ...colors('light'),
   ...saekdong.map((c, i) => `--color-saek-${i + 1}: ${c};`),

@@ -89,8 +89,8 @@ export function Patrocinadores() {
       </div>
 
       {/* Invitación a patrocinar, solo con datos verdaderos */}
-      <div className="relative mt-16 overflow-hidden rounded-xl bg-accent p-7 text-on-accent estampa-lg sm:p-10">
-        <Manchas className="text-accent-soft" manchas={[{ x: 95, y: 20, size: 30, forma: 1 }]} />
+      <div className="relative mt-16 overflow-hidden bg-ink p-7 text-on-ink estampa-lg sm:p-10">
+        <Manchas className="text-on-ink/10" manchas={[{ x: 95, y: 20, size: 30, forma: 1 }]} />
         <div className="relative grid gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-7">
             <h3 className="titulo">Patrocina HANGUK RUN</h3>

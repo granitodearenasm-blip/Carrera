@@ -27,6 +27,7 @@ const ins = (folio: number, extra: Partial<InscripcionPanel> = {}): InscripcionP
   notas: '',
   creado: new Date('2026-11-23T10:00:00Z'),
   reporte: null,
+  equipoId: null,
   corredores: [corredor(folio)],
   ...extra,
 });

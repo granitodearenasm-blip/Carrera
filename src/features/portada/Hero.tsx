@@ -3,13 +3,12 @@ import { ArrowDown } from 'lucide-react';
 import { CONFIG } from '../../config';
 import { fechaConDia, hora, img, pesos } from '../../shared/format';
 import { Button } from '../../shared/ui/Button';
-import { Contenedor, Manchas, Saekdong } from '../../shared/ui/decoracion';
+import { Contenedor } from '../../shared/ui/decoracion';
+import { Logotipo, Skyline } from '../layout/Logotipo';
 import { Pendiente } from '../layout/Seccion';
 import { Dorsal } from '../registro/Dorsal';
 import { PRECIO } from '../registro/datos';
 import { Cuenta } from './Cuenta';
-import { RamaCerezo } from './corea';
-import { SelloTaegeuk } from './ilustraciones';
 
 const { minimo: MIN, maximo: MAX } = CONFIG.numeros;
 const SALIDA = new Date(CONFIG.salida);
@@ -20,55 +19,41 @@ export function Hero() {
   const [numero] = useState(() => MIN + Math.floor(Math.random() * (MAX - MIN + 1)));
 
   return (
-    <section id="inicio" aria-labelledby="inicio-titulo" className="relative overflow-hidden bg-accent text-on-accent">
-      <Manchas
-        className="text-accent-soft"
-        manchas={[
-          { x: 6, y: 20, size: 20, forma: 0, rotar: 10 },
-          { x: 48, y: 96, size: 22, forma: 1, rotar: -20 },
-          { x: 97, y: 12, size: 16, forma: 2, rotar: 40 },
-        ]}
-      />
-      {/* Cerezo en flor que entra por la esquina */}
-      <RamaCerezo className="pointer-events-none absolute top-16 right-0 hidden w-64 sm:block lg:w-80" />
+    <section id="inicio" aria-labelledby="inicio-titulo" className="relative overflow-hidden border-b-[3px] border-outline">
       <Contenedor className="relative grid gap-14 pt-28 pb-16 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-12 lg:pt-32 lg:pb-20">
-        <div>
-          <p className="flex items-center gap-3 font-display text-[1.05rem] font-semibold">
+        <div className="text-center lg:text-left">
+          <p className="flex items-center justify-center gap-3 etiqueta lg:justify-start">
             <img src={img('logo-granito-de-arena.png')} alt="" width={44} height={44} className="size-11" />
             Granito de Arena presenta
           </p>
 
-          <h1 id="inicio-titulo" className="mt-5 titulo-hero">
-            <span className="block" translate="no">
-              Hanguk
-            </span>
-            <span className="flex items-center gap-[0.12em]" translate="no">
-              Run
-              <SelloTaegeuk className="size-[0.78em] shrink-0 -rotate-12" />
-            </span>
-            <span className="sr-only"> 한국</span>
+          <h1 id="inicio-titulo" className="mt-6">
+            <Logotipo />
+            <span className="sr-only">Hanguk Run 한국</span>
           </h1>
+          <p className="mt-3 etiqueta text-accent">7 · feb · 2027 — El Moral, Texmelucan</p>
+          <Skyline className="mx-auto mt-4 w-full max-w-[34rem] lg:mx-0" />
 
-          <p className="mt-6 max-w-[34rem] text-[clamp(1.2rem,1rem+0.8vw,1.5rem)] leading-snug font-semibold">
+          <p className="mx-auto mt-6 max-w-[34rem] text-lead lg:mx-0">
             Corre 3, 5 o 10 km por las calles de San Martín Texmelucan, con salida y meta en una hacienda de cuatro siglos, y ayuda a que jóvenes de Granito de Arena lleguen a
             Corea del Sur.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Button label={`Inscríbete por ${pesos(PRECIO)}`} size="lg" variant="ink" href="#inscripcion" />
+          <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <Button label={`Inscríbete por ${pesos(PRECIO)}`} size="lg" href="#inscripcion" />
             <Button label="Conoce la causa" icon={ArrowDown} iconPosition="end" size="lg" variant="secondary" href="#por-que" />
           </div>
 
-          <dl className="mt-8 grid max-w-[34rem] gap-x-6 gap-y-4 border-t-[2.5px] border-on-accent pt-5 sm:grid-cols-2">
+          <dl className="mt-8 grid max-w-[34rem] gap-x-6 gap-y-4 border-t-[3px] border-outline pt-5 text-left sm:grid-cols-2">
             <div>
-              <dt className="text-small font-semibold opacity-80">Cuándo</dt>
-              <dd className="font-display text-[1.15rem] font-semibold">
+              <dt className="etiqueta text-fg-muted">Cuándo</dt>
+              <dd className="mt-1 font-display text-[1.1rem] font-extrabold">
                 {fechaConDia(SALIDA)}, {hora(SALIDA)} h
               </dd>
             </div>
             <div>
-              <dt className="text-small font-semibold opacity-80">Inscripciones</dt>
-              <dd className="font-display text-[1.15rem] font-semibold">
+              <dt className="etiqueta text-fg-muted">Inscripciones</dt>
+              <dd className="mt-1 font-display text-[1.1rem] font-extrabold">
                 {CONFIG.cierreInscripciones ? (
                   `Abiertas hasta el ${CONFIG.cierreInscripciones}`
                 ) : (
@@ -79,8 +64,8 @@ export function Hero() {
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-small font-semibold opacity-80">Salida y meta</dt>
-              <dd className="font-display text-[1.15rem] font-semibold">
+              <dt className="etiqueta text-fg-muted">Salida y meta</dt>
+              <dd className="mt-1 font-display text-[1.1rem] font-extrabold">
                 <a href="#sede" className="underline decoration-2 underline-offset-4 hover:decoration-[3px]">
                   {CONFIG.sede.nombre}
                 </a>
@@ -93,16 +78,16 @@ export function Hero() {
         {/* La sede como postal, con el dorsal pegado encima */}
         <div className="mx-auto w-full max-w-[34rem] lg:mr-0">
           <figure className="relative pb-24 sm:pb-28">
-            <div className="relative rotate-[-2deg] rounded-lg border-[3px] border-on-accent bg-surface p-2.5 shadow-[7px_9px_0_0_var(--color-on-accent)]">
+            <div className="relative border-[3px] border-outline bg-surface p-2.5 shadow-[8px_8px_0_0_var(--color-accent)]">
               <img
                 src={img('polaxtla-fachada.jpg')}
                 alt="Fachada del Museo Hacienda San Cristóbal Polaxtla, con su galería de vidrio, palmeras y jardín"
                 width={636}
                 height={384}
                 fetchPriority="high"
-                className="aspect-[636/384] w-full rounded-md object-cover"
+                className="aspect-[636/384] w-full object-cover"
               />
-              <figcaption className="absolute top-5 left-5 rounded-pill border-[2px] border-on-accent bg-accent px-3 py-1 text-small font-bold text-on-accent">
+              <figcaption className="absolute top-5 left-5 border-[3px] border-outline bg-ink px-3 py-1.5 etiqueta text-on-ink">
                 Salida y meta<span className="hidden sm:inline">: {CONFIG.sede.nombre}</span>
               </figcaption>
             </div>
@@ -115,7 +100,6 @@ export function Hero() {
           </figure>
         </div>
       </Contenedor>
-      <Saekdong className="h-3" />
     </section>
   );
 }

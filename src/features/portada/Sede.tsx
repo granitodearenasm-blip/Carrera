@@ -93,7 +93,7 @@ export function Sede() {
       </dl>
 
       <div className="mt-16 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border-[3px] border-accent bg-accent p-6 text-on-accent sm:p-8">
+        <div className="border-[3px] border-outline bg-ink p-6 text-on-ink shadow-[6px_6px_0_0_var(--color-accent)] sm:p-8">
           <h3 className="titulo">Visítala también otro día</h3>
           <p className="mt-3">
             La hacienda es casa museo de la {sede.fundacion}: guarda pintura novohispana, tapicería europea y una colección de relojes, rodeada de jardines y un bosque de fresnos.

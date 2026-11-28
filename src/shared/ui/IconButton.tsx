@@ -29,7 +29,7 @@ export function IconButton({ icon: Icon, label, variant = 'quiet', size = 'md', 
       aria-pressed={pressed}
       aria-expanded={expanded}
       aria-controls={controls}
-      className={`relative inline-flex shrink-0 cursor-pointer items-center justify-center rounded-pill transition-[background-color,transform,box-shadow] duration-(--duration-fast) disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`relative inline-flex shrink-0 cursor-pointer items-center justify-center transition-[background-color,transform,box-shadow] duration-(--duration-fast) disabled:cursor-not-allowed disabled:opacity-40 ${
         size === 'md' ? 'size-11' : "size-9 before:absolute before:-inset-1 before:content-['']"
       } ${VARIANT[variant]} ${className}`}
     >

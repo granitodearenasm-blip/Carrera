@@ -7,6 +7,7 @@ import { Dialog } from '../../shared/ui/Dialog';
 import { IconButton } from '../../shared/ui/IconButton';
 import { ThemeSwitch } from '../../shared/ui/ThemeSwitch';
 import { PRECIO } from '../registro/datos';
+import { Logotipo } from './Logotipo';
 
 // ✏️ Menú: [id de la sección, texto]
 export const SECCIONES = [
@@ -42,16 +43,14 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-(--layer-nav) transition-[background-color,border-color] duration-(--duration-base) ${arriba ? 'border-b-[2.5px] border-transparent bg-accent text-on-accent' : 'border-b-[2.5px] border-outline bg-page text-fg'}`}
+      className={`fixed inset-x-0 top-0 z-(--layer-nav) border-b-[3px] border-outline bg-ink text-on-ink transition-[background-color,border-color] duration-(--duration-base)`}
     >
       <a href="#contenido" className="sr-only rounded-md bg-ink px-4 py-2 font-bold text-on-ink focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-10">
         Saltar al contenido
       </a>
       <Contenedor className="flex h-[4.25rem] items-center gap-4">
         <a href="#inicio" className="flex items-center gap-2 whitespace-nowrap" aria-label="HANGUK RUN, ir al inicio">
-          <span translate="no" className="font-display text-[1.6rem] font-bold [font-stretch:88%]">
-            Hanguk Run
-          </span>
+          <Logotipo compacto />
           <span lang="ko" className="hidden text-[1.15rem] sm:inline">
             한국
           </span>
@@ -63,7 +62,7 @@ export function Nav() {
               key={id}
               href={`#${id}`}
               aria-current={activa === id ? 'location' : undefined}
-              className={`rounded-pill px-3 py-2 text-[0.95rem] font-bold transition-colors ${activa === id ? 'bg-ink text-on-ink' : 'hover:bg-current/10'}`}
+              className={`px-3 py-2 etiqueta transition-colors ${activa === id ? 'bg-on-ink text-ink' : 'hover:bg-current/10'}`}
             >
               {texto}
             </a>

@@ -6,6 +6,7 @@
 /eventos/hanguk-run/panel   /   200
 /eventos/hanguk-run/panel/* /   200
 /eventos/hanguk-run/mi-inscripcion   /   200
+/eventos/hanguk-run/equipo/*   /   200
 /eventos/hanguk-run/*   /:splat   200
 # Direcciones anteriores, sin el prefijo
 /panel   /eventos/hanguk-run/panel   301

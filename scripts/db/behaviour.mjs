@@ -168,5 +168,38 @@ await espera('la organizadora confirma el pago', ORG, `select public.cambiar_est
 await espera('una pagada ya no acepta reportes', ANA, reporte('transferencia', 'otra-ref'), false, (r) => r.error.includes('ya-pagada'));
 await espera('…y la consulta dice pagado', BETO, consulta('ana@example.com'), true, (r) => r.rows[0].estado_pago === 'pagado');
 
+console.log('— Equipo Hanguk y finanzas (0003)');
+await espera('un visitante no ve al equipo', ANA, 'select count(*)::int n from public.equipo', true, (r) => r.rows[0].n === 0);
+await espera('un visitante no da de alta miembros', ANA, `insert into public.equipo (nombre, codigo) values ('Yo', 'yo-mismo')`, false);
+await espera('la organizadora da de alta a Sofía', ORG, `insert into public.equipo (nombre, codigo) values ('Sofía Ramírez', 'sofia') returning clave`, true);
+await espera('la organizadora no escribe la clave privada', ORG, `update public.equipo set clave = gen_random_uuid()`, false);
+const clave = (await como(ORG, `select clave from public.equipo where codigo = 'sofia'`)).rows[0].clave;
+const idAna = (await como(ORG, `select id from public.inscripciones where folio = ${folio}`)).rows[0].id;
+await espera('Beto no atribuye la inscripción de Ana', BETO, `select public.atribuir_inscripcion('${idAna}', 'sofia')`, true);
+await espera('…y sigue sin miembro', ORG, `select equipo_id from public.inscripciones where id = '${idAna}'`, true, (r) => r.rows[0].equipo_id === null);
+await espera('un código inventado no hace nada', ANA, `select public.atribuir_inscripcion('${idAna}', 'nadie')`, true);
+await espera('Ana atribuye su inscripción a Sofía', ANA, `select public.atribuir_inscripcion('${idAna}', ' SOFIA ')`, true);
+await espera(
+  '…y la organizadora lo ve',
+  ORG,
+  `select e.codigo from public.inscripciones i join public.equipo e on e.id = i.equipo_id where i.id = '${idAna}'`,
+  true,
+  (r) => r.rows[0]?.codigo === 'sofia',
+);
+await espera('Sofía ve con su clave su inscripción con nombre de pila, sin datos de contacto', BETO, `select public.mi_equipo('${clave}') d`, true, (r) => {
+  const d = r.rows[0].d;
+  return d.inscripciones.length === 1 && d.inscripciones[0].nombres === 'Ana' && d.ranking[0].corredores === 1 && !JSON.stringify(d).includes('example.com');
+});
+await espera('una clave inventada no ve nada', BETO, `select public.mi_equipo(gen_random_uuid())`, false, (r) => r.error.includes('no-encontrado'));
+await espera('sin sesión no se consulta', null, `select public.mi_equipo('${clave}')`, false);
+await espera('un visitante no ve patrocinios', ANA, 'select count(*)::int n from public.patrocinios', true, (r) => r.rows[0].n === 0);
+await espera('un visitante no registra gastos', ANA, `insert into public.gastos (concepto, monto) values ('Playeras', 100)`, false);
+await espera(
+  'la organizadora registra un patrocinio y un gasto',
+  ORG,
+  `with p as (insert into public.patrocinios (patrocinador, monto) values ('Trellum', 5000) returning 1) insert into public.gastos (concepto, monto) select 'Playeras', 1200 from p`,
+  true,
+);
+
 console.log(fallas ? `\n${fallas} prueba(s) de base de datos fallaron` : '\nBase de datos: todo bien');
 process.exit(fallas ? 1 : 0);

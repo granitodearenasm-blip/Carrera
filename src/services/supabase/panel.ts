@@ -35,6 +35,8 @@ export type InscripcionPanel = {
   notas: string;
   creado: Date;
   reporte: PagoReportado | null;
+  /** Miembro del equipo que la trajo (su link), si hubo */
+  equipoId: string | null;
   corredores: CorredorPanel[];
 };
 
@@ -54,13 +56,14 @@ type Fila = {
   pago_metodo: MetodoPago | null;
   pago_referencia: string | null;
   pago_reportado: string | null;
+  equipo_id: string | null;
   corredores: { numero: number; nombre: string; edad: number; sexo: string; categoria: string; talla: string; emergencia_nombre: string; emergencia_telefono: string }[];
 };
 
 export async function listarInscripciones(): Promise<InscripcionPanel[]> {
   const { data, error } = await requireSupabase()
     .from('inscripciones')
-    .select('id, folio, tipo, grupo, responsable, correo, telefono, total, estado_pago, pagar_antes_de, notas, creado, pago_metodo, pago_referencia, pago_reportado, corredores (numero, nombre, edad, sexo, categoria, talla, emergencia_nombre, emergencia_telefono)')
+    .select('id, folio, tipo, grupo, responsable, correo, telefono, total, estado_pago, pagar_antes_de, notas, creado, pago_metodo, pago_referencia, pago_reportado, equipo_id, corredores (numero, nombre, edad, sexo, categoria, talla, emergencia_nombre, emergencia_telefono)')
     .order('creado', { ascending: false });
   if (error) throw errorDe(error);
   return (data as Fila[]).map((f) => ({
@@ -77,6 +80,7 @@ export async function listarInscripciones(): Promise<InscripcionPanel[]> {
     notas: f.notas,
     creado: new Date(f.creado),
     reporte: f.pago_metodo && f.pago_reportado ? { metodo: f.pago_metodo, referencia: f.pago_referencia, cuando: new Date(f.pago_reportado) } : null,
+    equipoId: f.equipo_id,
     corredores: f.corredores
       .map((c) => ({ ...c, emergenciaNombre: c.emergencia_nombre, emergenciaTelefono: c.emergencia_telefono }))
       .sort((a, b) => a.numero - b.numero),

@@ -8,7 +8,7 @@ import { hayNube } from '../services/supabase/client';
 import { salir, soyOrganizador, useSesion } from '../services/supabase/auth';
 import { EncabezadoSimple } from '../features/layout/EncabezadoSimple';
 import { Login } from '../features/panel/Login';
-import { PanelInscripciones } from '../features/panel/PanelInscripciones';
+import { PanelOrganizadores } from '../features/panel/PanelOrganizadores';
 
 /** /panel: entrada, comprobación de organizador y el panel. */
 export default function Panel() {
@@ -48,7 +48,7 @@ export default function Panel() {
         Pide a Granito de Arena que agregue tu cuenta ({cuenta.user.email}) a la tabla de organizadores.
       </EmptyState>
     );
-  else contenido = <PanelInscripciones correo={cuenta.user.email ?? ''} />;
+  else contenido = <PanelOrganizadores correo={cuenta.user.email ?? ''} />;
 
   return (
     <div className="min-h-dvh bg-page">

@@ -3,17 +3,18 @@ import { miles, pesos } from '../../shared/format';
 import type { Resumen as Datos } from './estadisticas';
 
 /** Cifra principal: número grande con su etiqueta. */
-function Cifra({ valor, etiqueta, tono }: { valor: string; etiqueta: string; tono?: 'danger' }) {
+export function Cifra({ valor, etiqueta, tono, nota }: { valor: string; etiqueta: string; tono?: 'danger' | 'success'; nota?: string }) {
   return (
     <div className="rounded-md bg-surface p-4 contorno-fino">
-      <dd className={`cifra text-[2.2rem] ${tono === 'danger' ? 'text-danger' : 'text-fg'}`}>{valor}</dd>
+      <dd className={`cifra text-[2.2rem] ${tono === 'danger' ? 'text-danger' : tono === 'success' ? 'text-success' : 'text-fg'}`}>{valor}</dd>
       <dt className="mt-1 text-small font-semibold text-fg-muted">{etiqueta}</dt>
+      {nota ? <dd className="mt-1 text-small text-fg-muted">{nota}</dd> : null}
     </div>
   );
 }
 
 /** Conteo por categoría: una sola serie, barras de un solo tono y el número escrito al lado. */
-function Barras({ titulo, orden, conteo }: { titulo: string; orden: readonly string[]; conteo: Record<string, number> }) {
+export function Barras({ titulo, orden, conteo }: { titulo: string; orden: readonly string[]; conteo: Record<string, number> }) {
   const max = Math.max(1, ...Object.values(conteo));
   const claves = [...orden, ...Object.keys(conteo).filter((k) => !orden.includes(k))];
   return (

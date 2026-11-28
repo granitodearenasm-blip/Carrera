@@ -2,7 +2,8 @@
 @import './shared/design/tokens.css';
 
 /* Los colores, tipos, radios y sombras vienen de tokens.css (generado desde tokens.ts).
-   Aquí solo van la base y las utilidades del lenguaje "estampa" del logo de Granito. */
+   Aquí solo van la base y las utilidades del lenguaje «Varsity Seúl»: cuadrícula, bloques rectos
+   con contorno marino y sombra plana, títulos en mayúsculas y el logotipo script. */
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
@@ -16,6 +17,9 @@ html {
 body {
   @apply bg-page font-sans text-body text-fg antialiased;
   font-optical-sizing: auto;
+  /* Cuadrícula de fondo cada 48 px, la firma de la identidad */
+  background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
 html[data-theme='dark'] {
@@ -34,7 +38,6 @@ label {
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
-  border-radius: 6px;
 }
 
 ::selection {
@@ -47,8 +50,9 @@ label {
   font-weight: 400;
 }
 
-/* ---------- Tipografía (Fredoka, redondeada como las letras del logo) ---------- */
+/* ---------- Tipografía (Archivo Black en MAYÚSCULAS espaciadas) ---------- */
 @utility titulo-hero {
+  text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-hero);
   line-height: var(--text-hero--line-height);
@@ -58,6 +62,7 @@ label {
   text-wrap: balance;
 }
 @utility titulo-display {
+  text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-display);
   line-height: var(--text-display--line-height);
@@ -67,30 +72,56 @@ label {
   text-wrap: balance;
 }
 @utility titulo {
+  text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-title);
   line-height: var(--text-title--line-height);
   font-weight: var(--text-title--font-weight);
+  letter-spacing: var(--text-title--letter-spacing);
   font-stretch: calc(var(--wdth-title) * 1%);
   text-wrap: balance;
 }
 @utility subtitulo {
+  text-transform: uppercase;
   font-family: var(--font-display);
   font-size: var(--text-subtitle);
   line-height: var(--text-subtitle--line-height);
   font-weight: var(--text-subtitle--font-weight);
+  letter-spacing: var(--text-subtitle--letter-spacing);
   text-wrap: balance;
 }
-/* Números de dorsal y marcadores: Fredoka estrecha, cifras tabulares */
+/* Números de dorsal y marcadores: Archivo Black, cifras tabulares */
 @utility cifra {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-stretch: 78%;
+  font-weight: 900;
   font-variant-numeric: tabular-nums;
   line-height: 0.9;
 }
 
-/* ---------- Estampa: contorno café grueso + sombra plana desplazada, como sticker ---------- */
+/* Etiquetas y datos: mayúsculas espaciadas */
+@utility etiqueta {
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: var(--text-label--font-weight);
+  text-transform: uppercase;
+}
+
+/* «Hanguk» del logotipo: script hueso con contorno marino y doble sombra */
+@utility logo-script {
+  font-family: var(--font-logo);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-page);
+  -webkit-text-stroke: 0.14em var(--color-outline);
+  paint-order: stroke fill;
+  text-shadow:
+    0.05em 0.06em 0 var(--color-outline),
+    0.09em 0.11em 0 var(--color-sand);
+}
+
+/* ---------- Bloques: contorno marino recto + sombra plana desplazada ---------- */
 @utility estampa {
   border: var(--stroke-base) solid var(--color-outline);
   box-shadow: var(--shadow-md);
@@ -110,7 +141,7 @@ label {
   border: var(--stroke-thin) solid var(--color-line);
 }
 
-/* ---------- Saekdong: franjas de las mangas del hanbok (divisor, cinta de meta, progreso) ---------- */
+/* ---------- Franjas de uniforme varsity (divisor, cinta de meta, progreso) ---------- */
 @utility saekdong {
   background: linear-gradient(
     90deg,

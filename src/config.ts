@@ -110,6 +110,22 @@ export const CONFIG = {
     // ✏️ Cuántos lugares hay en cada nivel (los ocupados se restan solos). No se publica: solo decide si aparece "Tu marca aquí".
     lugares: { principal: 2, oro: 3, plata: 4, bronce: 6 } as Record<NivelPatrocinio, number>,
   },
+
+  /* ✈️ VIAJE Y EQUIPO HANGUK (solo se ve en el panel y en la página de cada miembro del equipo) */
+  viaje: {
+    // ✏️ Cuántos jóvenes viajan a Corea: lo recaudado (menos gastos) se reparte en partes iguales.
+    viajeros: 10,
+    // ✏️ Lo que cuesta el viaje de cada uno, en pesos. null = todavía por confirmar (no se muestra lo que falta).
+    costoPorViajero: null as number | null,
+  },
+  equipo: {
+    // ✏️ Insignias que gana un miembro al llegar a estos corredores inscritos con su link.
+    insignias: [5, 10, 25, 50],
+    // ✏️ Categorías para clasificar los gastos.
+    categoriasGasto: ['Playeras', 'Medallas', 'Permisos', 'Cronometraje', 'Hidratación', 'Publicidad', 'Logística', 'Otro'],
+    // ✏️ Mensaje que comparte cada miembro por WhatsApp junto con su link.
+    mensaje: '¡Corre conmigo el HANGUK RUN! 3K, 5K o 10K el 7 de febrero en El Moral. Cada inscripción ayuda a que jóvenes de Texmelucan viajen a Corea:',
+  },
 };
 /* ======================== FIN DE CONFIGURACIÓN ======================== */
 

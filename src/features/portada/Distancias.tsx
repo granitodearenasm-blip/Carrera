@@ -1,10 +1,9 @@
 import { Clock, Droplet, Flag, HeartPulse } from 'lucide-react';
 import { Button } from '../../shared/ui/Button';
 import { Card } from '../../shared/ui/Card';
-import { Pendiente } from '../layout/Seccion';
 
 // ✏️ Distancias, salidas y para quién es cada una. Los puestos de hidratación son km del recorrido.
-// calles: por dónde va la ruta; vacío = todavía por confirmar.
+// calles: por dónde va la ruta; vacío = se anunciará por etapas (no se muestra el trazo todavía).
 const DISTANCIAS = [
   { km: 3, ruta: 'Ruta Jeju', ko: '제주', salida: '7:30', hidratacion: [] as number[], calles: '', para: 'Ideal si vas empezando o si corres con tu familia.' },
   { km: 5, ruta: 'Ruta Seúl', ko: '서울', salida: '7:15', hidratacion: [] as number[], calles: '', para: 'Un reto cómodo si ya trotas de vez en cuando.' },
@@ -14,7 +13,7 @@ const DISTANCIAS = [
     ko: '부산',
     salida: '7:00',
     hidratacion: [2.5, 5, 7.5],
-    calles: 'Reforma Oriente, Al Moral, el libramiento y la avenida hasta Av. México (trazo aproximado)',
+    calles: '',
     para: 'Para quienes ya entrenan y quieren medir su marca.',
   },
 ];
@@ -50,7 +49,7 @@ export function Distancias() {
             </div>
 
             <p className="mt-4 text-small">
-              <strong>Por dónde:</strong> {d.calles || <Pendiente>ruta</Pendiente>}
+              <strong>Por dónde:</strong> {d.calles || <span className="text-fg-muted">la ruta se anunciará por etapas.</span>}
             </p>
             <ul className="mt-3 space-y-2 text-small">
               {/* El texto va en un solo <span>: suelto, cada pedazo sería un hijo del flex y se separaría */}

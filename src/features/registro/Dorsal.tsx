@@ -44,11 +44,11 @@ export function Dorsal({ numero, nombre, pie, className = '', rodar = false }: D
       {HOYOS.map((p) => (
         <span key={p} aria-hidden="true" className={`absolute z-10 size-[0.85em] rounded-full border-[0.12em] border-outline bg-page ${p}`} />
       ))}
-      <div className="flex items-center justify-between gap-2 border-b-[0.18em] border-outline bg-accent px-[2.2em] py-[0.55em] text-on-accent">
-        <span className="font-display text-[1.35em] leading-none font-bold [font-stretch:90%]" translate="no">
-          Hanguk Run
+      <div className="flex items-center justify-between gap-2 border-b-[0.18em] border-outline bg-ink px-[2.2em] py-[0.55em] text-on-ink">
+        <span className="font-logo text-[1.6em] leading-none" translate="no">
+          Hanguk
         </span>
-        <span lang="ko" className="text-[1.3em] leading-none text-on-accent">
+        <span lang="ko" className="text-[1.3em] leading-none text-on-ink">
           한국
         </span>
       </div>

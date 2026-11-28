@@ -8,6 +8,7 @@ import Inicio from '../pages/Inicio';
 // El panel se descarga aparte: la página pública no carga su código.
 const Panel = lazy(() => import('../pages/Panel'));
 const MiInscripcion = lazy(() => import('../pages/MiInscripcion'));
+const Equipo = lazy(() => import('../pages/Equipo'));
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Routes>
               <Route path="/panel" element={<Panel />} />
               <Route path="/mi-inscripcion" element={<MiInscripcion />} />
+              <Route path="/equipo/:clave" element={<Equipo />} />
               <Route path="*" element={<Inicio />} />
             </Routes>
           </Suspense>

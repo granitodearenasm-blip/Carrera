@@ -38,12 +38,12 @@ describe('tokens de diseño', () => {
     expect(Object.keys(color.dark).sort()).toEqual(Object.keys(color.light).sort());
   });
 
-  it('el amarillo Sol nunca es texto sobre fondos claros (regla de marca)', () => {
-    const textos = ['fg', 'fgMuted', 'link', 'danger', 'info', 'success'] as const;
-    for (const rol of textos) expect(color.light[rol]).not.toBe(palette.sol);
+  it('el rojo sol nunca es texto corrido sobre fondos claros (regla de marca)', () => {
+    const textos = ['fg', 'fgMuted', 'link', 'info', 'success'] as const;
+    for (const rol of textos) expect(color.light[rol]).not.toBe(palette.rojo);
   });
 
-  it('el café del contorno se lee sobre el amarillo del logo', () => {
-    expect(contrastRatio(palette.cafe, palette.sol)).toBeGreaterThanOrEqual(TEXTO);
+  it('el marino del contorno se lee sobre el hueso del fondo', () => {
+    expect(contrastRatio(palette.marino, palette.hueso)).toBeGreaterThanOrEqual(TEXTO);
   });
 });

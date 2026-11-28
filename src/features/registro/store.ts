@@ -15,6 +15,8 @@ import { hayNube, type ErrorBase } from '../../services/supabase/client';
 import { asegurarSesionAnonima } from '../../services/supabase/auth';
 import { apartarNumero, cargarTablero, escucharTablero, soltarAlSalir, soltarNumero, type Celda } from '../../services/supabase/numeros';
 import { confirmarInscripcion } from '../../services/supabase/inscripciones';
+import { atribuirInscripcion } from '../../services/supabase/equipo';
+import { olvidarReferido, referidoVigente } from './referido';
 
 export type Paso = 1 | 2 | 3 | 4;
 export type Conexion = { tipo: 'cargando' | 'demo' | 'ok' | 'error'; texto: string };
@@ -583,6 +585,9 @@ export async function enviar(data: Inscripcion): Promise<ResultadoEnvio> {
     numeros.forEach((n) => DB.tablero.set(n, { estado: 'confirmado', ms: 0 }));
     reiniciar();
     recordar({ folio: recibo.folio, correo: data.correo });
+    // Si llegó con el link de alguien del Equipo Hanguk, se le cuenta (si falla, la inscripción ya quedó)
+    const ref = referidoVigente();
+    if (ref) void atribuirInscripcion(recibo.id, ref).then(olvidarReferido, () => {});
     return { tipo: 'ok', data: { ...data, folio: recibo.folio, total: recibo.total, pagarAntesDe: fechaLarga(recibo.pagarAntesDe) } };
   } catch (err) {
     const e = err as ErrorBase;

@@ -52,8 +52,7 @@ export const PREGUNTAS: Pregunta[] = [
   },
   {
     pregunta: '¿Por dónde es la ruta?',
-    respuesta: `Todas las distancias salen y llegan al ${CONFIG.sede.nombre}. La de 10 km recorre las calles de El Moral: Reforma Oriente, Al Moral, el libramiento y la avenida hasta Av. México. La ruta estará marcada y habrá personal de apoyo.`,
-    pendiente: 'trazo definitivo de 10 km y rutas de 3 y 5 km',
+    respuesta: `Todas las distancias salen y llegan al ${CONFIG.sede.nombre} y recorren las calles de El Moral. Iremos anunciando el recorrido por etapas en nuestras redes. La ruta estará marcada y habrá personal de apoyo.`,
   },
   {
     pregunta: '¿Cómo llego y dónde me estaciono?',

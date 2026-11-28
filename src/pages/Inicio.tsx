@@ -9,12 +9,15 @@ import { Patrocinadores } from '../features/portada/Patrocinadores';
 import { Organizador } from '../features/portada/Organizador';
 import { Preguntas } from '../features/portada/Preguntas';
 import { Registro } from '../features/registro/Registro';
+import { capturarReferido } from '../features/registro/referido';
+import { useEffect } from 'react';
 
 /**
  * La portada, en el orden en que alguien decide inscribirse: qué es, por qué, dónde, cómo es el día,
  * quién lo respalda, quién organiza, la inscripción y las dudas que quedan.
  */
 export default function Inicio() {
+  useEffect(capturarReferido, []);
   return (
     <>
       <Nav />
